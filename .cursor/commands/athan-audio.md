@@ -1,0 +1,1 @@
+Spawn the `athan-audio` subagent with the Task tool (`subagent_type: athan-audio`). Do not wire AlarmManager yourself. After it returns, read `ops/handoffs/audio.md`, update `ops/STATUS.md` and `ops/LOG.md`.

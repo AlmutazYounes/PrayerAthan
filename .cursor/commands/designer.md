@@ -1,0 +1,1 @@
+Spawn the `designer` subagent with the Task tool (`subagent_type: designer`). Do not draw WallScreen yourself. After it returns, check both orientations against the PNGs and `DESIGN.md`, read `ops/handoffs/designer.md`, update `ops/STATUS.md` and `ops/LOG.md`.

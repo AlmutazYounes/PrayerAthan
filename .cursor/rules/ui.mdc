@@ -1,0 +1,11 @@
+---
+description: Wall UI tokens and layout. Both orientations.
+globs: "**/ui/**/*.kt"
+alwaysApply: false
+---
+
+# Wall UI
+
+Read `DESIGN.md` and `ops/contracts/ui-api.md`.
+
+Colors from the token table only. Both portrait and landscape. No Hijri, weather, or Qibla. Gold settings gear in the header. Do not import adhan-kotlin in a composable. Do not hardcode mockup prayer times.

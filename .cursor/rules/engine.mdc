@@ -1,0 +1,11 @@
+---
+description: Prayer engine boundaries. No Compose. ISNA + Shafi.
+globs: "**/engine/**/*.kt"
+alwaysApply: false
+---
+
+# Prayer engine
+
+Read `ops/contracts/engine-api.md` and `PROJECT.md` location section.
+
+No Compose. No AlarmManager. No MediaPlayer. Jordan is `Asia/Amman`, never local plus hours. Sunrise is never an athan target. `CalculationMethod.NORTH_AMERICA`, `Madhab.SHAFI`.

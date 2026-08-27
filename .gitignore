@@ -1,0 +1,17 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+*.apk
+*.aab
+.kotlin
+/keystore/*.jks
+/keystore/*.p12
+/keystore/keystore.properties
+/play/service-account.json

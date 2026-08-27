@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PrayerAthan</string>
+    <string name="athan_channel_name">Athan</string>
+    <string name="athan_playing_title">Adhan is playing</string>
+    <string name="athan_stop">Stop</string>
+    <string name="athkar_channel_name">Athkar</string>
+    <string name="athkar_playing_title">Dhikr</string>
+</resources>

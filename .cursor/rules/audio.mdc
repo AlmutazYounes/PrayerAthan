@@ -1,0 +1,11 @@
+---
+description: Athan playback. Alarms, not Compose delay.
+globs: "**/prayerathan/audio/**/*.kt"
+alwaysApply: false
+---
+
+# Athan audio
+
+Read `ops/contracts/audio-api.md` and `audio/SOURCE.md`.
+
+`AlarmManager.setAlarmClock` plus MediaPlayer on the alarm stream. Fajr file vs standard. No athan at sunrise. No `delay()` in Compose to fire prayer. Personal-use MP3s, not a Play Store clearance.

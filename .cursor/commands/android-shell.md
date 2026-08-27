@@ -1,0 +1,1 @@
+Spawn the `android-shell` subagent with the Task tool (`subagent_type: android-shell`). Do not create the Gradle project yourself. After it returns, confirm `assembleDebug` was run, read `ops/handoffs/shell.md`, update `ops/STATUS.md` and `ops/LOG.md`.

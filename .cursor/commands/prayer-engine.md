@@ -1,0 +1,1 @@
+Spawn the `prayer-engine` subagent with the Task tool (`subagent_type: prayer-engine`). Do not implement engine code yourself. After it returns, review the diff against `ops/contracts/engine-api.md`, read `ops/handoffs/engine.md`, update `ops/STATUS.md` and `ops/LOG.md`.

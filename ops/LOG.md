@@ -1,0 +1,74 @@
+# Log
+
+Append one line per event. Newest at the top.
+
+- 2026-08-27 Mutaz: open sourced on GitHub as AlmutazYounes/PrayerAthan under MIT license.
+- 2026-08-27 Mutaz: built release 7 (0.7.0) bundle and recaptured clean full-res Play screenshots for phone and tablet slots.
+- 2026-08-27 Mutaz: internal testing 6 (0.6.0). Weather poll, precipitation soon, no Yara. Not production.
+- 2026-08-27 Mutaz: weather polling increased to every 3 minutes. Added 1-hour minutely precipitation forecast (shows SOON for upcoming rain, snow, drizzle, or storm).
+- 2026-08-27 Mutaz: dropped the Yara photo theme. `ThemeMode` is Light/Dark/Auto only. Deleted `wall_backdrop_yara.webp`, `design/yara/`, `syncYaraPhotos` Gradle task, and the settings chip. Docs patched.
+- 2026-08-27 Mutaz: write how to push. `store/PUSH.md`.
+- 2026-08-27 Mutaz: internal testing 5 (0.5.0). Not production.
+- 2026-08-27 Mutaz: internal testing 4 (0.4.0). Yara photo rotate. Not production.
+
+- 2026-08-27 Mutaz: no hourly athkar from 10 PM until 8 AM.
+- 2026-08-27 Mutaz: removed Haram Isha, Ali Ahmed Mullah, and Haram Friday athan choices. Ali Mala is the only standard athan. Athkar settings show On/Off only, no clip demos.
+- 2026-08-27 Mutaz: fixed portrait header. Location and weather were invisible because the date column had no weight while filling to max width, starving its weighted sibling. Both columns are weighted now. Header's fit-to-width text also measures the real string instead of guessing an em-width ratio, which was clipping "2026" off the date.
+- 2026-08-27 Mutaz: landscape countdown sized from a real measurement of "00:00:00" instead of a guessed char count. Seconds no longer run off the right edge.
+- 2026-08-27 Mutaz: fixed-width digit slots for landscape countdown and clock. Numbers no longer drift sideways each tick.
+- 2026-08-27 Mutaz: weekday and date on one header line.
+- 2026-08-27 Mutaz: landscape header. Weather and date fill their clock columns.
+- 2026-08-27 Mutaz: redesign settings. Sections, pinned close, landscape two columns.
+- 2026-08-27 Mutaz: internal testing 3 (0.3.0). Athan picker, athkar toggle, contrast, Yara. Not production.
+- 2026-08-27 Mutaz: type contrast on plaster and Yara. Ivory/gold on a 58% umber veil for the photo.
+- 2026-08-27 Mutaz: internal testing 2 (0.2.0). City search, GPS, weather, athkar, palettes. Not production.
+- 2026-08-27 Mutaz: Yara background settings chip. Family photo, not light, not dark. Auto never picks it.
+- 2026-08-27 Mutaz: searchable country and city dropdowns. Drop typed lat/long.
+- 2026-08-27 Mutaz: weather in Celsius.
+- 2026-08-27 Mutaz: weather under the city in the header. Drop NOW / ALBANY.
+- 2026-08-27 Hourly athkar shipped. Five clips, Fajr to Isha, athan wins. Sources in `audio/athkar/SOURCE.md`.
+- 2026-08-27 Mutaz: change location when needed. PrefsLocationStore, settings city/lat/long/zone, GPS-once.
+
+- 2026-08-27 Designer palettes: sand plaster light, umber/indigo dark, Canvas girih. Not white, not crushed black.
+- 2026-08-27 Standard athan is Haram Isha (Ali Mala, 1439). Old file had the Fajr line. Fajr untouched.
+- 2026-08-27 Mutaz: hourly athkar between Fajr and Isha. Download clips. Athan still wins.
+- 2026-08-27 Mutaz: rework palettes. No plain white, no total black. Islamic geometric backdrop.
+- 2026-08-27 Mutaz: remove Adhan is playing UI preview from settings.
+- 2026-08-27 Mutaz: bigger header date.
+- 2026-08-27 Mutaz: smaller Albany and countdown. Bigger prayer-grid times. Standard athan without the Fajr addition.
+- 2026-08-27 Docs match Console. Listing free, production blocked on 12/14. Removed duplicate 8:5 screenshot folders and `ops/shots`.
+
+- 2026-08-27 Mutaz: App content filled in Console even for testing. Privacy https://almutazyounes.github.io/prayerathan-privacy/ Ads no. Sign-in none. IARC Everyone/PEGI 3. Audience 13+. Data safety none collected. Gov/finance/health no. Not sent for review. Not production.
+- 2026-08-27 Mutaz: tablet Play download still failing. Account is already a tester. Debug APK or wrong Gmail on the tablet. Signed APK on Desktop for USB install.
+
+- 2026-08-27 Mutaz: Play download on tablet failed. Debug APK still installed. Same package, different signature. Uninstall first.
+- 2026-08-27 Mutaz: store listing filled in Console even for testing. Name, copy, icon, graphic, screenshots. Category Lifestyle. Email published. Not sent for review. Not production.
+- 2026-08-27 Mutaz: internal testing live. AAB 1 (0.1.0). Opt-in play.google.com/apps/internaltest/4701680380313434468 Not production.
+- 2026-08-27 Mutaz: settings sheet gets its own panel color, not the wall wash.
+- 2026-08-27 Mutaz: prep Play listing assets in parallel. Icon, feature graphic, screenshots, copy. Not production.
+- 2026-08-27 Mutaz: PrayerAthan created in Play Console as paid. Package `com.mutazyounes.prayerathan`. Dashboard only, no AAB, no production.
+- 2026-08-27 Mutaz: Play Console developer account created. Personal, mutazyounes@gmail.com. No app listing yet.
+- 2026-08-27 Mutaz: settings gear in the header. Long-press stays as backup.
+- 2026-08-27 Mutaz: started Play Console signup in browser as mutazyounes@gmail.com. Personal. Developer name Mutaz Younes. Payments profile 557 1st St Albany. Stopped at phone + $25. No production listing.
+- 2026-08-27 Mutaz: free for now. No $0 production listing.
+- 2026-08-27 Mutaz: free-then-paid store plan. Sequence in `store/PLAN.md`, price in `store/MONEY.md`. Status Next points at PLAN, not Console.
+- 2026-08-27 Mutaz: portrait countdown was clipped at the grid. Slot 24, digits sit higher.
+- 2026-08-27 Mutaz: research Play Store publish + paid listing. Docs in `store/`.
+- 2026-08-27 Mutaz: light theme. Auto switches at sunrise and Maghrib. Settings Light / Dark / Auto.
+- 2026-08-27 Mutaz: bigger portrait clocks. Digits fill the leftover slot after the label.
+- 2026-08-27 Mutaz: landscape must match horizontal PNG. Hairline at 70%, clocks fill the column, countdown is HH:MM:SS.
+- 2026-08-27 Mutaz: portrait is done. Landscape clocks fill the column, prayer row 18%.
+- 2026-08-27 Emulator shots: prayer times clipped; landscape labels under the date. Packed cell lines, header clearance, shorter landscape prayer row.
+- 2026-08-27 Emulator shots: prayer times were clipped. Each cell line now has its own slot. Bottom inset on the wall.
+- 2026-08-27 Mutaz: clock and prayer type fill their slot by percent. No 88sp cap. Clip at the box edge.
+- 2026-08-27 Mutaz: launcher icon. Gold Rub el Hizb on #050403. Adaptive mipmap plus `ic_athan` notification star.
+- 2026-08-27 Mutaz: shorter prayer boxes, more height for clocks. Portrait grid weight 28, landscape hero 72 / prayer 28.
+- 2026-08-27 Mutaz: built signed release bundle v6 (0.6.0) with new realistic mosque light & dark backdrops for Play Console internal testing.
+- 2026-08-27 Five Cursor subagents in `.cursor/agents/`. Removed `ORCHESTRATOR.md` and `ops/prompts/`. Next job is prayer-engine.
+- 2026-08-27 Control plane created (`ops/`).
+- 2026-08-27 Makkah athan landed in `audio/` (Fajr Archive.org 2009, standard Ali Ahmed Mullah). Personal use.
+- 2026-08-27 `DESIGN.md` written from `athan-wall-horizontal-v2.png` and `athan-wall-vertical.png`.
+- 2026-08-27 Locked: Shafi, 12-hour, keep-screen-on, both orientations, ISNA Albany, Jordan `Asia/Amman`.
+- 2026-08-27 `PROJECT.md` written.
+- 2026-08-27 Mutaz: swapped English/numeral type from Oswald to Yeseva One serif, then to Cinzel engraved serif. Stacked wall now has one hairline total, above the prayer row. Fixed AM/PM clipping caused by the wider serif overflowing a char-count width guess; now measures real text width. Dark backdrop replaced with a generated sunset arc/star plate (`design/dark-wall-backdrop.png`). Dropped AM/PM beside the Albany clock, the `NEXT {PRAYER}` label above the countdown, and the star watermark behind Albany. Yara photo fill now biases the crop window toward the top (`BiasAlignment(0f, -0.55f)`) so the landscape center-crop keeps face and upper body instead of slicing through the chin. `DESIGN.md` typography and stacked-clocks sections patched.
+- 2026-08-27 Mutaz: asked to push to Play. Bumped to versionCode 5 / 0.5.0, built a signed release AAB. Wired `gradle-play-publisher` (`play/` block in `app/build.gradle.kts`) so `./gradlew publishReleaseBundle` can push straight to the internal track once a service account key exists. That key needs a one-time manual grant in Play Console only Mutaz can do (`play/README.md`). Nothing uploaded to Play yet, this session only produced the local AAB and the publish pipeline.

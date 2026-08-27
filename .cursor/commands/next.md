@@ -1,0 +1,1 @@
+Read `ops/STATUS.md`. Spawn the job under **Next** with the Cursor Task tool. Set `subagent_type` to that agent's `name` in `.cursor/agents/`. Do not do the job yourself. After it returns, review the diff, read `ops/handoffs/`, update `ops/STATUS.md`, append `ops/LOG.md`.
