@@ -8,7 +8,7 @@ Live snapshot: `store/README.md` and `ops/STATUS.md`.
 
 ## Done
 
-Free listing. Internal testing live, 10 (0.10.0). Six new wall screenshots saved on the default listing. Name, copy, icon, feature graphic still in Console. App content forms Mutaz asked for are saved. Privacy URL live.
+Free listing. Internal testing live, 12 (0.12.0). Six new wall screenshots saved on the default listing. Name, copy, icon, feature graphic still in Console. App content forms Mutaz asked for are saved. Privacy URL live.
 
 ## Not done
 
