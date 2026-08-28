@@ -2,6 +2,8 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-28 Mutaz: internal testing 10 (0.10.0). All athans, athkar, night blackout, and auto theme on by default.. Not production.
+- 2026-08-28 Mutaz: added amin.shareedeh@gmail.com to closed & internal tester lists (6 total).
 - 2026-08-28 Mutaz: created AllActiveTesters (5 users) and assigned to active Internal testing track for instant tester access.
 - 2026-08-28 Mutaz: submitted 12 changes (Closed testing Alpha, countries, ClosedTesters list, store listing, App content declarations) for Google review. Status: in review.
 - 2026-08-28 Mutaz: added Ahmadyounes94@gmail.com to closed testers list (5 total).

@@ -6,8 +6,8 @@ class WallSettingsStore(context: Context) {
     private val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
     fun themeMode(): ThemeMode {
-        val raw = prefs.getString(KEY_THEME, ThemeMode.LIGHT.name) ?: ThemeMode.LIGHT.name
-        return runCatching { ThemeMode.valueOf(raw) }.getOrDefault(ThemeMode.LIGHT)
+        val raw = prefs.getString(KEY_THEME, ThemeMode.AUTO.name) ?: ThemeMode.AUTO.name
+        return runCatching { ThemeMode.valueOf(raw) }.getOrDefault(ThemeMode.AUTO)
     }
 
     fun setThemeMode(mode: ThemeMode) {
