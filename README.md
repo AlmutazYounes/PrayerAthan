@@ -56,7 +56,7 @@ PrayerAthan is designed specifically for wall-mounted 7-inch and 10-inch Android
       <td align="center"><b>Light Plaster Theme</b></td>
     </tr>
     <tr>
-      <td><img src="store/listing/play/tablet-10/04-landscape-than-dark.png" onerror="this.src='store/listing/play/tablet-10/04-landscape-athan-dark.png'" alt="Adhan Playing" width="480"/></td>
+      <td><img src="store/listing/play/tablet-10/04-landscape-athan-dark.png" alt="Adhan Playing" width="480"/></td>
       <td><img src="store/listing/play/tablet-10/06-landscape-idle-light.png" alt="Light Theme" width="480"/></td>
     </tr>
   </table>
