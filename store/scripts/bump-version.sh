@@ -49,8 +49,8 @@ else
 fi
 new_name="${NAME_OVERRIDE:-0.${new_code}.0}"
 
-perl -i -pe "s/^(\\s*versionCode\\s*=\\s*)\\d+/\$1${new_code}/" "$ROOT/app/build.gradle.kts"
-perl -i -pe "s/^(\\s*versionName\\s*=\\s*)\"[^\"]+\"/\$1\"${new_name}\"/" "$ROOT/app/build.gradle.kts"
+perl -i -pe 's/^(\s*versionCode\s*=\s*)\d+/${1}'"${new_code}"'/' "$ROOT/app/build.gradle.kts"
+perl -i -pe 's/^(\s*versionName\s*=\s*)"[^"]+"/${1}"'"${new_name}"'"/' "$ROOT/app/build.gradle.kts"
 
 echo "bumped $code ($name) -> $new_code ($new_name)"
 echo "CODE=$new_code"

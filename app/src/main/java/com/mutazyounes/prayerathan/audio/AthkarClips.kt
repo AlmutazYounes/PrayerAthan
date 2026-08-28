@@ -8,9 +8,6 @@ enum class AthkarClip(
     val caption: String,
 ) {
     SALAWAT(R.raw.athkar_salawat, "اللهم صل على محمد"),
-    HAMD(R.raw.athkar_hamd, "الحمد لله"),
-    TAKBIR(R.raw.athkar_takbir, "الله أكبر"),
-    SHAHADA(R.raw.athkar_shahada, "لا إله إلا الله"),
 }
 
 class AthkarRotation(

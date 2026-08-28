@@ -146,7 +146,7 @@ Volume should fill a room at living-room distance. Do not duck to media volume t
 
 Sunrise: silence.
 
-**Athkar.** Short dhikr on the local clock hour, rotating clips such as اللهم صل على محمد. Files live in `audio/athkar/` with `audio/athkar/SOURCE.md`. Copy into `res/raw/`. Personal use, same rights rule as athan. Not Quran. Play between Fajr and Isha, and only from 8:00 AM through 9:00 PM local. Silent from 10:00 PM until 8:00 AM, even if Fajr was earlier. If an athan is due that minute, athan wins. Tap stops. Settings can turn this off. Each clip has a PLAY demo. Settings PLAY demos ignore the clock.
+**Athkar.** Short dhikr on the local clock hour: اللهم صل على محمد (`athkar_salawat.mp3`). Files live in `audio/athkar/` with `audio/athkar/SOURCE.md`. Copy into `res/raw/`. Personal use, same rights rule as athan. Not Quran. Play between Fajr and Isha, and only from 8:00 AM through 9:00 PM local. Silent from 10:00 PM until 8:00 AM, even if Fajr was earlier. If an athan is due that minute, athan wins. Tap stops. Settings can turn this off.
 
 ---
 

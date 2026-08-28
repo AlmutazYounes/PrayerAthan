@@ -2,6 +2,8 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-28 Mutaz: kept only Salawat (اللهم صل على محمد) in athkar and removed all other clips (Hamd, Takbir, Shahada).
+- 2026-08-28 Mutaz: internal testing 8 (0.8.0). Night blackout 11 PM to 4 AM. Tap to wake.. Not production.
 - 2026-08-27 Mutaz: push skill plus `store/scripts/`. `/push` runs bump, AAB, Console publish.
 - 2026-08-27 Mutaz: added Night blackout setting (11 PM to 4 AM). Window screenBrightness set to 0.0 with pure black overlay, tap anywhere to wake for 15s. Athan playing wakes screen immediately.
 - 2026-08-27 Mutaz: updated README with app icon, visual showcases, architecture map, and repo badges.

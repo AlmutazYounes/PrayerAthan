@@ -8,13 +8,7 @@ Files after shell copies them:
 
 - `res/raw/athan_fajr.mp3`
 - `res/raw/athan_standard.mp3`
-- `res/raw/athan_isha_2009.mp3`
-- `res/raw/athan_mullah_2009.mp3`
-- `res/raw/athan_friday_2009.mp3`
 - `res/raw/athkar_salawat.mp3`
-- `res/raw/athkar_hamd.mp3`
-- `res/raw/athkar_takbir.mp3`
-- `res/raw/athkar_shahada.mp3`
 
 Athan masters live in `audio/`. Athkar masters live in `audio/athkar/`. See `audio/SOURCE.md` and `audio/athkar/SOURCE.md`.
 
