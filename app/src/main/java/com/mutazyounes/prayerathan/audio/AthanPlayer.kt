@@ -12,11 +12,11 @@ class AthanPlayer(
     private var player: MediaPlayer? = null
 
     fun play(prayer: PrayerName, onComplete: () -> Unit, onError: () -> Unit) {
-        if (prayer == PrayerName.SUNRISE) {
+        val store = AudioSettingsStore(context)
+        if (prayer == PrayerName.SUNRISE || store.isPrayerMuted(prayer)) {
             onError()
             return
         }
-        val store = AudioSettingsStore(context)
         playRaw(
             AthanCatalog.rawRes(prayer, store.fajrSoundId(), store.standardSoundId()),
             onComplete,

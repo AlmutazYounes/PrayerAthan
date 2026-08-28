@@ -55,6 +55,7 @@ import com.mutazyounes.prayerathan.audio.AthanSoundChoice
 import com.mutazyounes.prayerathan.engine.CityCatalog
 import com.mutazyounes.prayerathan.engine.PlaceCity
 import com.mutazyounes.prayerathan.engine.PlaceCountry
+import com.mutazyounes.prayerathan.engine.PrayerName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -75,6 +76,8 @@ fun SettingsSheet(
     fajrSoundId: String,
     standardSoundId: String,
     athkarEnabled: Boolean,
+    mutedPrayers: Set<PrayerName>,
+    nightBlackoutEnabled: Boolean,
     demoId: String?,
     onSelectLocation: (String, Double, Double, String) -> Unit,
     onResetAlbany: () -> Unit,
@@ -83,6 +86,8 @@ fun SettingsSheet(
     onSelectFajrSound: (String) -> Unit,
     onSelectStandardSound: (String) -> Unit,
     onAthkarEnabledChange: (Boolean) -> Unit,
+    onTogglePrayerMute: (PrayerName) -> Unit,
+    onNightBlackoutChange: (Boolean) -> Unit,
     onPlayAthanDemo: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -254,6 +259,11 @@ fun SettingsSheet(
                                 .fillMaxHeight()
                                 .verticalScroll(rememberScrollState()),
                         ) {
+                            PrayerAthansBlock(
+                                mutedPrayers = mutedPrayers,
+                                onTogglePrayerMute = onTogglePrayerMute,
+                            )
+                            Spacer(Modifier.height(22.dp))
                             AthanBlock(
                                 fajrSoundId = fajrSoundId,
                                 standardSoundId = standardSoundId,
@@ -266,6 +276,11 @@ fun SettingsSheet(
                             AthkarBlock(
                                 athkarEnabled = athkarEnabled,
                                 onAthkarEnabledChange = onAthkarEnabledChange,
+                            )
+                            Spacer(Modifier.height(22.dp))
+                            NightBlackoutBlock(
+                                nightBlackoutEnabled = nightBlackoutEnabled,
+                                onNightBlackoutChange = onNightBlackoutChange,
                             )
                         }
                     }
@@ -314,6 +329,11 @@ fun SettingsSheet(
                             onUseGps = onUseGps,
                         )
                         Spacer(Modifier.height(22.dp))
+                        PrayerAthansBlock(
+                            mutedPrayers = mutedPrayers,
+                            onTogglePrayerMute = onTogglePrayerMute,
+                        )
+                        Spacer(Modifier.height(22.dp))
                         AthanBlock(
                             fajrSoundId = fajrSoundId,
                             standardSoundId = standardSoundId,
@@ -326,6 +346,11 @@ fun SettingsSheet(
                         AthkarBlock(
                             athkarEnabled = athkarEnabled,
                             onAthkarEnabledChange = onAthkarEnabledChange,
+                        )
+                        Spacer(Modifier.height(22.dp))
+                        NightBlackoutBlock(
+                            nightBlackoutEnabled = nightBlackoutEnabled,
+                            onNightBlackoutChange = onNightBlackoutChange,
                         )
                         Spacer(Modifier.height(22.dp))
                         ThemeBlock(
@@ -435,6 +460,30 @@ private fun LocationBlock(
 }
 
 @Composable
+private fun PrayerAthansBlock(
+    mutedPrayers: Set<PrayerName>,
+    onTogglePrayerMute: (PrayerName) -> Unit,
+) {
+    SettingsSection("Prayer athans", "Tap to mute or unmute") {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            PrayerName.athanTargets().forEach { prayer ->
+                val muted = prayer in mutedPrayers
+                ChoiceChip(
+                    title = prayer.englishLabel(),
+                    active = !muted,
+                    onClick = { onTogglePrayerMute(prayer) },
+                    modifier = Modifier.weight(1f),
+                    fontSize = 12.sp,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun AthanBlock(
     fajrSoundId: String,
     standardSoundId: String,
@@ -494,6 +543,32 @@ private fun AthkarBlock(
                 title = "Off",
                 active = !athkarEnabled,
                 onClick = { onAthkarEnabledChange(false) },
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun NightBlackoutBlock(
+    nightBlackoutEnabled: Boolean,
+    onNightBlackoutChange: (Boolean) -> Unit,
+) {
+    SettingsSection("Night blackout", "11 PM to 4 AM · tap to wake") {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            ChoiceChip(
+                title = "On",
+                active = nightBlackoutEnabled,
+                onClick = { onNightBlackoutChange(true) },
+                modifier = Modifier.weight(1f),
+            )
+            ChoiceChip(
+                title = "Off",
+                active = !nightBlackoutEnabled,
+                onClick = { onNightBlackoutChange(false) },
                 modifier = Modifier.weight(1f),
             )
         }
@@ -784,12 +859,13 @@ private fun ChoiceChip(
     active: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    fontSize: androidx.compose.ui.unit.TextUnit = 15.sp,
 ) {
     val palette = LocalWallPalette.current
     Text(
         text = title,
         color = if (active) palette.gold else palette.clock,
-        fontSize = 15.sp,
+        fontSize = fontSize,
         fontFamily = EnglishFontFamily,
         fontWeight = FontWeight.Medium,
         textAlign = TextAlign.Center,

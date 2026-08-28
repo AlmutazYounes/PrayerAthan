@@ -83,10 +83,31 @@ class AudioSettingsStore(
         prefs.edit().putBoolean(KEY_ATHKAR, enabled).apply()
     }
 
+    fun isPrayerMuted(prayer: PrayerName): Boolean =
+        prayer in mutedPrayers()
+
+    fun mutedPrayers(): Set<PrayerName> {
+        val raw = prefs.getStringSet(KEY_MUTED_PRAYERS, emptySet()) ?: emptySet()
+        return raw.mapNotNull { name ->
+            runCatching { PrayerName.valueOf(name) }.getOrNull()
+        }.toSet()
+    }
+
+    fun setPrayerMuted(prayer: PrayerName, muted: Boolean) {
+        val current = mutedPrayers().toMutableSet()
+        if (muted) {
+            current.add(prayer)
+        } else {
+            current.remove(prayer)
+        }
+        prefs.edit().putStringSet(KEY_MUTED_PRAYERS, current.map { it.name }.toSet()).apply()
+    }
+
     companion object {
         private const val PREFS = "prayerathan_audio"
         private const val KEY_FAJR = "fajr_sound"
         private const val KEY_STANDARD = "standard_sound"
         private const val KEY_ATHKAR = "athkar_enabled"
+        private const val KEY_MUTED_PRAYERS = "muted_prayers"
     }
 }

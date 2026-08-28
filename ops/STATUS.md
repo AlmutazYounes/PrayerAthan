@@ -4,15 +4,15 @@ Updated: 2026-08-27
 
 ## Now
 
-Play listing is **free**. Internal testing release bundle built: **7 (0.7.0)** with updated Play screenshots in `store/listing/play/`. Console has name, copy, icon, screenshots, privacy, IARC, Data safety. Production is **not public**. Google refused the production application: 0 closed testers. New personal accounts need 12 testers opted into closed testing for 14 days.
+Play listing is **free**. Internal testing is **7 (0.7.0)**. Six wall screenshots saved in Console. App content leftover forms are filled: no advertising ID, mediaPlayback FGS with demo video, exact alarm declared as alarm clock. Production is **not public**. Apply for production is disabled: 0 closed testers opted in. Needs 12 opted in for 14 days.
 
 The Play URL shows a gray stub (`com.mutazyounes.prayerathan (unreviewed)`) because listing changes sit in Publishing overview and have not been reviewed. Pictures are in Console. They are not on the store page yet.
 
-Location is searchable country then city. Athan sound is selectable with a PLAY demo. Hourly athkar can be turned off. No athkar from 10 PM until 8 AM. Use GPS takes one fix.
+Location is searchable country then city. Athan sound is selectable with a PLAY demo. Per-prayer mute lets user toggle athans for Fajr, Dhuhr, Asr, Maghrib, and Isha. Hourly athkar can be turned off. No athkar from 10 PM until 8 AM. Use GPS takes one fix.
 
 ## Next
 
-Hourly athkar is in. Palettes landed. Wall fill is the two backdrop WebPs, Light/Dark/Auto only (Yara photo theme removed). Location settings landed. Device QA on the real 7-inch and 10-inch. Licensed MP3s before an honest public ship. Closed testing 12/14 after that.
+Hourly athkar and Night blackout (11 PM - 4 AM tap-to-wake) are in. Palettes landed. Wall fill is the two backdrop WebPs, Light/Dark/Auto only. Location settings landed. Device QA on the real 7-inch and 10-inch. Licensed MP3s before an honest public ship. Closed testing 12/14 after that.
 
 ## Board
 

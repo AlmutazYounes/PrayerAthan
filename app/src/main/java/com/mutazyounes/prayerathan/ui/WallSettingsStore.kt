@@ -14,8 +14,17 @@ class WallSettingsStore(context: Context) {
         prefs.edit().putString(KEY_THEME, mode.name).apply()
     }
 
+    fun nightBlackout(): Boolean {
+        return prefs.getBoolean(KEY_NIGHT_BLACKOUT, true)
+    }
+
+    fun setNightBlackout(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_NIGHT_BLACKOUT, enabled).apply()
+    }
+
     companion object {
         private const val PREFS = "prayerathan_wall"
         private const val KEY_THEME = "theme_mode"
+        private const val KEY_NIGHT_BLACKOUT = "night_blackout"
     }
 }

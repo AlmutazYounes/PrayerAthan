@@ -10,6 +10,7 @@ class AthanAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val prayer = prayerFrom(intent) ?: return
         if (prayer == PrayerName.SUNRISE) return
+        if (AudioSettingsStore(context).isPrayerMuted(prayer)) return
         context.startForegroundService(AthanService.playIntent(context, prayer))
     }
 

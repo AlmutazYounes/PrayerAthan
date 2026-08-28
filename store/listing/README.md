@@ -1,8 +1,8 @@
 # Play listing graphics
 
-Upload from `play/`, plus the icon and feature graphic. Do not upload `design/athan-wall-*.png`. Play's tablet slot wants 16:9 and 9:16 (1080px+). Uploaded set is `play/`.
+Upload from `play-ready/`, plus the icon and feature graphic. Do not upload `design/athan-wall-*.png`. Play's tablet slot wants 16:9 and 9:16 (1080px+). Uploaded set is `play-ready/`.
 
-Shot 27 August 2026 from the live debug APK on AVD `Tablet_10in`. Package `com.mutazyounes.prayerathan`. Device clock Friday 28 August 2026, Albany morning, next prayer Dhuhr. Dark and Light forced in settings, not Auto. Athan frames used the settings preview toggle, then CLOSE. No settings sheet in any upload PNG. 12-hour. Header `ALBANY, NY`.
+Shot 27 August 2026 evening from the live debug APK. Package `com.mutazyounes.prayerathan`. Albany, 12-hour. Dark and Light forced. Athan frames used a demo override, not the settings sheet. No settings sheet in any upload PNG. Crops for Play 9:16 / 16:9 live in `play-ready/`. Those are what went into Console.
 
 ## Upload these
 

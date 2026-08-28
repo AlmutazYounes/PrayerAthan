@@ -5,8 +5,12 @@ import com.mutazyounes.prayerathan.engine.PrayerInstant
 import com.mutazyounes.prayerathan.engine.PrayerName
 import java.time.Instant
 
-internal fun remainingAthanAlarms(day: PrayerDay, now: Instant): List<PrayerInstant> {
-    val targets = PrayerName.athanTargets().toSet()
+internal fun remainingAthanAlarms(
+    day: PrayerDay,
+    now: Instant,
+    mutedPrayers: Set<PrayerName> = emptySet(),
+): List<PrayerInstant> {
+    val targets = PrayerName.athanTargets().toSet() - mutedPrayers
     val remainingToday = day.times.filter { instant ->
         instant.name in targets && instant.at.isAfter(now)
     }

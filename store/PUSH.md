@@ -192,16 +192,24 @@ Leave production wording alone. A push does not make the public URL real.
 
 ---
 
-## Command list, copy paste
+## Command list
 
-Bump `versionCode` and `versionName` in `app/build.gradle.kts`, then:
+From the repo root:
 
 ```
-cd /Users/mutazyounes/Desktop/Projects/PrayerAthan
-./gradlew bundleRelease
-ls -lh app/build/outputs/bundle/release/app-release.aab
+./store/scripts/push-release.sh "one line of what changed"
 ```
 
-Open Console internal testing. Create new release. Upload that AAB. Next. Save and publish.
+That is the whole push. Skill: `.cursor/skills/push-play-release/SKILL.md`. Slash command: `/push`.
 
-Tell testers the opt-in URL and to wait for Update.
+Pieces:
+
+```
+./store/scripts/bump-version.sh
+./store/scripts/build-aab.sh
+./store/scripts/push-release.sh --build-only "notes"
+python3 store/scripts/patch-docs.py --code N --name 0.N.0 --notes "..."
+```
+
+Manual fallback if ego-browser is down: bump, `./gradlew bundleRelease`, upload `app/build/outputs/bundle/release/app-release.aab` in Console, then `patch-docs.py`.
+

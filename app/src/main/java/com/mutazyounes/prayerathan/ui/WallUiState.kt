@@ -29,7 +29,10 @@ data class WallUiState(
     val fajrSoundId: String,
     val standardSoundId: String,
     val athkarEnabled: Boolean,
+    val mutedPrayers: Set<PrayerName>,
     val demoId: String?,
+    val nightBlackoutEnabled: Boolean,
+    val isNightBlackout: Boolean,
 ) {
     companion object {
         val Empty = WallUiState(
@@ -59,7 +62,10 @@ data class WallUiState(
             fajrSoundId = "",
             standardSoundId = "",
             athkarEnabled = true,
+            mutedPrayers = emptySet(),
             demoId = null,
+            nightBlackoutEnabled = true,
+            isNightBlackout = false,
         )
     }
 }
@@ -71,6 +77,7 @@ data class PrayerCellState(
     val english: String,
     val time: String,
     val kind: CellKind,
+    val muted: Boolean = false,
 )
 
 enum class CellKind { PAST, NEXT, LATER }

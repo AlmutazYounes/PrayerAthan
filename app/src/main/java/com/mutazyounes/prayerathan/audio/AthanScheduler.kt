@@ -17,7 +17,8 @@ class AthanScheduler(
 
     fun schedule(day: PrayerDay, now: Instant) {
         cancelAll()
-        for (instant in remainingAthanAlarms(day, now)) {
+        val muted = AudioSettingsStore(context).mutedPrayers()
+        for (instant in remainingAthanAlarms(day, now, muted)) {
             setClock(instant)
         }
     }

@@ -2,9 +2,11 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-27 Mutaz: push skill plus `store/scripts/`. `/push` runs bump, AAB, Console publish.
+- 2026-08-27 Mutaz: added Night blackout setting (11 PM to 4 AM). Window screenBrightness set to 0.0 with pure black overlay, tap anywhere to wake for 15s. Athan playing wakes screen immediately.
 - 2026-08-27 Mutaz: updated README with app icon, visual showcases, architecture map, and repo badges.
 - 2026-08-27 Mutaz: open sourced on GitHub as AlmutazYounes/PrayerAthan under MIT license.
-- 2026-08-27 Mutaz: published internal testing 7 (0.7.0). Saved six new listing screenshots in Console. Not production.
+- 2026-08-27 Mutaz: filled Advertising ID, FGS demo video, exact-alarm alarm-clock. Production still locked. 0 closed testers.
 - 2026-08-27 Mutaz: internal testing 6 (0.6.0). Weather poll, precipitation soon, no Yara. Not production.
 - 2026-08-27 Mutaz: weather polling increased to every 3 minutes. Added 1-hour minutely precipitation forecast (shows SOON for upcoming rain, snow, drizzle, or storm).
 - 2026-08-27 Mutaz: dropped the Yara photo theme. `ThemeMode` is Light/Dark/Auto only. Deleted `wall_backdrop_yara.webp`, `design/yara/`, `syncYaraPhotos` Gradle task, and the settings chip. Docs patched.
@@ -65,6 +67,7 @@ Append one line per event. Newest at the top.
 - 2026-08-27 Mutaz: launcher icon. Gold Rub el Hizb on #050403. Adaptive mipmap plus `ic_athan` notification star.
 - 2026-08-27 Mutaz: shorter prayer boxes, more height for clocks. Portrait grid weight 28, landscape hero 72 / prayer 28.
 - 2026-08-27 Mutaz: built signed release bundle v6 (0.6.0) with new realistic mosque light & dark backdrops for Play Console internal testing.
+- 2026-08-27 Mutaz: added per-prayer mute toggle chips (Fajr, Dhuhr, Asr, Maghrib, Isha) in Settings with persistence and scheduler/alarm bypass.
 - 2026-08-27 Five Cursor subagents in `.cursor/agents/`. Removed `ORCHESTRATOR.md` and `ops/prompts/`. Next job is prayer-engine.
 - 2026-08-27 Control plane created (`ops/`).
 - 2026-08-27 Makkah athan landed in `audio/` (Fajr Archive.org 2009, standard Ali Ahmed Mullah). Personal use.

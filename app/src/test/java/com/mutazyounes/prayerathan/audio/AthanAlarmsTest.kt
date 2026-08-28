@@ -66,4 +66,17 @@ class AthanAlarmsTest {
         assertEquals(1, alarms.count { it.name == PrayerName.FAJR })
         assertTrue(alarms.none { it.name == PrayerName.SUNRISE })
     }
+
+    @Test
+    fun mutedPrayersAreExcludedFromAlarms() {
+        val muted = setOf(PrayerName.FAJR, PrayerName.ASR)
+        val beforeFajr = today.copy(
+            nextAthan = PrayerName.FAJR,
+            nextAthanAt = fajr,
+        )
+        val alarms = remainingAthanAlarms(beforeFajr, fajr.minusSeconds(60), muted)
+        assertEquals(listOf(PrayerName.DHUHR, PrayerName.MAGHRIB, PrayerName.ISHA), alarms.map { it.name })
+        assertFalse(alarms.any { it.name == PrayerName.FAJR })
+        assertFalse(alarms.any { it.name == PrayerName.ASR })
+    }
 }

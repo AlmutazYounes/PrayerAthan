@@ -13,7 +13,7 @@ If chat and the repo disagree, the repo wins.
 5. `PROJECT.md`
 6. `DESIGN.md`
 
-Spawn the job under **Next** in `ops/STATUS.md`. Details of expected files and review are in `ops/PLAN.md`. Use the Cursor Task tool with `subagent_type` set to the agent `name` in `.cursor/agents/`. Mutaz can also type `/next` or `/prayer-engine` (see `.cursor/commands/`). Do not paste a homemade prompt when that file already is the prompt. After it returns, read the diff and `ops/handoffs/`, then update `ops/STATUS.md` and one line in `ops/LOG.md`.
+Spawn the job under **Next** in `ops/STATUS.md`. Details of expected files and review are in `ops/PLAN.md`. Use the Cursor Task tool with `subagent_type` set to the agent `name` in `.cursor/agents/`. Mutaz can also type `/next`, `/push`, or `/prayer-engine` (see `.cursor/commands/`). Do not paste a homemade prompt when that file already is the prompt. After it returns, read the diff and `ops/handoffs/`, then update `ops/STATUS.md` and one line in `ops/LOG.md`.
 
 ## Subagents
 

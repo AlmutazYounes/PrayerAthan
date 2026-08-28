@@ -28,6 +28,13 @@ data class WallUiState(
     val twelveHour: Boolean,        // v1 always true
     val themeMode: ThemeMode,       // LIGHT, DARK, AUTO
     val darkTheme: Boolean,         // resolved palette. AUTO uses sunrise/Maghrib.
+    val fajrSoundId: String,
+    val standardSoundId: String,
+    val athkarEnabled: Boolean,
+    val mutedPrayers: Set<PrayerName>,
+    val demoId: String?,
+    val nightBlackoutEnabled: Boolean,
+    val isNightBlackout: Boolean,   // true from 11 PM to 4 AM unless athan playing
 )
 
 enum class ThemeMode { LIGHT, DARK, AUTO }
@@ -37,6 +44,7 @@ data class PrayerCellState(
     val english: String,            // FAJR, SUNRISE, ...
     val time: String,               // "5:09 AM"
     val kind: CellKind,             // PAST, NEXT, LATER
+    val muted: Boolean = false,
 )
 
 enum class CellKind { PAST, NEXT, LATER }

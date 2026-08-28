@@ -38,7 +38,7 @@ Three surfaces. That is the whole product in v1.
 
 **Athan playing.** Same wall screen. The countdown block switches to NOW, the prayer name, and the line "Adhan is playing". Albany time stays. The day's list highlights the prayer that just started.
 
-**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Theme is Light, Dark, or Auto. Auto is light from sunrise to Maghrib, dark from Maghrib to the next sunrise. Persist the choice. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
+**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lets you mute/unmute individual prayer athans. Theme is Light, Dark, or Auto. Auto is light from sunrise to Maghrib, dark from Maghrib to the next sunrise. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
 
 ---
 

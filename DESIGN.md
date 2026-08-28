@@ -367,7 +367,7 @@ Tap to stop is a distinct gesture from long-press settings. Visual of the tap is
 
 Small gold gear in the header, between location and date. Long-press anywhere is the backup. Not a FAB. Not on the prayer grid.
 
-The sheet is a bottom panel in `settingsPanel`. SETTINGS and CLOSE stay on one header row. Gold section titles with a thin rule: Location, Athan, Hourly athkar, Theme. Country and city are bordered search fields. GPS and Albany are quiet links under location. Athan is a compact list with a gold tick on the selected file and PLAY on the right. Athkar is On / Off, no clip demos. Subtitle is `8 AM to 10 PM · athan wins`. Theme is Light / Dark / Auto. Landscape splits location+theme on the left and athan+athkar on the right. Same Oswald and gold. No Material You cards. Scroll inside a column if the 7-inch cannot fit.
+The sheet is a bottom panel in `settingsPanel`. SETTINGS and CLOSE stay on one header row. Gold section titles with a thin rule: Location, Prayer athans, Athan, Hourly athkar, Night blackout, Theme. Country and city are bordered search fields. GPS and Albany are quiet links under location. Prayer athans has five chips (Fajr, Dhuhr, Asr, Maghrib, Isha) to mute or unmute individual athans. Athan is a compact list with a gold tick on the selected file and PLAY on the right. Athkar is On / Off, no clip demos. Subtitle is `8 AM to 10 PM · athan wins`. Night blackout is On / Off with subtitle `11 PM to 4 AM · tap to wake`. Theme is Light / Dark / Auto. Landscape splits location+theme on the left and prayer athans+athan+athkar+blackout on the right. Same Oswald and gold. No Material You cards. Scroll inside a column if the 7-inch cannot fit.
 
 ---
 

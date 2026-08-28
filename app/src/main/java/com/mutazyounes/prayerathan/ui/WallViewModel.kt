@@ -116,6 +116,17 @@ class WallViewModel(
         refresh(Instant.now(), forceSchedule = true)
     }
 
+    fun setNightBlackout(enabled: Boolean) {
+        settings.setNightBlackout(enabled)
+        refresh(Instant.now())
+    }
+
+    fun togglePrayerMute(prayer: PrayerName) {
+        val muted = audioSettings.isPrayerMuted(prayer)
+        audioSettings.setPrayerMuted(prayer, !muted)
+        refresh(Instant.now(), forceSchedule = true)
+    }
+
     fun playAthanDemo(id: String) {
         if (athan.demoId.value == id) {
             stopDemo()
@@ -201,6 +212,7 @@ class WallViewModel(
         val athkarOn = athkar != null && !playing
         val currentThemeMode = settings.themeMode()
         themeMode = currentThemeMode
+        val mutedPrayers = audioSettings.mutedPrayers()
         val albanyClock = formatClock(clocks.albany, twelveHour)
         val jordanClock = formatClock(clocks.jordan, twelveHour)
         _state.value = WallUiState(
@@ -222,7 +234,7 @@ class WallViewModel(
             playingName = playingName,
             athkarPlaying = athkarOn,
             athkarCaption = if (playing) "" else athkar?.caption.orEmpty(),
-            cells = buildCells(now, day, location.timeZoneId, playingName),
+            cells = buildCells(now, day, location.timeZoneId, playingName, mutedPrayers),
             twelveHour = twelveHour,
             themeMode = currentThemeMode,
             darkTheme = resolveDarkTheme(currentThemeMode, now, day),
@@ -230,7 +242,10 @@ class WallViewModel(
             fajrSoundId = audioSettings.fajrSoundId(),
             standardSoundId = audioSettings.standardSoundId(),
             athkarEnabled = audioSettings.athkarEnabled(),
+            mutedPrayers = mutedPrayers,
             demoId = athan.demoId.value,
+            nightBlackoutEnabled = settings.nightBlackout(),
+            isNightBlackout = settings.nightBlackout() && isNightBlackoutWindow(clocks.albany.hour) && !playing && athan.demoId.value == null,
         )
     }
 
@@ -253,6 +268,7 @@ class WallViewModel(
         day: PrayerDay,
         timeZoneId: String,
         playingName: PrayerName?,
+        mutedPrayers: Set<PrayerName>,
     ): List<PrayerCellState> {
         val zone = ZoneId.of(timeZoneId)
         return day.times.map { instant ->
@@ -267,6 +283,7 @@ class WallViewModel(
                 english = instant.name.englishLabel(),
                 time = formatPrayerTime(instant.at.atZone(zone), twelveHour),
                 kind = kind,
+                muted = instant.name in mutedPrayers,
             )
         }
     }
@@ -341,5 +358,8 @@ class WallViewModel(
             val seconds = totalSeconds % 60
             return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
         }
+
+        fun isNightBlackoutWindow(localHour: Int): Boolean =
+            localHour >= 23 || localHour < 4
     }
 }

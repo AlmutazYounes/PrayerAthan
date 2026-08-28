@@ -1,6 +1,9 @@
 package com.mutazyounes.prayerathan.ui
 
+import android.app.Activity
+import android.view.WindowManager
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,6 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +37,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -40,6 +46,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import kotlin.math.min
 
 /**
@@ -55,6 +62,35 @@ fun WallScreen(
 ) {
     val state by viewModel.state.collectAsState()
     var settingsOpen by remember { mutableStateOf(false) }
+    var userAwake by remember { mutableStateOf(false) }
+
+    LaunchedEffect(userAwake) {
+        if (userAwake) {
+            delay(15_000L)
+            userAwake = false
+        }
+    }
+
+    val showBlackout = state.isNightBlackout && !userAwake && !settingsOpen
+
+    val context = LocalContext.current
+    DisposableEffect(showBlackout) {
+        val window = (context as? Activity)?.window
+        if (window != null) {
+            val params = window.attributes
+            params.screenBrightness = if (showBlackout) 0.0f else WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            window.attributes = params
+        }
+        onDispose {
+            val window = (context as? Activity)?.window
+            if (window != null) {
+                val params = window.attributes
+                params.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+                window.attributes = params
+            }
+        }
+    }
+
     CompositionLocalProvider(LocalWallPalette provides paletteFor(state.themeMode, state.darkTheme)) {
         Box(modifier.fillMaxSize()) {
             WallScreen(
@@ -63,6 +99,18 @@ fun WallScreen(
                 onOpenSettings = { settingsOpen = true },
                 modifier = Modifier.fillMaxSize(),
             )
+            if (showBlackout) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { userAwake = true },
+                        ),
+                )
+            }
             if (settingsOpen) {
                 SettingsSheet(
                     cityLabel = state.locationCity,
@@ -73,6 +121,8 @@ fun WallScreen(
                     fajrSoundId = state.fajrSoundId,
                     standardSoundId = state.standardSoundId,
                     athkarEnabled = state.athkarEnabled,
+                    mutedPrayers = state.mutedPrayers,
+                    nightBlackoutEnabled = state.nightBlackoutEnabled,
                     demoId = state.demoId,
                     onSelectLocation = { label, lat, lon, zone ->
                         if (viewModel.saveLocation(label, lat, lon, zone)) {
@@ -88,6 +138,8 @@ fun WallScreen(
                     onSelectFajrSound = viewModel::setFajrSound,
                     onSelectStandardSound = viewModel::setStandardSound,
                     onAthkarEnabledChange = viewModel::setAthkarEnabled,
+                    onTogglePrayerMute = viewModel::togglePrayerMute,
+                    onNightBlackoutChange = viewModel::setNightBlackout,
                     onPlayAthanDemo = viewModel::playAthanDemo,
                     onDismiss = {
                         viewModel.stopDemo()

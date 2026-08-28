@@ -8,12 +8,12 @@ How PrayerAthan sits on Google Play. Not the product spec. `PROJECT.md` wins for
 | --- | --- |
 | Package | `com.mutazyounes.prayerathan` |
 | Price | **Free**. Cannot become paid on this package. |
-| Production | Inactive. Google refused apply. 0 closed testers. |
-| Internal testing | Release 7 (0.7.0) built. Ready to upload. |
-| Listing in Console | Name PrayerAthan, copy, icon, graphic, screenshots. |
-| Listing on Play URL | Gray stub, unreviewed. Drafts not reviewed yet. |
-| App content | Privacy, ads no, IARC Everyone / PEGI 3, 13+, Data safety none collected, gov/finance/health no. |
-| Still open in App content | Advertising ID, foreground service demo, exact alarms demo. |
+| Production | Inactive. Apply disabled. 0 closed testers opted in. |
+| Internal testing | Live. Release 7 (0.7.0). |
+| Closed testing | Alpha track. Countries targeted. Release 7 draft. Not rolled out. 0 opted in. |
+| Listing in Console | Name, copy, icon, graphic, six wall screenshots saved. |
+| Listing on Play URL | Gray stub until Google reviews a closed or production send. |
+| App content | Privacy, ads no, IARC, 13+, Data safety none, gov/finance/health no. Advertising ID no. FGS mediaPlayback + demo video. Exact alarm = alarm clock. |
 | Privacy URL | https://almutazyounes.github.io/prayerathan-privacy/ |
 
 Production page: https://play.google.com/store/apps/details?id=com.mutazyounes.prayerathan
@@ -27,7 +27,7 @@ Public production needs 12 closed testers opted in for 14 days, then Apply for p
 ## What to read
 
 1. This file.
-2. `PUSH.md`, how to upload the next AAB to internal testing.
+2. `PUSH.md`, how to upload the next AAB. Scripts in `store/scripts/`. Slash `/push`.
 3. `PLAN.md`, what is left before public.
 4. `CHECKLIST.md`, boxes.
 5. `APP-GAPS.md`, what the APK still lacks.
