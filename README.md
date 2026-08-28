@@ -124,6 +124,12 @@ PrayerAthan/
 
 ---
 
+## Instructions for AI Coding Agents
+
+If you are an AI assistant or coding agent working on this repository, please review [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md) for architectural boundaries, design tokens, and testing guidelines.
+
+---
+
 ## License
 
 Code is distributed under the [MIT License](LICENSE).

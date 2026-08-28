@@ -1,40 +1,40 @@
-# Agents
+# Agent Guidance (PrayerAthan)
 
-You are the orchestrator for PrayerAthan. You route work. You do not dump the whole app on one agent.
+This document is for AI coding agents (Claude Code, Cursor, Codex, Copilot, etc.) working on this repository.
 
-If chat and the repo disagree, the repo wins.
+## Core Rules
 
-## Read first, every session
+1. **Repo wins over chat:** If instructions in a conversation prompt conflict with committed files (`PROJECT.md`, `DESIGN.md`), follow the repo files or ask for clarification.
+2. **Keep scope locked:**
+   - **Form factor:** Wall-mounted 7" and 10" Android tablets (landscape and portrait).
+   - **No phone super-app bloat:** Do not add Quran readers, Qibla compasses, Hijri calendars, community feeds, accounts, or backends.
+   - **No hardcoded mockup times:** Times are dynamic outputs from `adhan-kotlin`. Mockups represent visual layout only.
+   - **Keep screen awake:** Always preserve `FLAG_KEEP_SCREEN_ON` in `MainActivity.kt`.
+3. **No hallucinated libraries or APIs:**
+   - Calculation engine: `com.batoulapps.adhan:adhan2` (offline, pure Kotlin).
+   - Audio scheduling: Android `AlarmManager` with `setAlarmClock` + `MediaPlayer` on the alarm audio stream.
+4. **Visual tokens over arbitrary colors:**
+   - Do not add random hex colors or standard Material palettes. Read and adhere to the tokens defined in `DESIGN.md`.
+5. **Quality gates:**
+   - Always run `./gradlew test assembleDebug` before committing changes.
+   - Verify both portrait and landscape Compose layouts if modifying UI.
 
-1. This file
-2. `ops/STATUS.md`
-3. `ops/PLAN.md`
-4. `ops/README.md`
-5. `PROJECT.md`
-6. `DESIGN.md`
+---
 
-Spawn the job under **Next** in `ops/STATUS.md`. Details of expected files and review are in `ops/PLAN.md`. Use the Cursor Task tool with `subagent_type` set to the agent `name` in `.cursor/agents/`. Mutaz can also type `/next`, `/push`, or `/prayer-engine` (see `.cursor/commands/`). Do not paste a homemade prompt when that file already is the prompt. After it returns, read the diff and `ops/handoffs/`, then update `ops/STATUS.md` and one line in `ops/LOG.md`.
+## Architecture & Responsibilities
 
-## Subagents
-
-| Task `subagent_type` | File | Owns |
+| Subsystem | Location | Responsibilities & Boundaries |
 | --- | --- | --- |
-| `prayer-engine` | `.cursor/agents/prayer-engine.md` | `engine/`, tests |
-| `android-shell` | `.cursor/agents/android-shell.md` | Gradle, Activity, keep-awake, boot |
-| `designer` | `.cursor/agents/designer.md` | Compose `ui/`, both orientations |
-| `athan-audio` | `.cursor/agents/athan-audio.md` | alarms, MediaPlayer, Fajr vs standard |
-| `device-qa` | `.cursor/agents/device-qa.md` | tablet checklist, not production code |
+| **Prayer Engine** | `app/src/main/java/.../engine/` | Pure Kotlin. Handles ISNA prayer calculation, timezones, offline city search, and day models. **No Compose, no Android UI, no MediaPlayer.** |
+| **Audio Scheduler** | `app/src/main/java/.../audio/` | Manages exact alarms (`AthanAlarmReceiver`), audio playback (`AthanPlayer`), foreground service (`AthanService`), and hourly Athkar. |
+| **Compose UI** | `app/src/main/java/.../ui/` | Renders `WallScreen`, `PrayerGrid`, `SettingsSheet`, and handles theme switching (Light/Dark/Auto). Uses `WallUiState` from `WallViewModel`. |
+| **Android Shell** | `app/src/main/java/.../shell/` | Manages `BootReceiver` (rescheduling alarms after reboot), permissions, and `KeepAwake` window flags. |
 
-Engine and shell may overlap. Designer needs a compiling engine API. Audio needs next-prayer instants. QA needs an APK.
+---
 
-## Locked
+## Important Spec & Doc Files
 
-Shafi. 12-hour. Keep-screen-on. Makkah athan. Both orientations. adhan-kotlin ISNA. Albany defaults. No Jordan clock. No Hijri, Qibla, Quran, weather, backend.
-
-## Review bar
-
-Reject: hardcoded mockup times, internet timetable, one orientation only, sleeping screen, sunrise athan, Jordan as local plus hours, AGPL or MAWAQIT code pasted in.
-
-## Mutaz
-
-Do not re-ask locked questions. Patch `PROJECT.md` or `DESIGN.md` when he decides something, then log it. Play price, testers, and Console IDs live in `store/README.md`. Prefer a running APK over another architecture paragraph.
+- `PROJECT.md` — Product specification, design principles, scope boundaries, and behavioral definitions.
+- `DESIGN.md` — Complete typography scale, spacing rules, and color token tables for Light and Dark themes.
+- `ops/STATUS.md` — Current project state and roadmap items.
+- `ops/LOG.md` — Chronological record of decisions and updates.
