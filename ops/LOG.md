@@ -2,8 +2,9 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-27 Mutaz: updated README with app icon, visual showcases, architecture map, and repo badges.
 - 2026-08-27 Mutaz: open sourced on GitHub as AlmutazYounes/PrayerAthan under MIT license.
-- 2026-08-27 Mutaz: built release 7 (0.7.0) bundle and recaptured clean full-res Play screenshots for phone and tablet slots.
+- 2026-08-27 Mutaz: published internal testing 7 (0.7.0). Saved six new listing screenshots in Console. Not production.
 - 2026-08-27 Mutaz: internal testing 6 (0.6.0). Weather poll, precipitation soon, no Yara. Not production.
 - 2026-08-27 Mutaz: weather polling increased to every 3 minutes. Added 1-hour minutely precipitation forecast (shows SOON for upcoming rain, snow, drizzle, or storm).
 - 2026-08-27 Mutaz: dropped the Yara photo theme. `ThemeMode` is Light/Dark/Auto only. Deleted `wall_backdrop_yara.webp`, `design/yara/`, `syncYaraPhotos` Gradle task, and the settings chip. Docs patched.
