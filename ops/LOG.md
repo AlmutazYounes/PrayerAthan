@@ -2,6 +2,10 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-28 Mutaz: added tester email to closed testers list in store/testers.csv.
+
+- 2026-08-28 Mutaz: collected initial closed tester emails in store/testers.csv and drafted closed-testing outreach post for 14-day production requirement.
+
 - 2026-08-28 Mutaz: internal testing 9 (0.9.0). Per-prayer mute, night blackout, athkar salawat only.. Not production.
 - 2026-08-28 Mutaz: kept only Salawat (اللهم صل على محمد) in athkar and removed all other clips (Hamd, Takbir, Shahada).
 - 2026-08-28 Mutaz: internal testing 8 (0.8.0). Night blackout 11 PM to 4 AM. Tap to wake.. Not production.

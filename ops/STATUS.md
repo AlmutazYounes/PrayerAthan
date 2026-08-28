@@ -38,7 +38,7 @@ Google production access: 12 closed testers / 14 days. Cannot skip on this perso
 
 - Production URL (stub until Google reviews): https://play.google.com/store/apps/details?id=com.mutazyounes.prayerathan
 - Internal test: https://play.google.com/apps/internaltest/4701680380313434468
-- Testers: `mutazyounes@gmail.com`, `mohtazscape@gmail.com`
+- Testers: `store/testers.csv` (untracked)
 - Privacy: https://almutazyounes.github.io/prayerathan-privacy/
 - Debug APK and Play-signed install cannot update each other. Uninstall debug first.
 - Test athan: `adb shell am start-foreground-service -n com.mutazyounes.prayerathan/.audio.AthanService -a com.mutazyounes.prayerathan.audio.PLAY --es prayer DHUHR`

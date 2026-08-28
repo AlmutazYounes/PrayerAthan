@@ -39,6 +39,7 @@ Public production needs 12 closed testers opted in for 14 days, then Apply for p
 ## Console IDs
 
 - Google: mutazyounes@gmail.com
+- Closed testing emails collected in untracked `store/testers.csv` (details in `store/TESTERS.md`)
 - Developer: YounesM, personal
 - Account: `5934139594166642747`
 - App ID: `4974554092638251166`

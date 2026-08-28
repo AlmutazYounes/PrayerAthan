@@ -15,3 +15,5 @@
 /keystore/*.p12
 /keystore/keystore.properties
 /play/service-account.json
+/store/testers.csv
+/store/TESTERS.md
