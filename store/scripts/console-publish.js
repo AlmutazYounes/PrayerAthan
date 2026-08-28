@@ -4,9 +4,9 @@
 
 const TRACK =
   'https://play.google.com/console/u/0/developers/5934139594166642747/app/4974554092638251166/tracks/internal-testing'
-const AAB = process.env.PLAY_AAB
-const LABEL = process.env.PLAY_LABEL
-const NOTES = process.env.RELEASE_NOTES || 'Internal test update.'
+const AAB = process.env.PLAY_AAB || globalThis.PLAY_AAB
+const LABEL = process.env.PLAY_LABEL || globalThis.PLAY_LABEL
+const NOTES = process.env.RELEASE_NOTES || globalThis.RELEASE_NOTES || 'Internal test update.'
 
 if (!AAB || !LABEL) {
   cliLog('need PLAY_AAB and PLAY_LABEL')

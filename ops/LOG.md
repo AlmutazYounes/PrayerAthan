@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-28 Mutaz: internal testing 9 (0.9.0). Per-prayer mute, night blackout, athkar salawat only.. Not production.
 - 2026-08-28 Mutaz: kept only Salawat (اللهم صل على محمد) in athkar and removed all other clips (Hamd, Takbir, Shahada).
 - 2026-08-28 Mutaz: internal testing 8 (0.8.0). Night blackout 11 PM to 4 AM. Tap to wake.. Not production.
 - 2026-08-27 Mutaz: push skill plus `store/scripts/`. `/push` runs bump, AAB, Console publish.

@@ -11,7 +11,7 @@ Product behavior is still `PROJECT.md`.
 ## Done in Console
 
 - App created. Then converted to free.
-- Signed AAB on internal testing, version 8 / 0.8.0.
+- Signed AAB on internal testing, version 9 / 0.9.0.
 - Store listing filled: PrayerAthan, short/full copy, icon, feature graphic, phone + 7-inch + 10-inch shots.
 - Privacy, sign-in none, ads no, IARC Everyone / PEGI 3, audience 13+, Data safety none collected, government / financial / health no.
 

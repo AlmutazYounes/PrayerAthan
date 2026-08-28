@@ -67,7 +67,12 @@ export PLAY_AAB="$AAB"
 export PLAY_LABEL="$LABEL"
 export RELEASE_NOTES="$NOTES"
 
-ego-browser nodejs < "$SCRIPT_DIR/console-publish.js"
+(
+  python3 -c "import json, os; print('globalThis.PLAY_AAB = ' + json.dumps(os.environ.get('PLAY_AAB', '')) + ';')"
+  python3 -c "import json, os; print('globalThis.PLAY_LABEL = ' + json.dumps(os.environ.get('PLAY_LABEL', '')) + ';')"
+  python3 -c "import json, os; print('globalThis.RELEASE_NOTES = ' + json.dumps(os.environ.get('RELEASE_NOTES', '')) + ';')"
+  cat "$SCRIPT_DIR/console-publish.js"
+) | ego-browser nodejs
 
 python3 "$SCRIPT_DIR/patch-docs.py" --code "$CODE" --name "$NAME" --notes "$NOTES"
 

@@ -47,8 +47,8 @@ def main() -> int:
     )
     n += sub_file(
         ROOT / "store" / "PLAN.md",
-        r"Signed AAB on internal testing, version \d+ / [^\s.]+",
-        f"Signed AAB on internal testing, version {args.code} / {args.name}",
+        r"Signed AAB on internal testing, version \d+ / [^\n]+",
+        f"Signed AAB on internal testing, version {args.code} / {args.name}.",
     )
     n += sub_file(
         ROOT / "store" / "APP-GAPS.md",
