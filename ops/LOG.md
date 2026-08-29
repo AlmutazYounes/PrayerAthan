@@ -2,6 +2,11 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-29 Mutaz: removed Power & Battery and smart outlet features from UI, ViewModel, and shell layers.
+- 2026-08-29 Google: approved Closed testing Alpha track. Release 12 (0.12.0) live for testers.
+- 2026-08-28 Mutaz: pack percent and temp on the wall header under weather, portrait and landscape.
+- 2026-08-28 Mutaz: LAN outlet cycle 55/80 (Shelly HTTP or kasa://). Pritom has no software charge cutoff.
+- 2026-08-28 Mutaz: battery readout in settings (percent, temp, health). Dim at 40°C. No charger control.
 - 2026-08-28 Mutaz: internal testing 12 (0.12.0). Closed testing release 12 (0.12.0) submitted for review.. Not production.
 - 2026-08-28 Mutaz: internal testing 10 (0.10.0). All athans, athkar, night blackout, and auto theme on by default.. Not production.
 - 2026-08-28 Mutaz: added tester email to closed & internal tester lists (6 total).

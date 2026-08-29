@@ -28,7 +28,7 @@ This document is for AI coding agents (Claude Code, Cursor, Codex, Copilot, etc.
 | **Prayer Engine** | `app/src/main/java/.../engine/` | Pure Kotlin. Handles ISNA prayer calculation, timezones, offline city search, and day models. **No Compose, no Android UI, no MediaPlayer.** |
 | **Audio Scheduler** | `app/src/main/java/.../audio/` | Manages exact alarms (`AthanAlarmReceiver`), audio playback (`AthanPlayer`), foreground service (`AthanService`), and hourly Athkar. |
 | **Compose UI** | `app/src/main/java/.../ui/` | Renders `WallScreen`, `PrayerGrid`, `SettingsSheet`, and handles theme switching (Light/Dark/Auto). Uses `WallUiState` from `WallViewModel`. |
-| **Android Shell** | `app/src/main/java/.../shell/` | Manages `BootReceiver` (rescheduling alarms after reboot), permissions, and `KeepAwake` window flags. |
+| **Android Shell** | `app/src/main/java/.../shell/` | Manages `BootReceiver` (rescheduling alarms after reboot), permissions, and keep-awake window flags. |
 
 ---
 

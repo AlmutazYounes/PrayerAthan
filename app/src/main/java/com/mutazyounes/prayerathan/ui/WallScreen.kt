@@ -78,7 +78,10 @@ fun WallScreen(
         val window = (context as? Activity)?.window
         if (window != null) {
             val params = window.attributes
-            params.screenBrightness = if (showBlackout) 0.0f else WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            params.screenBrightness = when {
+                showBlackout -> 0.0f
+                else -> WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            }
             window.attributes = params
         }
         onDispose {

@@ -8,7 +8,7 @@ Play listing is **free**. Internal testing is **12 (0.12.0)**. Six wall screensh
 
 The Play URL shows a gray stub (`com.mutazyounes.prayerathan (unreviewed)`) because listing changes sit in Publishing overview and have not been reviewed. Pictures are in Console. They are not on the store page yet.
 
-Location is searchable country then city. Athan sound is selectable with a PLAY demo. Per-prayer mute lets user toggle athans for Fajr, Dhuhr, Asr, Maghrib, and Isha. Hourly athkar can be turned off. No athkar from 10 PM until 8 AM. Use GPS takes one fix.
+Location is searchable country then city. Athan sound is selectable with a PLAY demo. Per-prayer mute lets user toggle athans for Fajr, Dhuhr, Asr, Maghrib, and Isha. Hourly athkar can be turned off. No athkar from 10 PM until 8 AM. Use GPS takes one fix. Night blackout (11 PM - 4 AM) with tap-to-wake.
 
 ## Next
 

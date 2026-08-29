@@ -10,7 +10,7 @@ How PrayerAthan sits on Google Play. Not the product spec. `PROJECT.md` wins for
 | Price | **Free**. Cannot become paid on this package. |
 | Production | Inactive. Apply disabled. 0 closed testers opted in. |
 | Internal testing | Live. Release 12 (0.12.0). |
-| Closed testing | Alpha track. Countries targeted. Release 12 (0.12.0) full rollout in review. 0 opted in. |
+| Closed testing | Alpha track. Countries targeted. Release 12 (0.12.0) live. 0 opted in. |
 | Listing in Console | Name, copy, icon, graphic, six wall screenshots saved. |
 | Listing on Play URL | Gray stub until Google reviews a closed or production send. |
 | App content | Privacy, ads no, IARC, 13+, Data safety none, gov/finance/health no. Advertising ID no. FGS mediaPlayback + demo video. Exact alarm = alarm clock. |
