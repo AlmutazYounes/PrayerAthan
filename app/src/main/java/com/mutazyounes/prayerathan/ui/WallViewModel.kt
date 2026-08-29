@@ -6,11 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.mutazyounes.prayerathan.audio.AthanController
 import com.mutazyounes.prayerathan.audio.AthkarClip
 import com.mutazyounes.prayerathan.audio.AudioSettingsStore
+import com.mutazyounes.prayerathan.engine.CityCatalog
 import com.mutazyounes.prayerathan.engine.LocationStore
 import com.mutazyounes.prayerathan.engine.PrayerDay
 import com.mutazyounes.prayerathan.engine.PrayerEngine
 import com.mutazyounes.prayerathan.engine.PrayerName
 import com.mutazyounes.prayerathan.engine.SavedLocation
+import com.mutazyounes.prayerathan.engine.SystemWallClock
+import com.mutazyounes.prayerathan.engine.WallClock
+import com.mutazyounes.prayerathan.engine.WallTime
 import com.mutazyounes.prayerathan.shell.LocationFixer
 import com.mutazyounes.prayerathan.weather.WeatherClient
 import java.time.Duration
@@ -37,6 +41,7 @@ class WallViewModel(
     private val locationStore: LocationStore,
     private val locationFixer: LocationFixer,
     private val audioSettings: AudioSettingsStore,
+    private val wallClock: WallClock = SystemWallClock,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(WallUiState.Empty)
@@ -49,29 +54,41 @@ class WallViewModel(
     private var wasAthkar: Boolean = false
     private var weatherLine: String = ""
     private var locationError: String? = null
+    private var resolvedLocation: SavedLocation? = null
+    private var lastCellKinds: List<CellKind>? = null
 
     init {
-        refresh(Instant.now())
+        refresh(now())
+        viewModelScope.launch(Dispatchers.IO) {
+            if (wallClock.syncIfDue()) {
+                withContext(Dispatchers.Main) { refresh(now(), forceSchedule = true) }
+            }
+            while (isActive) {
+                delay(CLOCK_SYNC_CHECK_MS)
+                if (wallClock.syncIfDue()) {
+                    withContext(Dispatchers.Main) { refresh(now(), forceSchedule = true) }
+                }
+            }
+        }
         viewModelScope.launch {
             athan.playback.collect {
-                refresh(Instant.now())
+                refresh(now())
             }
         }
         viewModelScope.launch {
             athan.athkarPlayback.collect {
-                refresh(Instant.now())
+                refresh(now())
             }
         }
         viewModelScope.launch {
             athan.demoId.collect {
-                refresh(Instant.now())
+                refresh(now())
             }
         }
         viewModelScope.launch {
             while (isActive) {
-                val waitMs = 1000L - (System.currentTimeMillis() % 1000L)
-                delay(waitMs.coerceAtLeast(1L))
-                refresh(Instant.now())
+                delay(WallTime.millisUntilNextSecond(now().toEpochMilli()))
+                refresh(now())
             }
         }
         viewModelScope.launch {
@@ -86,45 +103,40 @@ class WallViewModel(
         val fetched = withContext(Dispatchers.IO) { weather.fetch() }
         if (fetched != null) {
             weatherLine = fetched.line
-            refresh(Instant.now())
+            refresh(now())
         }
     }
 
     fun stopAthan() {
         athan.stop()
-        refresh(Instant.now())
+        refresh(now())
     }
 
     fun setThemeMode(mode: ThemeMode) {
         themeMode = mode
         settings.setThemeMode(mode)
-        refresh(Instant.now())
+        refresh(now())
     }
 
-    fun setFajrSound(id: String) {
-        audioSettings.setFajrSoundId(id)
-        refresh(Instant.now())
-    }
-
-    fun setStandardSound(id: String) {
-        audioSettings.setStandardSoundId(id)
-        refresh(Instant.now())
+    fun setAthanSound(id: String) {
+        audioSettings.setSoundId(id)
+        refresh(now())
     }
 
     fun setAthkarEnabled(enabled: Boolean) {
         audioSettings.setAthkarEnabled(enabled)
-        refresh(Instant.now(), forceSchedule = true)
+        refresh(now(), forceSchedule = true)
     }
 
     fun setNightBlackout(enabled: Boolean) {
         settings.setNightBlackout(enabled)
-        refresh(Instant.now())
+        refresh(now())
     }
 
     fun togglePrayerMute(prayer: PrayerName) {
         val muted = audioSettings.isPrayerMuted(prayer)
         audioSettings.setPrayerMuted(prayer, !muted)
-        refresh(Instant.now(), forceSchedule = true)
+        refresh(now(), forceSchedule = true)
     }
 
     fun playAthanDemo(id: String) {
@@ -133,7 +145,7 @@ class WallViewModel(
             return
         }
         athan.playAthanDemo(id)
-        refresh(Instant.now())
+        refresh(now())
     }
 
     fun playAthkarDemo(clip: AthkarClip) {
@@ -143,13 +155,13 @@ class WallViewModel(
             return
         }
         athan.playAthkarDemo(clip)
-        refresh(Instant.now())
+        refresh(now())
     }
 
     fun stopDemo() {
         if (athan.demoId.value == null) return
         athan.stop()
-        refresh(Instant.now())
+        refresh(now())
     }
 
     fun saveLocation(
@@ -161,20 +173,22 @@ class WallViewModel(
         val parsed = SavedLocation.parse(label, latitude, longitude, timeZoneId)
         if (parsed == null) {
             locationError = "That city could not be saved. Try another."
-            refresh(Instant.now())
+            refresh(now())
             return false
         }
+        resolvedLocation = null
         locationStore.write(parsed)
         locationError = null
-        refresh(Instant.now(), forceSchedule = true)
+        refresh(now(), forceSchedule = true)
         viewModelScope.launch { pullWeather() }
         return true
     }
 
     fun resetToAlbany() {
+        resolvedLocation = null
         locationStore.write(SavedLocation.albany)
         locationError = null
-        refresh(Instant.now(), forceSchedule = true)
+        refresh(now(), forceSchedule = true)
         viewModelScope.launch { pullWeather() }
     }
 
@@ -182,13 +196,14 @@ class WallViewModel(
         locationFixer.requestOneFix { outcome ->
             when (outcome) {
                 LocationFixer.Outcome.Saved -> {
+                    resolvedLocation = null
                     locationError = null
-                    refresh(Instant.now(), forceSchedule = true)
+                    refresh(now(), forceSchedule = true)
                     viewModelScope.launch { pullWeather() }
                 }
                 LocationFixer.Outcome.Failed -> {
                     locationError = "GPS did not get a fix. Pick a city, or try again."
-                    refresh(Instant.now())
+                    refresh(now())
                 }
             }
         }
@@ -199,11 +214,42 @@ class WallViewModel(
         super.onCleared()
     }
 
+    private fun now(): Instant = wallClock.now()
+
+    private fun resolveCityLabel(location: SavedLocation): SavedLocation {
+        val held = resolvedLocation
+        if (held != null &&
+            held.latitude == location.latitude &&
+            held.longitude == location.longitude &&
+            held.label == location.label &&
+            !looksLikeCoords(held.label)
+        ) {
+            return held
+        }
+        val catalog = CityCatalog.cached() ?: return location.also { resolvedLocation = it }
+        val name = catalog.wallLabel(location.latitude, location.longitude, location.label)
+        if (name == location.label) {
+            resolvedLocation = location
+            return location
+        }
+        val hit = catalog.match(location.latitude, location.longitude, name)
+            ?: catalog.nearest(location.latitude, location.longitude)
+        val resolved = location.copy(
+            label = name,
+            timeZoneId = hit?.second?.timeZoneId ?: location.timeZoneId,
+        )
+        locationStore.write(resolved)
+        resolvedLocation = resolved
+        return resolved
+    }
+
     private fun refresh(now: Instant, forceSchedule: Boolean = false) {
-        val location = engine.location()
+        val location = resolveCityLabel(engine.location())
         val day = engine.day(now, location)
         val clocks = engine.clocks(now, location)
-        val remaining = engine.remainingToNext(now, location)
+        val remaining = Duration.between(now, day.nextAthanAt).let {
+            if (it.isNegative) Duration.ZERO else it
+        }
         maybeSchedule(day, now, forceSchedule)
         val playback = athan.playback.value
         val playingName = playback?.prayer
@@ -215,7 +261,19 @@ class WallViewModel(
         val mutedPrayers = audioSettings.mutedPrayers()
         val albanyClock = formatClock(clocks.albany, twelveHour)
         val jordanClock = formatClock(clocks.jordan, twelveHour)
-        _state.value = WallUiState(
+        val previous = _state.value
+        val cells = if (
+            previous.cells.isNotEmpty() &&
+            previous.playingName == playingName &&
+            previous.mutedPrayers == mutedPrayers &&
+            previous.locationTimeZoneId == location.timeZoneId &&
+            cellKindsUnchanged(now, day, playingName, previous)
+        ) {
+            previous.cells
+        } else {
+            buildCells(now, day, location.timeZoneId, playingName, mutedPrayers)
+        }
+        _state.value = previous.copy(
             locationLabel = location.label.uppercase(Locale.ENGLISH),
             locationCity = location.label,
             locationLatitude = formatCoord(location.latitude),
@@ -234,19 +292,38 @@ class WallViewModel(
             playingName = playingName,
             athkarPlaying = athkarOn,
             athkarCaption = if (playing) "" else athkar?.caption.orEmpty(),
-            cells = buildCells(now, day, location.timeZoneId, playingName, mutedPrayers),
+            cells = cells,
             twelveHour = twelveHour,
             themeMode = currentThemeMode,
             darkTheme = resolveDarkTheme(currentThemeMode, now, day),
             weatherLine = weatherLine,
-            fajrSoundId = audioSettings.fajrSoundId(),
-            standardSoundId = audioSettings.standardSoundId(),
+            athanSoundId = audioSettings.soundId(),
             athkarEnabled = audioSettings.athkarEnabled(),
             mutedPrayers = mutedPrayers,
             demoId = athan.demoId.value,
             nightBlackoutEnabled = settings.nightBlackout(),
             isNightBlackout = settings.nightBlackout() && isNightBlackoutWindow(clocks.albany.hour) && !playing && athan.demoId.value == null,
         )
+    }
+
+    private fun cellKindsUnchanged(
+        now: Instant,
+        day: PrayerDay,
+        playingName: PrayerName?,
+        previous: WallUiState,
+    ): Boolean {
+        if (previous.cells.size != day.times.size) return false
+        val kinds = day.times.map { instant ->
+            when {
+                playingName != null && instant.name == playingName -> CellKind.NEXT
+                playingName == null && instant.at == day.nextAthanAt -> CellKind.NEXT
+                instant.at <= now -> CellKind.PAST
+                else -> CellKind.LATER
+            }
+        }
+        if (kinds == lastCellKinds && previous.cells.map { it.kind } == kinds) return true
+        lastCellKinds = kinds
+        return false
     }
 
     private fun maybeSchedule(day: PrayerDay, now: Instant, force: Boolean = false) {
@@ -290,10 +367,18 @@ class WallViewModel(
 
     companion object {
         private val DATE_LINE: DateTimeFormatter =
-            DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
+            DateTimeFormatter.ofPattern("d MMMM", Locale.ENGLISH)
         private val WEEKDAY: DateTimeFormatter =
             DateTimeFormatter.ofPattern("EEEE", Locale.ENGLISH)
+
+        private fun looksLikeCoords(label: String): Boolean {
+            val comma = label.indexOf(',')
+            if (comma < 0) return false
+            return label.substring(0, comma).trim().toDoubleOrNull() != null &&
+                label.substring(comma + 1).trim().toDoubleOrNull() != null
+        }
         private const val WEATHER_REFRESH_MS = 3 * 60 * 1000L
+        private const val CLOCK_SYNC_CHECK_MS = 60L * 60L * 1000L
 
         fun factory(
             engine: PrayerEngine,
@@ -303,6 +388,7 @@ class WallViewModel(
             locationStore: LocationStore,
             locationFixer: LocationFixer,
             audioSettings: AudioSettingsStore,
+            wallClock: WallClock,
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
@@ -315,6 +401,7 @@ class WallViewModel(
                         locationStore,
                         locationFixer,
                         audioSettings,
+                        wallClock,
                     ) as T
                 }
             }

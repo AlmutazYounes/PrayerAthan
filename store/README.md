@@ -8,9 +8,9 @@ How PrayerAthan sits on Google Play. Not the product spec. `PROJECT.md` wins for
 | --- | --- |
 | Package | `com.mutazyounes.prayerathan` |
 | Price | **Free**. Cannot become paid on this package. |
-| Production | Inactive. Apply disabled. 0 closed testers opted in. |
-| Internal testing | Live. Release 12 (0.12.0). |
-| Closed testing | Alpha track. Countries targeted. Release 12 (0.12.0) live. 0 opted in. |
+| Production | Inactive. Apply disabled. 3 closed testers opted in. Need 12 for 14 days. |
+| Internal testing | Live. Release 18 (0.18.0). |
+| Closed testing | Alpha track. Countries targeted. Release 16 (0.16.0) in review. Testers keep 15 until Google clears it. |
 | Listing in Console | Name, copy, icon, graphic, six wall screenshots saved. |
 | Listing on Play URL | Gray stub until Google reviews a closed or production send. |
 | App content | Privacy, ads no, IARC, 13+, Data safety none, gov/finance/health no. Advertising ID no. FGS mediaPlayback + demo video. Exact alarm = alarm clock. |
@@ -20,9 +20,11 @@ Production page: https://play.google.com/store/apps/details?id=com.mutazyounes.p
 
 Internal opt-in: https://play.google.com/apps/internaltest/4701680380313434468
 
-Testers already on Play: open Play Store, search PrayerAthan (or the unreviewed package name), tap Update. Or reopen the opt-in link. Play can sit on the old build for 5 to 60 minutes. If Update never appears, the tablet still has the debug APK. Uninstall that, then install from the opt-in link.
+Testers already on Play: open Play Store, search Athan Wall Clock (or the unreviewed package name), tap Update. Or reopen the opt-in link. Play can sit on the old build for 5 to 60 minutes. If Update never appears, the tablet still has the debug APK. Uninstall that, then install from the opt-in link.
 
 Public production needs 12 closed testers opted in for 14 days, then Apply for production. Official: https://support.google.com/googleplay/android-developer/answer/14151465
+
+Maintain one tester list: Play Console `ClosedTesters`, mirrored in `store/testers.csv`. Internal testing is only for `/push` (Mutaz tablets). Those testers do not count.
 
 ## What to read
 

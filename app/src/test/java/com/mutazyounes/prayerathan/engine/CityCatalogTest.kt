@@ -43,6 +43,40 @@ class CityCatalogTest {
     }
 
     @Test
+    fun citySearchCapsResults() {
+        val hits = catalog.searchCities("US", "al", limit = 1)
+        assertEquals(1, hits.size)
+        assertEquals("NY", hits.single().admin1)
+    }
+
+    @Test
+    fun countrySearchCapsResults() {
+        val hits = catalog.searchCountries("a", limit = 1)
+        assertEquals(1, hits.size)
+    }
+
+    @Test
+    fun emptyCountrySearchIsCapped() {
+        val hits = catalog.searchCountries("", limit = 1)
+        assertEquals(1, hits.size)
+    }
+
+    @Test
+    fun nearestFindsAlbanyNy() {
+        val hit = catalog.nearest(42.65, -73.76)
+        checkNotNull(hit)
+        assertEquals("Albany, NY", hit.second.label(hit.first.name))
+    }
+
+    @Test
+    fun wallLabelNeverKeepsBareCoords() {
+        assertEquals(
+            "Albany, NY",
+            catalog.wallLabel(42.6526, -73.7562, "42.6526, -73.7562"),
+        )
+    }
+
+    @Test
     fun makkahLabelUsesCountryName() {
         val sa = catalog.country("SA")!!
         val makkah = catalog.searchCities("SA", "makkah").single()

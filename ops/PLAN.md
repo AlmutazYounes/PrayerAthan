@@ -10,7 +10,7 @@ Do not skip steps. Do not start Designer on fake times. Engine and shell may ove
 
 - Product spec: `PROJECT.md`
 - Visual spec: `DESIGN.md` plus the two PNGs
-- Makkah athan: `audio/fajr.mp3`, `audio/standard.mp3`, `audio/SOURCE.md`
+- Athan: `res/raw/athan_saudi.mp3`, `audio/SOURCE.md`
 - Contracts: `ops/contracts/`
 - Subagents: `.cursor/agents/`
 - Slash commands: `/next`, `/prayer-engine`, …
@@ -70,7 +70,7 @@ Tick these in `STATUS.md` when the review below passes. Do not tick because the 
 - `MainActivity` with keep-screen-on
 - Both orientations allowed (`sensor`)
 - `BootReceiver` stub
-- `res/raw/athan_fajr.mp3` and `athan_standard.mp3` copied from `audio/`
+- `res/raw/athan_saudi.mp3`
 - `./gradlew assembleDebug` exit 0
 - `ops/handoffs/shell.md` with assembleDebug pass
 

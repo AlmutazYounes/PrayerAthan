@@ -107,20 +107,14 @@ PrayerAthan/
    cd PrayerAthan
    ```
 
-2. Build the debug APK:
-   ```bash
-   ./gradlew assembleDebug
-   ```
+2. Wall tablets install from Play (internal or closed testing). Do not sideload a debug APK onto those tablets.
 
 3. Run unit tests:
    ```bash
    ./gradlew test
    ```
 
-4. Install to a connected tablet or emulator:
-   ```bash
-   ./gradlew installDebug
-   ```
+4. Ship a Play build with `./store/scripts/push-release.sh`. `assembleDebug` is for local compile checks only.
 
 ---
 

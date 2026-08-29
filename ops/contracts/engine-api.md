@@ -55,7 +55,7 @@ interface PrayerEngine {
 }
 ```
 
-`remainingToNext` is `nextAthanAt - now`, floored at zero. Tick from the UI every second by passing a new `now`. Do not hide a clock inside the engine.
+`remainingToNext` is `nextAthanAt - now`, floored at zero. Tick from the UI every second by passing a new `now`. The UI and audio get `now` from `WallClock` (NTP offset in `shell/SyncedClock`). Engine math stays Instant-in Instant-out. `WallTime` converts device millis plus correction. Do not hide NTP inside the engine.
 
 Jordan is `now.atZone(ZoneId.of("Asia/Amman"))`. Never `albany plus hours`.
 

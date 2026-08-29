@@ -14,6 +14,9 @@ class PrayerCalculator(
     private val locationStore: LocationStore = InMemoryLocationStore(),
 ) : PrayerEngine {
 
+    private var cacheOne: Pair<TimesKey, List<PrayerInstant>>? = null
+    private var cacheTwo: Pair<TimesKey, List<PrayerInstant>>? = null
+
     override fun location(): SavedLocation = locationStore.read()
 
     override fun day(now: Instant, location: SavedLocation): PrayerDay {
@@ -57,12 +60,20 @@ class PrayerCalculator(
     }
 
     private fun timesFor(localDate: LocalDate, location: SavedLocation): List<PrayerInstant> {
+        val key = TimesKey(
+            localDate,
+            location.latitude,
+            location.longitude,
+            location.timeZoneId,
+        )
+        cacheOne?.let { if (it.first == key) return it.second }
+        cacheTwo?.let { if (it.first == key) return it.second }
         val prayerTimes = PrayerTimes(
             Coordinates(location.latitude, location.longitude),
             DateComponents(localDate.year, localDate.monthValue, localDate.dayOfMonth),
             PARAMETERS,
         )
-        return listOf(
+        val computed = listOf(
             PrayerInstant(PrayerName.FAJR, javaInstant(prayerTimes.fajr.toEpochMilliseconds())),
             PrayerInstant(PrayerName.SUNRISE, javaInstant(prayerTimes.sunrise.toEpochMilliseconds())),
             PrayerInstant(PrayerName.DHUHR, javaInstant(prayerTimes.dhuhr.toEpochMilliseconds())),
@@ -70,6 +81,9 @@ class PrayerCalculator(
             PrayerInstant(PrayerName.MAGHRIB, javaInstant(prayerTimes.maghrib.toEpochMilliseconds())),
             PrayerInstant(PrayerName.ISHA, javaInstant(prayerTimes.isha.toEpochMilliseconds())),
         )
+        cacheTwo = cacheOne
+        cacheOne = key to computed
+        return computed
     }
 
     private fun javaInstant(epochMilli: Long): Instant = Instant.ofEpochMilli(epochMilli)
@@ -81,3 +95,10 @@ class PrayerCalculator(
         private val ATHAN_TARGETS = PrayerName.athanTargets().toSet()
     }
 }
+
+private data class TimesKey(
+    val date: LocalDate,
+    val latitude: Double,
+    val longitude: Double,
+    val timeZoneId: String,
+)

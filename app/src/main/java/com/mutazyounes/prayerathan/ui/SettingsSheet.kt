@@ -28,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,12 +58,16 @@ import com.mutazyounes.prayerathan.engine.PlaceCity
 import com.mutazyounes.prayerathan.engine.PlaceCountry
 import com.mutazyounes.prayerathan.engine.PrayerName
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 private val SheetShape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp)
 private val ChipShape = RoundedCornerShape(10.dp)
 private val MenuShape = RoundedCornerShape(12.dp)
 private val FieldShape = RoundedCornerShape(10.dp)
+private const val CITY_QUERY_MIN = 2
+private const val CITY_RESULT_CAP = 50
+private const val COUNTRY_RESULT_CAP = 60
 
 private enum class PlaceMenu { Country, City }
 
@@ -73,8 +78,7 @@ fun SettingsSheet(
     longitude: String,
     locationError: String?,
     themeMode: ThemeMode,
-    fajrSoundId: String,
-    standardSoundId: String,
+    athanSoundId: String,
     athkarEnabled: Boolean,
     mutedPrayers: Set<PrayerName>,
     nightBlackoutEnabled: Boolean,
@@ -83,8 +87,7 @@ fun SettingsSheet(
     onResetAlbany: () -> Unit,
     onUseGps: () -> Unit,
     onThemeModeChange: (ThemeMode) -> Unit,
-    onSelectFajrSound: (String) -> Unit,
-    onSelectStandardSound: (String) -> Unit,
+    onSelectAthanSound: (String) -> Unit,
     onAthkarEnabledChange: (Boolean) -> Unit,
     onTogglePrayerMute: (PrayerName) -> Unit,
     onNightBlackoutChange: (Boolean) -> Unit,
@@ -93,37 +96,61 @@ fun SettingsSheet(
 ) {
     val palette = LocalWallPalette.current
     val context = LocalContext.current
-    var catalog by remember { mutableStateOf<CityCatalog?>(null) }
+    var catalog by remember { mutableStateOf(CityCatalog.cached()) }
     var selectedCountry by remember { mutableStateOf<PlaceCountry?>(null) }
     var selectedCity by remember { mutableStateOf<PlaceCity?>(null) }
     var openMenu by remember { mutableStateOf<PlaceMenu?>(null) }
     var countryQuery by remember { mutableStateOf("") }
     var cityQuery by remember { mutableStateOf("") }
+    var cityQueryLive by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
+        val ready = CityCatalog.cached()
+        if (ready != null) {
+            catalog = ready
+            return@LaunchedEffect
+        }
+        val assets = context.assets
         catalog = withContext(Dispatchers.IO) {
-            val countries = context.assets.open("countries.tsv").bufferedReader().use { it.readText() }
-            val cities = context.assets.open("cities.tsv").bufferedReader().use { it.readText() }
-            CityCatalog.bundled(countries, cities)
+            CityCatalog.loadBundled { name ->
+                assets.open(name).bufferedReader().use { it.readText() }
+            }
         }
     }
     LaunchedEffect(catalog, cityLabel, latitude, longitude) {
         val places = catalog ?: return@LaunchedEffect
-        val hit = places.match(latitude.toDoubleOrNull(), longitude.toDoubleOrNull(), cityLabel)
+        val hit = withContext(Dispatchers.Default) {
+            places.match(latitude.toDoubleOrNull(), longitude.toDoubleOrNull(), cityLabel)
+        }
         selectedCountry = hit?.first
         selectedCity = hit?.second
         countryQuery = ""
         cityQuery = ""
+        cityQueryLive = ""
         openMenu = null
     }
 
-    val places = catalog
-    val countryChoices = remember(places, countryQuery) {
-        places?.searchCountries(countryQuery).orEmpty()
+    val placesReady = catalog != null
+    val countryChoices by remember {
+        derivedStateOf {
+            catalog?.searchCountries(countryQuery, limit = COUNTRY_RESULT_CAP).orEmpty()
+        }
     }
-    val cityChoices = remember(places, selectedCountry, cityQuery) {
-        val code = selectedCountry?.code ?: return@remember emptyList()
-        places?.searchCities(code, cityQuery).orEmpty()
+    LaunchedEffect(cityQueryLive) {
+        delay(90)
+        cityQuery = cityQueryLive
+    }
+    val cityChoices by remember {
+        derivedStateOf {
+            val places = catalog
+            val code = selectedCountry?.code
+            val q = cityQuery.trim()
+            if (places == null || code == null || q.length < CITY_QUERY_MIN) {
+                emptyList()
+            } else {
+                places.searchCities(code, q, limit = CITY_RESULT_CAP)
+            }
+        }
     }
     val cityValue = selectedCity?.let { city ->
         val country = selectedCountry
@@ -211,23 +238,24 @@ fun SettingsSheet(
                                 .verticalScroll(rememberScrollState()),
                         ) {
                             LocationBlock(
-                                places = places,
+                                placesReady = placesReady,
                                 selectedCountry = selectedCountry,
                                 selectedCity = selectedCity,
                                 cityValue = cityValue,
                                 countryQuery = countryQuery,
-                                cityQuery = cityQuery,
+                                cityQuery = cityQueryLive,
                                 countryChoices = countryChoices,
                                 cityChoices = cityChoices,
                                 openMenu = openMenu,
                                 locationError = locationError,
                                 onCountryQuery = { countryQuery = it },
-                                onCityQuery = { cityQuery = it },
+                                onCityQuery = { cityQueryLive = it },
                                 onOpenMenu = { openMenu = it },
                                 onCountry = { country ->
                                     selectedCountry = country
                                     selectedCity = null
                                     cityQuery = ""
+                                    cityQueryLive = ""
                                     countryQuery = ""
                                     openMenu = PlaceMenu.City
                                 },
@@ -265,11 +293,9 @@ fun SettingsSheet(
                             )
                             Spacer(Modifier.height(22.dp))
                             AthanBlock(
-                                fajrSoundId = fajrSoundId,
-                                standardSoundId = standardSoundId,
+                                athanSoundId = athanSoundId,
                                 demoId = demoId,
-                                onSelectFajrSound = onSelectFajrSound,
-                                onSelectStandardSound = onSelectStandardSound,
+                                onSelectAthanSound = onSelectAthanSound,
                                 onPlayAthanDemo = onPlayAthanDemo,
                             )
                             Spacer(Modifier.height(22.dp))
@@ -292,23 +318,24 @@ fun SettingsSheet(
                             .verticalScroll(rememberScrollState()),
                     ) {
                         LocationBlock(
-                            places = places,
+                            placesReady = placesReady,
                             selectedCountry = selectedCountry,
                             selectedCity = selectedCity,
                             cityValue = cityValue,
                             countryQuery = countryQuery,
-                            cityQuery = cityQuery,
+                            cityQuery = cityQueryLive,
                             countryChoices = countryChoices,
                             cityChoices = cityChoices,
                             openMenu = openMenu,
                             locationError = locationError,
                             onCountryQuery = { countryQuery = it },
-                            onCityQuery = { cityQuery = it },
+                            onCityQuery = { cityQueryLive = it },
                             onOpenMenu = { openMenu = it },
                             onCountry = { country ->
                                 selectedCountry = country
                                 selectedCity = null
                                 cityQuery = ""
+                                cityQueryLive = ""
                                 countryQuery = ""
                                 openMenu = PlaceMenu.City
                             },
@@ -335,11 +362,9 @@ fun SettingsSheet(
                         )
                         Spacer(Modifier.height(22.dp))
                         AthanBlock(
-                            fajrSoundId = fajrSoundId,
-                            standardSoundId = standardSoundId,
+                            athanSoundId = athanSoundId,
                             demoId = demoId,
-                            onSelectFajrSound = onSelectFajrSound,
-                            onSelectStandardSound = onSelectStandardSound,
+                            onSelectAthanSound = onSelectAthanSound,
                             onPlayAthanDemo = onPlayAthanDemo,
                         )
                         Spacer(Modifier.height(22.dp))
@@ -366,7 +391,7 @@ fun SettingsSheet(
 
 @Composable
 private fun LocationBlock(
-    places: CityCatalog?,
+    placesReady: Boolean,
     selectedCountry: PlaceCountry?,
     selectedCity: PlaceCity?,
     cityValue: String,
@@ -388,14 +413,16 @@ private fun LocationBlock(
         SearchSelect(
             title = "Country",
             value = selectedCountry?.name.orEmpty(),
-            placeholder = if (places == null) "Loading…" else "Search",
+            placeholder = if (!placesReady) "Loading…" else "Search",
+            emptyHint = "No matches",
             query = countryQuery,
             onQueryChange = onCountryQuery,
             expanded = openMenu == PlaceMenu.Country,
-            enabled = places != null,
+            enabled = placesReady,
             options = countryChoices,
             selected = selectedCountry,
             optionText = { it.name },
+            optionKey = { it.code },
             onToggle = {
                 onOpenMenu(if (openMenu == PlaceMenu.Country) null else PlaceMenu.Country)
                 onCountryQuery("")
@@ -408,17 +435,23 @@ private fun LocationBlock(
             title = "City",
             value = cityValue,
             placeholder = when {
-                places == null -> "Loading…"
+                !placesReady -> "Loading…"
                 selectedCountry == null -> "Country first"
-                else -> "Search"
+                else -> "Type two letters"
+            },
+            emptyHint = if (cityQuery.trim().length < CITY_QUERY_MIN) {
+                "Type two letters"
+            } else {
+                "No matches"
             },
             query = cityQuery,
             onQueryChange = onCityQuery,
             expanded = openMenu == PlaceMenu.City,
-            enabled = places != null && selectedCountry != null,
+            enabled = placesReady && selectedCountry != null,
             options = cityChoices,
             selected = selectedCity,
             optionText = { it.rowText() },
+            optionKey = { "${it.name}|${it.admin1}|${it.latitude}|${it.longitude}" },
             onToggle = {
                 if (selectedCountry == null) return@SearchSelect
                 onOpenMenu(if (openMenu == PlaceMenu.City) null else PlaceMenu.City)
@@ -485,38 +518,19 @@ private fun PrayerAthansBlock(
 
 @Composable
 private fun AthanBlock(
-    fajrSoundId: String,
-    standardSoundId: String,
+    athanSoundId: String,
     demoId: String?,
-    onSelectFajrSound: (String) -> Unit,
-    onSelectStandardSound: (String) -> Unit,
+    onSelectAthanSound: (String) -> Unit,
     onPlayAthanDemo: (String) -> Unit,
 ) {
-    val current = AthanCatalog.standard(standardSoundId)
+    val current = AthanCatalog.choice(athanSoundId)
     SettingsSection("Athan", current.title) {
-        AthanCatalog.standard.forEach { choice ->
+        AthanCatalog.all.forEach { choice ->
             SoundRow(
                 choice = choice,
-                selected = choice.id == standardSoundId,
+                selected = choice.id == athanSoundId,
                 playing = demoId == choice.id,
-                onSelect = { onSelectStandardSound(choice.id) },
-                onPlay = { onPlayAthanDemo(choice.id) },
-            )
-        }
-        Spacer(Modifier.height(10.dp))
-        Text(
-            text = "Fajr",
-            color = LocalWallPalette.current.prayerPast,
-            fontSize = 12.sp,
-            fontFamily = EnglishFontFamily,
-            modifier = Modifier.padding(bottom = 6.dp),
-        )
-        AthanCatalog.fajr.forEach { choice ->
-            SoundRow(
-                choice = choice,
-                selected = choice.id == fajrSoundId,
-                playing = demoId == choice.id,
-                onSelect = { onSelectFajrSound(choice.id) },
+                onSelect = { onSelectAthanSound(choice.id) },
                 onPlay = { onPlayAthanDemo(choice.id) },
             )
         }
@@ -645,6 +659,7 @@ private fun <T> SearchSelect(
     title: String,
     value: String,
     placeholder: String,
+    emptyHint: String,
     query: String,
     onQueryChange: (String) -> Unit,
     expanded: Boolean,
@@ -652,6 +667,7 @@ private fun <T> SearchSelect(
     options: List<T>,
     selected: T?,
     optionText: (T) -> String,
+    optionKey: (T) -> String,
     onToggle: () -> Unit,
     onDismiss: () -> Unit,
     onSelect: (T) -> Unit,
@@ -778,7 +794,7 @@ private fun <T> SearchSelect(
                         Spacer(Modifier.height(6.dp))
                         if (options.isEmpty()) {
                             Text(
-                                text = "No matches",
+                                text = emptyHint,
                                 color = palette.prayerPast,
                                 fontSize = 15.sp,
                                 fontFamily = EnglishFontFamily,
@@ -786,7 +802,7 @@ private fun <T> SearchSelect(
                             )
                         } else {
                             LazyColumn(modifier = Modifier.heightIn(max = 220.dp)) {
-                                items(options) { option ->
+                                items(options, key = optionKey) { option ->
                                     val label = optionText(option)
                                     val active = option == selected
                                     Text(

@@ -1,5 +1,7 @@
 # PrayerAthan
 
+Display name on the launcher and Play listing is **Athan Wall Clock**. Package stays `com.mutazyounes.prayerathan`.
+
 This file is the spec. If chat history and this file disagree, this file wins. Update it when Mutaz decides something. Do not invent a server, an account system, or a second app.
 
 Mutaz hangs 7-inch and 10-inch Android tablets on the wall in Albany, NY. He already pays for a commercial Athan app and dislikes it. The clock type is too small to read from across the room, and the current time is an afterthought. This project is his wall clock. It shows Albany time, a countdown to the next prayer, today's timetable, and it plays athan when a prayer starts.
@@ -38,7 +40,7 @@ Three surfaces. That is the whole product in v1.
 
 **Athan playing.** Same wall screen. The countdown block switches to NOW, the prayer name, and the line "Adhan is playing". Albany time stays. The day's list highlights the prayer that just started.
 
-**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lets you mute/unmute individual prayer athans. Theme is Light, Dark, or Auto. Auto is light from sunrise to Maghrib, dark from Maghrib to the next sunrise. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
+**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lets you mute/unmute individual prayer athans. First launch: all five prayer athans muted, hourly athkar off. Theme is Light, Dark, or Auto. Auto is light from sunrise to Maghrib, dark from Maghrib to the next sunrise. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
 
 ---
 
@@ -48,7 +50,7 @@ Both orientations ship. The tablet hangs landscape or portrait. Same information
 
 Same content on every hang:
 
-- Location `ALBANY, NY`, current weather under it (`22°C  CLEAR`), and the Gregorian date. No Hijri.
+- Location is the city name (`ALBANY, NY`), never lat/long. Weather under it (`22°C  CLEAR`). Gregorian date without the year (`27 August`). No Hijri.
 - Albany current time
 - Countdown to the next prayer, `HH:MM:SS`
 - Today's six times: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha. English names only. No Arabic on the cells.
@@ -86,7 +88,7 @@ Older PNGs were deleted on purpose. Do not resurrect them. `DESIGN.md` is the wr
 
 ## Behavior
 
-Tick every second. Clocks, countdown, and dimming all follow the device clock. Do not refresh once a minute and hope.
+Tick every second. Clocks, countdown, dimming, and athan alarms follow an in-app clock. On first open, and again once a day while the wall stays up, the app asks a public NTP server (Google, then Cloudflare, then pool.ntp.org) for UTC and stores the offset from the tablet clock. AlarmManager still fires on the device clock. The trigger is shifted by that offset so two tablets hit the same real moment. Offline, the last offset stays. If NTP fails, the device clock. No time backend of ours. Do not refresh the wall once a minute and hope.
 
 **Next prayer** is the next of Fajr, Dhuhr, Asr, Maghrib, Isha. Sunrise is a line in the grid only. No athan at sunrise. After Fajr, the countdown target is Dhuhr even if sunrise has not happened yet. Sunrise still dims once its time has passed.
 
@@ -122,8 +124,8 @@ Madhab: Shafi. Decided. That is the earlier Asr (shadow factor 1) via adhan-kotl
 Location can be set three ways, all persisted on device:
 
 1. These Albany defaults, on first launch.
-2. One GPS fix, then save. Do not poll GPS forever on a wall tablet.
-3. Searchable country, then searchable city, from the bundled GeoNames list (`assets/cities.tsv`). Picking a city writes the label, coordinates, and timezone. No typed lat/long.
+2. One GPS fix, then save the nearest city name. Do not poll GPS forever on a wall tablet. Do not put lat/long on the wall.
+3. Searchable country, then searchable city, from the bundled GeoNames list (`assets/cities.tsv`). Picking a city writes the city name, coordinates, and timezone. No typed lat/long.
 
 Prayer math is a pure function of coordinates, date, method, and madhab. UI does not compute times. If the designer needs a preview, they call the engine.
 
@@ -133,10 +135,7 @@ Mockup times (Fajr 5:09 AM and so on) are drawn for Thursday 27 August 2026. The
 
 ## Audio
 
-Makkah / Maki (الحرم المكي) athan. Sources stay in `audio/`. The APK copies them into `res/raw/`:
-
-- `audio/fajr.mp3` → `athan_fajr.mp3` for Fajr (includes الصلاة خير من النوم)
-- `audio/standard.mp3` and extra Haram recordings → selectable Dhuhr, Asr, Maghrib, Isha files. Settings lists them. PLAY is a demo. Gold border is the one that fires at prayer time.
+Saudi athan for all five prayers, including Fajr. One file: `res/raw/athan_saudi.mp3`. Settings shows one sound. PLAY is a demo. Wall tablets install from Play. Do not sideload a debug APK onto them.
 
 Origins, muezzin names, and license notes are in `audio/SOURCE.md`. Personal use on Mutaz's wall. Replace before strangers install from Play. The recordings are not MIT just because our code is.
 
@@ -146,7 +145,7 @@ Volume should fill a room at living-room distance. Do not duck to media volume t
 
 Sunrise: silence.
 
-**Athkar.** Short dhikr on the local clock hour: اللهم صل على محمد (`athkar_salawat.mp3`). Files live in `audio/athkar/` with `audio/athkar/SOURCE.md`. Copy into `res/raw/`. Personal use, same rights rule as athan. Not Quran. Play between Fajr and Isha, and only from 8:00 AM through 9:00 PM local. Silent from 10:00 PM until 8:00 AM, even if Fajr was earlier. If an athan is due that minute, athan wins. Tap stops. Settings can turn this off.
+**Athkar.** Short dhikr on the local clock hour: اللهم صل على محمد (`athkar_salawat.mp3`). Files live in `audio/athkar/` with `audio/athkar/SOURCE.md`. Copy into `res/raw/`. Personal use, same rights rule as athan. Not Quran. Play between Fajr and Isha, and only from 8:00 AM through 9:00 PM local. Silent from 10:00 PM until 8:00 AM, even if Fajr was earlier. If an athan is due that minute, athan wins. Tap stops. Settings can turn this on. Off on first launch.
 
 ---
 
@@ -207,8 +206,6 @@ PrayerAthan/
   store/                     <- Play listing. Free. Production not public.
   design/                    <- athan-wall-horizontal-v2.png, athan-wall-vertical.png
   audio/
-    fajr.mp3                 <- Makkah Fajr athan
-    standard.mp3             <- Makkah Isha athan, used for Dhuhr–Isha (Ali Mala, 1439)
     SOURCE.md                <- URLs, muezzin, license
   app/src/main/java/com/mutazyounes/prayerathan/
     MainActivity.kt
@@ -226,14 +223,13 @@ PrayerAthan/
       SettingsSheet.kt
     audio/
       AthanScheduler.kt      <- AlarmManager
-      AthanPlayer.kt         <- MediaPlayer, Fajr vs standard
+      AthanPlayer.kt         <- MediaPlayer, one Saudi athan
       AthanService.kt        <- foreground while playing
     shell/
       BootReceiver.kt
       KeepAwake.kt
   app/src/main/res/raw/
-    athan_fajr.mp3
-    athan_standard.mp3
+    athan_saudi.mp3
   app/src/test/java/com/mutazyounes/prayerathan/engine/
     PrayerCalculatorTest.kt
 ```
@@ -298,7 +294,7 @@ Done when. `./gradlew assembleDebug` works, the activity follows landscape or po
 
 Job. Sound at prayer time, still working after reboot.
 
-Owns. `audio/` : `setAlarmClock`, `MediaPlayer`, Fajr vs standard files from repo `audio/fajr.mp3` and `audio/standard.mp3` (Makkah / Maki, see `audio/SOURCE.md`), foreground service for the duration of the file, stop-on-tap hook the UI can call.
+Owns. `audio/` : `setAlarmClock`, `MediaPlayer`, `res/raw/athan_saudi.mp3` (see `audio/SOURCE.md`), foreground service for the duration of the file, stop-on-tap hook the UI can call.
 
 Must not. Layout. CalculationMethod. GPS.
 
@@ -337,7 +333,7 @@ Jobs 1 to 4 are on disk. Device QA on the real wall tablets is still waiting. Pl
 Mutaz locked these. Orchestrator standing orders are in `AGENTS.md`.
 
 1. **Madhab.** Shafi (earlier Asr). Hanafi can wait for settings later.
-2. **Athan files.** Makkah / Maki. Sources in `audio/`, copies in `res/raw/`. URLs and license in `audio/SOURCE.md`. Personal use on the wall. Replace before strangers install from Play.
+2. **Athan files.** Saudi athan, one MP3 for all five: `res/raw/athan_saudi.mp3`. Notes in `audio/SOURCE.md`. Personal use on the wall. Replace before strangers install from Play. Tablets get the app from Play, not a USB debug APK.
 3. **Kiosk.** Not in v1. Rely on keep-screen-on. Lock-task is a later settings option if a stray tap dumps him into the launcher.
 4. **12-hour vs 24-hour.** 12-hour with AM/PM on the wall. 24-hour is a settings flag only.
 5. **Athkar quiet hours.** No hourly athkar from 10:00 PM until 8:00 AM local. Last clip is 9:00 PM. First clip is 8:00 AM, and only if that hour is still between Fajr and Isha.

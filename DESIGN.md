@@ -1,4 +1,4 @@
-# PrayerAthan visual spec
+# Athan Wall Clock visual spec
 
 This file is the visual contract. Designer agents and Compose agents implement from here plus the two PNGs. If chat history disagrees with this file, this file wins. If a pixel in an approved PNG disagrees with a number here, update this file with Mutaz. Do not freelance a third look.
 
@@ -171,7 +171,7 @@ Type is a percent of the slot it sits in, not a global `sp` cap. `fitSp` takes t
 - Outer inset about `0.04 * S` from each edge for header text. Clocks may sit closer to the vertical center than the header.
 - Header is a overlay on the top of the hero, not a third content region that eats the clocks.
 - Location top-left, one line, all-caps.
-- Date top-right, two lines, right-aligned. Weekday on top. Date line under it, larger. Format `d MMMM yyyy` in English, e.g. `27 August 2026`. No comma in the date line. No Hijri.
+- Date top-right, two lines, right-aligned. Weekday on top. Date line under it, larger. Format `d MMMM` in English, e.g. `27 August`. No year. No comma in the date line. No Hijri.
 - Hairlines are 1.dp on mdpi, 1.5.dp to 2.dp on the mockup density. Never 8.dp "dividers" with padding like a card list.
 - Star watermark only behind Albany. Never behind Jordan, never behind the countdown, never as a repeating background.
 
@@ -278,7 +278,7 @@ Five composables. Naming is a suggestion. Structure is not.
 Header(location: String, weekday: String, dateLine: String)
 ```
 
-Location top-start, two lines: city then gold weather (`22°C  CLEAR`) from Open-Meteo, Celsius. Date column top-end, one line: weekday then calendar date (`Thursday  27 August 2026`). In landscape, weather fills the Albany column and that day-date line fills the countdown column. No Hijri slot. No weather icon.
+Location top-start, two lines: city name then gold weather (`22°C  CLEAR`) from Open-Meteo, Celsius. Never lat/long on the wall. Date column top-end, one line: weekday then calendar date (`Thursday  27 August`). No year. In landscape, weather fills the Albany column and that day-date line fills the countdown column. No Hijri slot. No weather icon.
 
 ### ClockBlock
 

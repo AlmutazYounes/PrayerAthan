@@ -34,15 +34,37 @@ if (before.includes('Latest release: ' + LABEL)) {
   })()`)
   cliLog('create ' + JSON.stringify(pos))
   if (pos.missing) throw new Error('Create new release not found. Sign into Console as mutazyounes@gmail.com')
-  await click([Math.round(pos.x), Math.round(pos.y)], { label: 'Create new release' })
-  await wait(5)
+  const clicked = await js(String.raw`(() => {
+    const btn = [...document.querySelectorAll('button, a')].find(b => (b.innerText||'').trim() === 'Create new release')
+    if (!btn) return false
+    btn.click()
+    return true
+  })()`)
+  cliLog('clicked direct: ' + clicked)
+  await wait(8)
   cliLog(JSON.stringify(await pageInfo()))
 
+  // Wait for file input or any upload element
+  let foundInput = false
+  for (let t = 0; t < 15; t++) {
+    foundInput = await js(`!!(document.querySelector('input[type="file"]') || document.querySelector('input[accept*=".aab"]'))`)
+    if (foundInput) break
+    await wait(2)
+  }
+  cliLog('foundInput: ' + foundInput)
+
   try {
-    await uploadFile('input[accept=".aab"]', AAB)
-    cliLog('uploadFile ok')
+    const inputSel = await js(`(() => {
+      if (document.querySelector('input[accept*=".aab"]')) return 'input[accept*=".aab"]'
+      if (document.querySelector('input[type="file"]')) return 'input[type="file"]'
+      return 'input[accept*=".aab"]'
+    })()`)
+    await uploadFile(inputSel, AAB)
+    cliLog('uploadFile ok on ' + inputSel)
   } catch (e) {
     cliLog('uploadFile err ' + e.message)
+    const domSummary = await js(`document.body.innerText.slice(0, 500)`)
+    cliLog('DOM summary: ' + domSummary)
     throw e
   }
 

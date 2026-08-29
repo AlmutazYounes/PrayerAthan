@@ -2,6 +2,27 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-29 Mutaz: internal testing 18 (0.18.0). Saudi athan, faster search, date format updates, sounds default off. Not production.
+- 2026-08-29 Mutaz: one tester list. ClosedTesters has all 7 invited. Closed track uses that list only. Internal track stays for /push.
+- 2026-08-29 Dashboard: 3 closed testers opted in. Need 12 for 14 days before production.
+- 2026-08-29 Mutaz: added aljghimi.bayan@gmail.com to ClosedTesters (Alpha).
+- 2026-08-29 Mutaz: internal testing 17 (0.17.0). New app icon featuring minimalist satin brass minaret. Not production.
+- 2026-08-29 Mutaz: updated app icon to satin brass minaret artwork across adaptive mipmaps and store listing.
+- 2026-08-29 Mutaz: closed testing Alpha 16 (0.16.0) sent for review.
+- 2026-08-29 Mutaz: internal testing 16 (0.16.0). Saudi athan, faster city search, city name on wall, date without year, sounds off by default. Not production.
+- 2026-08-29 Mutaz: first launch mutes all five athans and leaves hourly athkar off.
+- 2026-08-29 Mutaz: cached prayer-day math, indexed city search, lighter wall tick, debounced city typing.
+- 2026-08-29 Mutaz: faster city dropdowns, wall shows city name not coords, date drops the year.
+- 2026-08-29 Mutaz: one Saudi athan file in res/raw. No audio/ master copy. Wall tablets from Play only, no debug sideload.
+- 2026-08-29 Mutaz: pulled Muhammad Jazi Abdullah Irbid adhan into audio/candidates. Not wired. Not Makkah.
+- 2026-08-29 Mutaz: pulled smaller athan candidates into audio/candidates for a pick. Not wired into the APK.
+- 2026-08-29 Mutaz: closed testing 15 (0.15.0) and listing rename to Athan Wall Clock sent for review.
+- 2026-08-29 Mutaz: internal testing 15 (0.15.0). Renamed display name to Athan Wall Clock.. Not production.
+- 2026-08-29 Mutaz: display name is Athan Wall Clock. Package stays com.mutazyounes.prayerathan.
+- 2026-08-29 Mutaz: internal testing 14 (0.14.0). NTP in-app clock so tablets fire athan on the same real second.. Not production.
+- 2026-08-29 Mutaz: in-app NTP clock offset (on open + daily) so two tablets fire athan on the same real second.
+- 2026-08-29 Mutaz: promoted release 13 (0.13.0) to Closed testing Alpha track and submitted for review.
+- 2026-08-29 Mutaz: internal testing 13 (0.13.0). Removed power and battery settings and shell monitors.. Not production.
 - 2026-08-29 Mutaz: removed Power & Battery and smart outlet features from UI, ViewModel, and shell layers.
 - 2026-08-29 Google: approved Closed testing Alpha track. Release 12 (0.12.0) live for testers.
 - 2026-08-28 Mutaz: pack percent and temp on the wall header under weather, portrait and landscape.

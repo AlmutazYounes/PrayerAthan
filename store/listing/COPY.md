@@ -11,10 +11,10 @@ Category in Console is Lifestyle. Contact email is a listing field and is also i
 ## App name
 
 ```
-PrayerAthan
+Athan Wall Clock
 ```
 
-11 characters. Limit 30.
+16 characters. Limit 30.
 
 ## Short description
 
@@ -31,7 +31,7 @@ Tablet wall clock for prayer times. On-device ISNA times, countdown, athan.
 Limit 4000. Paste the block below as-is.
 
 ```
-PrayerAthan is a wall clock for 7-inch and 10-inch Android tablets. Hang it landscape or portrait. The screen stays on while the app is open.
+Athan Wall Clock is a wall-mounted clock for 7-inch and 10-inch Android tablets. Hang it landscape or portrait. The screen stays on while the app is open.
 
 It shows local time, a countdown to the next prayer, and today's Fajr, Sunrise, Dhuhr, Asr, Maghrib, and Isha. Times are calculated on the device. Method is ISNA, North America. Asr is Shafi. No account. After location is saved, the clock does not need the internet.
 
@@ -50,7 +50,7 @@ Contact: mutazyounes@gmail.com
 
 ## Console fields next to the copy
 
-- App name: PrayerAthan
+- App name: Athan Wall Clock
 - Default language: English
 - Category: Lifestyle
 - Contact email: mutazyounes@gmail.com

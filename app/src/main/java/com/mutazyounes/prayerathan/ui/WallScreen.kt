@@ -46,8 +46,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
+import com.mutazyounes.prayerathan.engine.CityCatalog
 import kotlin.math.min
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 /**
  * Trial: Albany plus countdown in StackedClockWall.kt. No Jordan clock.
@@ -74,6 +77,14 @@ fun WallScreen(
     val showBlackout = state.isNightBlackout && !userAwake && !settingsOpen
 
     val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        val assets = context.assets
+        withContext(Dispatchers.IO) {
+            CityCatalog.loadBundled { name ->
+                assets.open(name).bufferedReader().use { it.readText() }
+            }
+        }
+    }
     DisposableEffect(showBlackout) {
         val window = (context as? Activity)?.window
         if (window != null) {
@@ -121,8 +132,7 @@ fun WallScreen(
                     longitude = state.locationLongitude,
                     locationError = state.locationError,
                     themeMode = state.themeMode,
-                    fajrSoundId = state.fajrSoundId,
-                    standardSoundId = state.standardSoundId,
+                    athanSoundId = state.athanSoundId,
                     athkarEnabled = state.athkarEnabled,
                     mutedPrayers = state.mutedPrayers,
                     nightBlackoutEnabled = state.nightBlackoutEnabled,
@@ -138,8 +148,7 @@ fun WallScreen(
                     },
                     onUseGps = viewModel::useGps,
                     onThemeModeChange = viewModel::setThemeMode,
-                    onSelectFajrSound = viewModel::setFajrSound,
-                    onSelectStandardSound = viewModel::setStandardSound,
+                    onSelectAthanSound = viewModel::setAthanSound,
                     onAthkarEnabledChange = viewModel::setAthkarEnabled,
                     onTogglePrayerMute = viewModel::togglePrayerMute,
                     onNightBlackoutChange = viewModel::setNightBlackout,

@@ -94,7 +94,7 @@ Metadata policy: https://support.google.com/googleplay/android-developer/answer/
 
 | Field | Limit / spec | Note for this app |
 | --- | --- | --- |
-| App name | 30 characters | `PrayerAthan` is 11. Fine. |
+| App name | 30 characters | `Athan Wall Clock` is 16. Fine. |
 | Short description | 80 characters | First text on the listing. |
 | Full description | 4000 characters | Say wall tablet. Say offline. Do not promise Quran. |
 | Hi-res icon | 512 x 512, 32-bit PNG with alpha, ≤ 1024 KB | Separate from the adaptive launcher. |

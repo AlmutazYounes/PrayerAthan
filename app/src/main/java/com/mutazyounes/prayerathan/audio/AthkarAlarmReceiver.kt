@@ -5,17 +5,17 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.mutazyounes.prayerathan.PrayerAthanApp
-import java.time.Instant
 import java.time.ZoneId
 
 class AthkarAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val app = context.applicationContext as PrayerAthanApp
         if (!AudioSettingsStore(app).athkarEnabled()) {
-            app.athanController.schedule(app.prayerEngine.day(Instant.now()), Instant.now())
+            val now = app.wallClock.now()
+            app.athanController.schedule(app.prayerEngine.day(now), now)
             return
         }
-        val now = Instant.now()
+        val now = app.wallClock.now()
         val location = app.prayerEngine.location()
         val day = app.prayerEngine.day(now, location)
         val zone = ZoneId.of(location.timeZoneId)

@@ -18,7 +18,7 @@ class AthanPlayer(
             return
         }
         playRaw(
-            AthanCatalog.rawRes(prayer, store.fajrSoundId(), store.standardSoundId()),
+            AthanCatalog.rawRes(prayer),
             onComplete,
             onError,
         )

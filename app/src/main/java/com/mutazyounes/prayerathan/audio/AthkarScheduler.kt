@@ -2,6 +2,7 @@ package com.mutazyounes.prayerathan.audio
 
 import android.app.AlarmManager
 import android.content.Context
+import com.mutazyounes.prayerathan.PrayerAthanApp
 import com.mutazyounes.prayerathan.engine.PrayerDay
 import java.time.Instant
 import java.time.ZoneId
@@ -13,11 +14,12 @@ class AthkarScheduler(
 
     fun schedule(day: PrayerDay, now: Instant, zone: ZoneId) {
         cancelAll()
+        val clock = (context.applicationContext as PrayerAthanApp).wallClock
         for (at in remainingAthkarAlarms(day, now, zone)) {
             val hour = at.atZone(zone).hour
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                at.toEpochMilli(),
+                clock.alarmEpochMilli(at),
                 AthkarAlarmReceiver.pendingIntent(context, hour),
             )
         }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PrayerAthan</string>
+    <string name="app_name">Athan Wall Clock</string>
     <string name="athan_channel_name">Athan</string>
     <string name="athan_playing_title">Adhan is playing</string>
     <string name="athan_stop">Stop</string>

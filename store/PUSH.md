@@ -141,12 +141,12 @@ On a tablet that already joined internal testing:
 
 1. Same Google account as the tester list.
 2. Play Store → profile → Manage apps & device → Updates available.
-3. Or search `PrayerAthan`. Listing may still say `com.mutazyounes.prayerathan (unreviewed)`.
+3. Or search `Athan Wall Clock`. Listing may still say `com.mutazyounes.prayerathan (unreviewed)`.
 4. Or open the opt-in link on the tablet and tap Update / Download.
 
 If Update never appears:
 
-- Debug APK is still installed. Uninstall PrayerAthan, then install from the opt-in link.
+- Debug APK is still installed. Uninstall Athan Wall Clock, then install from the opt-in link.
 - Tablet is on a different Gmail. The opt-in URL 404s or says sorry for non-testers.
 - Play has not finished processing. Wait, then pull to refresh.
 

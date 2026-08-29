@@ -23,7 +23,6 @@ import com.mutazyounes.prayerathan.shell.KeepAwake
 import com.mutazyounes.prayerathan.shell.LocationFixer
 import com.mutazyounes.prayerathan.ui.WallScreen
 import com.mutazyounes.prayerathan.ui.WallViewModel
-import java.time.Instant
 
 class MainActivity : ComponentActivity() {
     private val locationPermissionLauncher = registerForActivityResult(
@@ -45,7 +44,7 @@ class MainActivity : ComponentActivity() {
         requestNotificationPermission()
         val app = application as PrayerAthanApp
         app.locationFixer.launchPermissionDialog = launchLocationPermission
-        val now = Instant.now()
+        val now = app.wallClock.now()
         app.athanController.schedule(app.prayerEngine.day(now), now)
         setContent {
             val wallViewModel: WallViewModel = viewModel(
@@ -57,6 +56,7 @@ class MainActivity : ComponentActivity() {
                     app.locationStore,
                     app.locationFixer,
                     app.audioSettings,
+                    app.wallClock,
                 ),
             )
             Box(

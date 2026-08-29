@@ -15,7 +15,6 @@ import com.mutazyounes.prayerathan.MainActivity
 import com.mutazyounes.prayerathan.PrayerAthanApp
 import com.mutazyounes.prayerathan.R
 import com.mutazyounes.prayerathan.engine.PrayerName
-import java.time.Instant
 
 class AthanService : Service() {
 
@@ -53,7 +52,7 @@ class AthanService : Service() {
         }
         startInForeground(prayer)
         val app = application as PrayerAthanApp
-        val now = Instant.now()
+        val now = app.wallClock.now()
         app.athanController.stopAthkar()
         app.athanController.markDemo(null)
         app.athanController.markPlaying(prayer, now)

@@ -12,7 +12,7 @@ data class WallUiState(
     val locationLongitude: String,
     val locationTimeZoneId: String,
     val locationError: String?,     // gold line after a failed parse
-    val gregorianDate: String,      // "27 August 2026"
+    val gregorianDate: String,      // "27 August"
     val weekday: String,            // "Thursday"
     val albanyTime: String,         // "3:17" plus amPm
     val albanyAmPm: String,
@@ -28,8 +28,7 @@ data class WallUiState(
     val twelveHour: Boolean,        // v1 always true
     val themeMode: ThemeMode,       // LIGHT, DARK, AUTO
     val darkTheme: Boolean,         // resolved palette. AUTO uses sunrise/Maghrib.
-    val fajrSoundId: String,
-    val standardSoundId: String,
+    val athanSoundId: String,
     val athkarEnabled: Boolean,
     val mutedPrayers: Set<PrayerName>,
     val demoId: String?,

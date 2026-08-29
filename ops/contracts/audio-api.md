@@ -6,11 +6,10 @@ Package: `com.mutazyounes.prayerathan.audio`
 
 Files after shell copies them:
 
-- `res/raw/athan_fajr.mp3`
-- `res/raw/athan_standard.mp3`
+- `res/raw/athan_saudi.mp3`
 - `res/raw/athkar_salawat.mp3`
 
-Athan masters live in `audio/`. Athkar masters live in `audio/athkar/`. See `audio/SOURCE.md` and `audio/athkar/SOURCE.md`.
+Athan file is `res/raw/athan_saudi.mp3`. Athkar masters live in `audio/athkar/`. See `audio/SOURCE.md` and `audio/athkar/SOURCE.md`.
 
 ## Types
 

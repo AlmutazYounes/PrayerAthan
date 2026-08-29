@@ -83,9 +83,7 @@ Do not add a foreground service start in the boot path to "make it more reliable
 
 Read `audio/SOURCE.md`. Short version: personal use on Mutaz's wall. Replace before strangers install from Play.
 
-**`fajr.mp3`.** Extracted from a 13 November 2009 Masjid al-Haram Fajr on Archive.org, item `MakkahAzan`, uploader Maahir. The item is tagged public domain. That tag is the uploader's claim. A live Haram recording from 2009 is likely still someone's copyright. Fine at home. Not a clearance to sell on Play.
-
-**`standard.mp3`.** Isha from Masjid al-Haram by Ali ibn Ahmad Mala, 18 Muharram 1439, Archive.org item `0314zzzz181439`. Used for Dhuhr, Asr, Maghrib, and Isha. Whisper check: no الصلاة خير من النوم. The MP4 is YouTube-origin hosted on Archive.org. Personal use only. The old Kiwifu GitHub HQ file had the Fajr line and was replaced.
+**`athan_saudi.mp3`.** Display name Saudi athan. Mutaz picked this file (was `400685.mp3`). ID3 tags say IslamWeb, 2013. One file for all five prayers, in `res/raw`. Fine at home. Not a clearance to sell on Play.
 
 MIT on our Kotlin does not license the recordings. Shipping them on Play as if we own them is how you get a takedown, and it is a bad look for a mosque clock.
 

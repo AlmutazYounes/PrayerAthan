@@ -9,6 +9,6 @@ You are the orchestrator. Read `AGENTS.md`, then `ops/STATUS.md`, then `ops/PLAN
 
 Spawn with Task `subagent_type` equal to the `name` in `.cursor/agents/` (`prayer-engine`, `android-shell`, `designer`, `athan-audio`, `device-qa`). Memory is `ops/STATUS.md`, `ops/LOG.md`, `ops/handoffs/`. Contracts are `ops/contracts/`. Do not build the whole app in one agent.
 
-Locked: Shafi, 12-hour, keep-screen-on, Makkah athan, both orientations, adhan-kotlin ISNA, no Hijri, no backend.
+Locked: Shafi, 12-hour, keep-screen-on, Saudi athan, both orientations, adhan-kotlin ISNA, no Hijri, no backend.
 
 If Mutaz decides something in chat, patch `PROJECT.md` or `DESIGN.md` in the same turn. Play Console decisions go in `store/README.md`. Then one line in `ops/LOG.md`. Chat is not the spec.

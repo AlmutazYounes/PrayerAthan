@@ -32,9 +32,9 @@ Max 8 per slot. These 6 fit.
 
 ## Icon and feature graphic
 
-`icon-512.png` is the gold Rub el Hizb on `#050403`, from `design/ic_launcher.png`. No wordmark.
+`icon-512.png` is the gold minaret on dark plaster, from `design/ic_launcher.png`. No wordmark.
 
-`feature-graphic-1024x500.png` is a cover crop of the 10-inch landscape dark idle wall, small star and the word PrayerAthan top left. No Kaaba photo, no "official Makkah", no price.
+`feature-graphic-1024x500.png` is a cover crop of the 10-inch landscape dark idle wall, small star and the word Athan Wall Clock top left. No Kaaba photo, no "official Makkah", no price.
 
 ## Other listing paste
 

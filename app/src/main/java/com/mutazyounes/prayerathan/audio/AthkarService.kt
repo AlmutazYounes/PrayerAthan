@@ -14,7 +14,6 @@ import android.os.IBinder
 import com.mutazyounes.prayerathan.MainActivity
 import com.mutazyounes.prayerathan.PrayerAthanApp
 import com.mutazyounes.prayerathan.R
-import java.time.Instant
 import java.time.ZoneId
 
 class AthkarService : Service() {
@@ -46,7 +45,7 @@ class AthkarService : Service() {
 
     private fun startPlayback() {
         val app = application as PrayerAthanApp
-        val now = Instant.now()
+        val now = app.wallClock.now()
         val location = app.prayerEngine.location()
         val day = app.prayerEngine.day(now, location)
         val zone = ZoneId.of(location.timeZoneId)
@@ -82,7 +81,7 @@ class AthkarService : Service() {
         val app = application as PrayerAthanApp
         startInForeground(clip.caption)
         app.athanController.markDemo(demoId(clip))
-        app.athanController.markAthkarPlaying(clip.caption, Instant.now())
+        app.athanController.markAthkarPlaying(clip.caption, app.wallClock.now())
         player.playRaw(
             resId = clip.rawRes,
             onComplete = { stopPlayback() },

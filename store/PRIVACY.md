@@ -7,7 +7,7 @@ This HTML comment is not part of the public page.
 
 # Privacy policy
 
-PrayerAthan
+Athan Wall Clock
 Package `com.mutazyounes.prayerathan`
 
 Publisher: Mutaz Younes
@@ -17,13 +17,13 @@ Last updated: 27 August 2026
 
 ## Who publishes this app
 
-Mutaz Younes publishes PrayerAthan. On Google Play the developer name is YounesM. There is no company server behind the app and no user accounts.
+Mutaz Younes publishes Athan Wall Clock. On Google Play the developer name is YounesM. There is no company server behind the app and no user accounts.
 
-This page is the privacy policy for the Android app PrayerAthan.
+This page is the privacy policy for the Android app Athan Wall Clock.
 
 ## What the app is
 
-PrayerAthan is a wall clock for Android tablets. It shows prayer times and plays the call to prayer at Fajr, Dhuhr, Asr, Maghrib, and Isha. Sunrise is listed and silent.
+Athan Wall Clock is a wall clock for Android tablets. It shows prayer times and plays the call to prayer at Fajr, Dhuhr, Asr, Maghrib, and Isha. Sunrise is listed and silent.
 
 Times are calculated on your tablet. The app does not download a timetable. It does not need the internet after a location is saved.
 
@@ -33,7 +33,7 @@ None, in the app we ship today.
 
 The app does not create accounts. It does not include ads. It does not include analytics. It does not include a crash reporter that uploads stack traces. It does not send your data to Mutaz, to an ad network, or to a prayer-time API.
 
-On Google Play, "collect" means data is transmitted off your device. PrayerAthan does not collect data in that sense.
+On Google Play, "collect" means data is transmitted off your device. Athan Wall Clock does not collect data in that sense.
 
 ## Location
 
@@ -61,7 +61,7 @@ Athan recordings are bundled in the app. They play on your tablet. They are not 
 
 There is no account to close and no web form, because we never received your data.
 
-Uninstall PrayerAthan, or clear the app's storage in Android settings. That removes any saved location on that device.
+Uninstall Athan Wall Clock, or clear the app's storage in Android settings. That removes any saved location on that device.
 
 ## Children
 

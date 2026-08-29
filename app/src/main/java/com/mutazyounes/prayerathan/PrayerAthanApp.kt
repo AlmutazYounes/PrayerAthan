@@ -7,12 +7,15 @@ import com.mutazyounes.prayerathan.engine.PrefsLocationStore
 import com.mutazyounes.prayerathan.engine.PrayerCalculator
 import com.mutazyounes.prayerathan.engine.PrayerEngine
 import com.mutazyounes.prayerathan.audio.AudioSettingsStore
+import com.mutazyounes.prayerathan.engine.WallClock
 import com.mutazyounes.prayerathan.shell.LocationFixer
+import com.mutazyounes.prayerathan.shell.SyncedClock
 import com.mutazyounes.prayerathan.ui.WallSettingsStore
 import com.mutazyounes.prayerathan.weather.OpenMeteoWeather
 import com.mutazyounes.prayerathan.weather.WeatherClient
 
 class PrayerAthanApp : Application() {
+    val wallClock: WallClock by lazy { SyncedClock(this) }
     val locationStore: LocationStore by lazy { PrefsLocationStore(this) }
     val locationFixer: LocationFixer by lazy { LocationFixer(this, locationStore) }
     val prayerEngine: PrayerEngine by lazy { PrayerCalculator(locationStore) }

@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.CancellationSignal
 import android.os.Handler
 import android.os.Looper
+import com.mutazyounes.prayerathan.engine.CityCatalog
 import com.mutazyounes.prayerathan.engine.LocationStore
 import com.mutazyounes.prayerathan.engine.SavedLocation
 import java.util.Locale
@@ -142,8 +143,15 @@ class LocationFixer(
     }
 
     private fun saveFix(latitude: Double, longitude: Double): Outcome {
-        val label = String.format(Locale.US, "%.4f, %.4f", latitude, longitude)
-        val parsed = SavedLocation.parse(label, latitude, longitude, TimeZone.getDefault().id)
+        val catalog = CityCatalog.cached()
+        val hit = catalog?.nearest(latitude, longitude)
+        val label = if (hit != null) {
+            hit.second.label(hit.first.name)
+        } else {
+            String.format(Locale.US, "%.4f, %.4f", latitude, longitude)
+        }
+        val zone = hit?.second?.timeZoneId ?: TimeZone.getDefault().id
+        val parsed = SavedLocation.parse(label, latitude, longitude, zone)
             ?: return Outcome.Failed
         locationStore.write(parsed)
         return Outcome.Saved

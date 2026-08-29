@@ -4,7 +4,7 @@ Updated: 2026-08-27
 
 ## Now
 
-Play listing is **free**. Internal testing is **12 (0.12.0)**. Six wall screenshots saved in Console. App content leftover forms are filled: no advertising ID, mediaPlayback FGS with demo video, exact alarm declared as alarm clock. Production is **not public**. Apply for production is disabled: 0 closed testers opted in. Needs 12 opted in for 14 days.
+Play listing is **free**. Internal testing is **18 (0.18.0)**. Six wall screenshots saved in Console. App content leftover forms are filled: no advertising ID, mediaPlayback FGS with demo video, exact alarm declared as alarm clock. Production is **not public**. Apply for production is disabled: 3 closed testers opted in. Needs 12 opted in for 14 days.
 
 The Play URL shows a gray stub (`com.mutazyounes.prayerathan (unreviewed)`) because listing changes sit in Publishing overview and have not been reviewed. Pictures are in Console. They are not on the store page yet.
 
@@ -38,8 +38,8 @@ Google production access: 12 closed testers / 14 days. Cannot skip on this perso
 
 - Production URL (stub until Google reviews): https://play.google.com/store/apps/details?id=com.mutazyounes.prayerathan
 - Internal test: https://play.google.com/apps/internaltest/4701680380313434468
-- Testers: `store/testers.csv` (untracked, 6 testers)
+- Testers: `ClosedTesters` only. `store/testers.csv` (7 invited, 3 opted in).
 - Privacy: https://almutazyounes.github.io/prayerathan-privacy/
-- Debug APK and Play-signed install cannot update each other. Uninstall debug first.
+- Wall tablets install from Play only. Do not sideload a debug APK over a Play install.
 - Test athan: `adb shell am start-foreground-service -n com.mutazyounes.prayerathan/.audio.AthanService -a com.mutazyounes.prayerathan.audio.PLAY --es prayer DHUHR`
 - Test athkar: `adb shell am start-foreground-service -n com.mutazyounes.prayerathan/.audio.AthkarService -a com.mutazyounes.prayerathan.audio.ATHKAR_PLAY`

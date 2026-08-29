@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.mutazyounes.prayerathan.MainActivity
+import com.mutazyounes.prayerathan.PrayerAthanApp
 import com.mutazyounes.prayerathan.engine.PrayerDay
 import com.mutazyounes.prayerathan.engine.PrayerInstant
 import com.mutazyounes.prayerathan.engine.PrayerName
@@ -24,7 +25,8 @@ class AthanScheduler(
     }
 
     private fun setClock(instant: PrayerInstant) {
-        val triggerAt = instant.at.toEpochMilli()
+        val clock = (context.applicationContext as PrayerAthanApp).wallClock
+        val triggerAt = clock.alarmEpochMilli(instant.at)
         val show = PendingIntent.getActivity(
             context,
             SHOW_REQUEST,
