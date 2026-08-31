@@ -33,9 +33,9 @@ data class WallPalette(
     val star: Color,
     val geometry: Color,
 ) {
-    val highlightStroke: Color get() = if (this == DarkWallPalette) Color(0xFFFFD54F) else Color(0xFF7A450A)
-    val highlightFill: Color get() = if (this == DarkWallPalette) Color(0x22FFD54F) else Color(0xDDFFFFFF)
-    val cellBackground: Color get() = if (this == DarkWallPalette) Color.Transparent else Color(0x99FFFFFF)
+    val highlightStroke: Color get() = Color(0xFFFFD54F)
+    val highlightFill: Color get() = Color(0x22FFD54F)
+    val cellBackground: Color get() = Color.Transparent
     val date: Color get() = clock
     val location: Color get() = clock
     val label: Color get() = gold
@@ -57,29 +57,7 @@ val DarkWallPalette = WallPalette(
     geometry = Color(0xFFFFD54F).copy(alpha = 0.12f),
 )
 
-val LightWallPalette = WallPalette(
-    background = Color(0xFFEBE3D5),
-    backgroundLift = Color(0xFFF5EFE6),
-    backgroundDeep = Color(0xFFDACFBE),
-    settingsPanel = Color(0xFFE0D5C3),
-    clock = Color(0xFF1A1412),
-    gold = Color(0xFF7A450A),
-    goldDim = Color(0xFF5A3206),
-    prayerPast = Color(0xFF756A63),
-    prayerNext = Color(0xFF6B4A1E),
-    hairline = Color(0x664E341C),
-    star = Color(0xFF7A450A).copy(alpha = 0.22f),
-    geometry = Color(0xFF7A450A).copy(alpha = 0.16f),
-)
-
 val LocalWallPalette = staticCompositionLocalOf { DarkWallPalette }
-
-fun paletteFor(mode: ThemeMode, darkTheme: Boolean): WallPalette =
-    when (mode) {
-        ThemeMode.LIGHT -> LightWallPalette
-        ThemeMode.DARK -> DarkWallPalette
-        ThemeMode.AUTO -> if (darkTheme) DarkWallPalette else LightWallPalette
-    }
 
 val HairlineWidth = 1.5.dp
 val HighlightStrokeWidth = 1.5.dp

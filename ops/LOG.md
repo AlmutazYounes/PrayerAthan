@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-31 Mutaz: dropped light mode and Auto. Dark wall only. Removed theme settings and leftover light images.
 - 2026-08-31 Mutaz: landscape countdown slid under the weather column. fromStart 0.52, width 0.46. Nothing else touched.
 - 2026-08-31 Mutaz: landscape pieces now have independent knobs in LandscapeWallLayout. Clock and weather got bigger, countdown sits lower, prayer times/names/weather got bigger. Changing one field no longer resizes the others.
 - 2026-08-31 Mutaz: landscape hero is clock left and current weather right at mid-screen, countdown centered under both. Prayer grid left at 46f, cells untouched.

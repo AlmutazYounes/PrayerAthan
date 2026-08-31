@@ -26,8 +26,8 @@ data class WallUiState(
     val athkarCaption: String,      // gold Arabic while a clip plays
     val cells: List<PrayerCellState>,
     val twelveHour: Boolean,        // v1 always true
-    val themeMode: ThemeMode,       // LIGHT, DARK, AUTO
-    val darkTheme: Boolean,         // resolved palette. AUTO uses sunrise/Maghrib.
+    val weatherLine: String,
+    val weatherCondition: String,
     val athanSoundId: String,
     val athkarEnabled: Boolean,
     val mutedPrayers: Set<PrayerName>,
@@ -35,8 +35,6 @@ data class WallUiState(
     val nightBlackoutEnabled: Boolean,
     val isNightBlackout: Boolean,   // true from 11 PM to 4 AM unless athan playing
 )
-
-enum class ThemeMode { LIGHT, DARK, AUTO }
 
 data class PrayerCellState(
     val name: PrayerName,

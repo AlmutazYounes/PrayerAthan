@@ -15,8 +15,6 @@ import com.mutazyounes.prayerathan.R
 
 @Composable
 fun WallBackdrop(
-    themeMode: ThemeMode,
-    darkTheme: Boolean,
     modifier: Modifier = Modifier,
     portrait: Boolean = false,
 ) {
@@ -26,12 +24,7 @@ fun WallBackdrop(
             .fillMaxSize()
             .background(palette.backgroundDeep),
     ) {
-        val isDark = themeMode == ThemeMode.DARK || (themeMode == ThemeMode.AUTO && darkTheme)
-        val resId = if (isDark) {
-            if (portrait) R.drawable.wall_backdrop_dark_portrait else R.drawable.wall_backdrop_dark
-        } else {
-            if (portrait) R.drawable.wall_backdrop_light_portrait else R.drawable.wall_backdrop_light
-        }
+        val resId = if (portrait) R.drawable.wall_backdrop_dark_portrait else R.drawable.wall_backdrop_dark
         Image(
             painter = painterResource(resId),
             contentDescription = null,
@@ -39,32 +32,17 @@ fun WallBackdrop(
             alignment = Alignment.BottomCenter,
             modifier = Modifier.fillMaxSize(),
         )
-        if (isDark) {
-            // Soft overlay to maintain contrast without hiding the embedded mosque arches
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0.0f to Color(0x1A000000),
-                            0.60f to Color(0x33000000),
-                            1.0f to Color(0x66000000),
-                        ),
+        // Soft overlay to maintain contrast without hiding the embedded mosque arches
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        0.0f to Color(0x1A000000),
+                        0.60f to Color(0x33000000),
+                        1.0f to Color(0x66000000),
                     ),
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0.0f to Color(0x11FFFFFF),
-                            0.45f to Color(0x22FFFFFF),
-                            0.65f to Color(0x66FFFFFF),
-                            1.0f to Color(0xAAFFFFFF),
-                        ),
-                    ),
-            )
-        }
+                ),
+        )
     }
 }

@@ -23,8 +23,6 @@ data class WallUiState(
     val athkarCaption: String,
     val cells: List<PrayerCellState>,
     val twelveHour: Boolean,
-    val themeMode: ThemeMode,
-    val darkTheme: Boolean,
     val weatherLine: String,
     val weatherCondition: String,
     val athanSoundId: String,
@@ -56,8 +54,6 @@ data class WallUiState(
             athkarCaption = "",
             cells = emptyList(),
             twelveHour = true,
-            themeMode = ThemeMode.AUTO,
-            darkTheme = true,
             weatherLine = "",
             weatherCondition = "",
             athanSoundId = "",
@@ -69,8 +65,6 @@ data class WallUiState(
         )
     }
 }
-
-enum class ThemeMode { LIGHT, DARK, AUTO }
 
 data class PrayerCellState(
     val name: PrayerName,

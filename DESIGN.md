@@ -89,44 +89,33 @@ Use these Compose names. Hex is sRGB. Dark values below. Light sits in the next 
 
 On the PNGs, some landscape labels sit closer to cream than brass. Implement `ColorLabel` as gold anyway so labels, countdown, and next-prayer share one accent. Do not add a second gold.
 
-The wall is not a flat fill. `WallBackdrop` crops `wall_backdrop_light` or `wall_backdrop_dark` to fill the screen. Light and dark are the generated plaster plus girih from `design/`. Palette `backgroundDeep` sits under the bitmap while it loads. Dark must not collapse to total black. Light must not collapse to white. Do not replace the plaster walls with a mosque JPEG, marble stock, emoji, or a neon second accent. Do not go back to a Canvas girih unless Mutaz drops the bitmaps.
+The wall is not a flat fill. `WallBackdrop` crops `wall_backdrop_dark` (or `wall_backdrop_dark_portrait`) to fill the screen. Dark is the generated plaster plus girih from `design/`. Palette `backgroundDeep` sits under the bitmap while it loads. Dark must not collapse to total black. Do not replace the plaster walls with a mosque JPEG, marble stock, emoji, or a neon second accent. Do not go back to a Canvas girih unless Mutaz drops the bitmaps.
 
 Do not use `#FFD700`, `#FFC107`, `#FFEB3B`, `#FFFFFF`, `#FFF6E8`, `#000000`, or `#020101`. Digit cores measure about `rgb(197, 150, 58)`. If your gold looks like a warning banner, it is wrong.
 
 Past vs later in the mockups is a small ivory dim, not a different hue. `ColorPrayerPast` is that dim. Later stays `ColorClock`. Next is all `ColorGold`.
 
-## Light and dark
+## Dark wall tokens
 
-Dark is a night mosque wall: umber, bronze, deep indigo plaster. Not crushed OLED black. Light is sand plaster and parchment. Not white. Not blown-out cream. Ink digits. Same brass.
+Dark is a night mosque wall: umber, bronze, deep indigo plaster. Not crushed OLED black.
 
-| Token | Dark | Light | Job |
-| --- | --- | --- | --- |
-| `background` | `#1C1614` | `#D4C2A0` | Wall wash mid-tone. Umber plaster / sand plaster. |
-| `backgroundLift` | `#3E2C18` | `#E0D0B0` | Radial center. Bronze / parchment. Not `#FFF6E8`. |
-| `backgroundDeep` | `#151328` | `#B8A078` | Corners, vignette, prayer shelf. Indigo plaster / toasted plaster. |
-| `settingsPanel` | `#2C241A` | `#C4AC80` | Settings sheet fill. Not any wall-wash stop. |
-| `clock` | `#F5EBDA` | `#0E0907` | Ivory on dark. Near-black ink on light. |
-| `gold` | `#E2B85C` | `#6E3C08` | Labels, countdown, next-prayer. Lighter brass on night plaster. Burnt bronze on sand. |
-| `goldDim` | `#C5963A` | `#4A2806` | Receding gold. |
-| `prayerPast` | `#C8B498` | `#3A2818` | Past prayer text. |
-| `hairline` | `#C4A888` | `#4E341C` | Rules. |
-| `star` | gold 12% | gold 22% | Albany watermark only. |
-| `geometry` | gold 10% | gold 16% | Baked into the backdrop bitmaps. Keep the token. |
+| Token | Dark | Job |
+| --- | --- | --- |
+| `background` | `#1C1614` | Wall wash mid-tone. Umber plaster. |
+| `backgroundLift` | `#3E2C18` | Radial center. Bronze. Not `#FFF6E8`. |
+| `backgroundDeep` | `#151328` | Corners, vignette, prayer shelf. Indigo plaster. |
+| `settingsPanel` | `#2C241A` | Settings sheet fill. Not any wall-wash stop. |
+| `clock` | `#F5EBDA` | Ivory on dark. |
+| `gold` | `#E2B85C` | Labels, countdown, next-prayer. Lighter brass on night plaster. |
+| `goldDim` | `#C5963A` | Receding gold. |
+| `prayerPast` | `#C8B498` | Past prayer text. |
+| `hairline` | `#C4A888` | Rules. |
+| `star` | gold 12% | Albany watermark only. |
+| `geometry` | gold 10% | Baked into the backdrop bitmaps. Keep the token. |
 
-Put both in a `WallPalette`. Provide via `CompositionLocal`. Do not leave `ColorBackground` as a file-wide singleton that ignores the mode. `WallBackdrop` picks the bitmap from `themeMode`. Light is `design/light-wall-backdrop.png`. Dark is `design/dark-wall-backdrop.png`. Type, hairlines, and the Albany star still use the token table. Geometry in the plaster bitmaps stays behind the clocks.
+Provide via `CompositionLocal` with `LocalWallPalette`. `WallBackdrop` uses `design/dark-wall-backdrop.png` (landscape) or `design/dark-wall-backdrop-portrait.png` (portrait). Type, hairlines, and the Albany star use the token table. Geometry in the plaster bitmaps stays behind the clocks.
 
-### Theme mode
-
-`ThemeMode`: `LIGHT`, `DARK`, `AUTO`. Persist it. Default `AUTO`.
-
-`AUTO` uses today's engine times, not Android night mode and not a clock offset.
-
-- Light from sunrise (inclusive) until Maghrib (exclusive).
-- Dark from Maghrib (inclusive) until the next sunrise.
-
-Before today's sunrise, it is still night: dark. ViewModel reads `PrayerDay.times` for `SUNRISE` and `MAGHRIB`. Composables do not import adhan-kotlin.
-
-Settings: Light / Dark / Auto on one row. Sheet fill is `settingsPanel`, not the wall mid-tone. Gold gear in the header between location and date. Long-press still opens the sheet.
+Settings: Sheet fill is `settingsPanel`, not the wall mid-tone. Gold gear in the header between location and date. Long-press still opens the sheet.
 
 ---
 
@@ -430,20 +419,6 @@ val DarkWallPalette = WallPalette(
     hairline = Color(0xFFC4A888),
     star = Color(0xFFE2B85C).copy(alpha = 0.12f),
     geometry = Color(0xFFE2B85C).copy(alpha = 0.10f),
-)
-
-val LightWallPalette = WallPalette(
-    background = Color(0xFFD4C2A0),
-    backgroundLift = Color(0xFFE0D0B0),
-    backgroundDeep = Color(0xFFB8A078),
-    settingsPanel = Color(0xFFC4AC80),
-    clock = Color(0xFF0E0907),
-    gold = Color(0xFF6E3C08),
-    goldDim = Color(0xFF4A2806),
-    prayerPast = Color(0xFF3A2818),
-    hairline = Color(0xFF4E341C),
-    star = Color(0xFF6E3C08).copy(alpha = 0.22f),
-    geometry = Color(0xFF6E3C08).copy(alpha = 0.16f),
 )
 
 val HairlineWidth = 1.5.dp

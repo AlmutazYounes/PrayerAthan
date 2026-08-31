@@ -40,7 +40,7 @@ Three surfaces. That is the whole product in v1.
 
 **Athan playing.** Same wall screen. The countdown block switches to NOW, the prayer name, and the line "Adhan is playing". Albany time stays. The day's list highlights the prayer that just started.
 
-**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lets you mute/unmute individual prayer athans. First launch: all five prayer athans muted, hourly athkar off. Theme is Light, Dark, or Auto. Auto is light from sunrise to Maghrib, dark from Maghrib to the next sunrise. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
+**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lets you mute/unmute individual prayer athans. First launch: all five prayer athans muted, hourly athkar off. Wall is dark only. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
 
 ---
 
@@ -67,7 +67,7 @@ When athan plays, the countdown block becomes NOW, the prayer name, and "Adhan i
 
 ## Visual system
 
-Palette, type scale, hairlines, star motif, and 7-inch vs 10-inch sizing are specified in `DESIGN.md`. Dark is a night mosque wall, umber and bronze, not total black. Light is warm plaster, not white. Wall fill is `design/light-wall-backdrop.png` and `design/dark-wall-backdrop.png`. Ivory clocks, antique brass for next prayer and countdown. No second loud accent. No Hijri. One small gold gear in the header. Not a FAB, not on the prayer grid.
+Palette, type scale, hairlines, star motif, and 7-inch vs 10-inch sizing are specified in `DESIGN.md`. Dark wall only: a night mosque wall, umber and bronze, not total black. Wall fill is `design/dark-wall-backdrop.png` and `design/dark-wall-backdrop-portrait.png`. Ivory clocks, antique brass for next prayer and countdown. No second loud accent. No Hijri. One small gold gear in the header. Not a FAB, not on the prayer grid.
 
 English names, this spelling: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha. No Arabic on the wall. Clock format is 12-hour with AM/PM, matching the mockups. Prayer grid times are hour and minute only, no AM/PM. 24-hour can wait as a settings flag.
 

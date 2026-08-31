@@ -49,7 +49,6 @@ class WallViewModel(
     val state: StateFlow<WallUiState> = _state.asStateFlow()
 
     private var twelveHour: Boolean = true
-    private var themeMode: ThemeMode = settings.themeMode()
     private var lastScheduledDate: LocalDate? = null
     private var wasPlaying: Boolean = false
     private var wasAthkar: Boolean = false
@@ -121,12 +120,6 @@ class WallViewModel(
 
     fun stopAthan() {
         athan.stop()
-        refresh(now())
-    }
-
-    fun setThemeMode(mode: ThemeMode) {
-        themeMode = mode
-        settings.setThemeMode(mode)
         refresh(now())
     }
 
@@ -275,8 +268,6 @@ class WallViewModel(
         val playing = playingName != null
         val athkar = athan.athkarPlayback.value
         val athkarOn = athkar != null && !playing
-        val currentThemeMode = settings.themeMode()
-        themeMode = currentThemeMode
         val mutedPrayers = audioSettings.mutedPrayers()
         val albanyClock = formatClock(clocks.albany, twelveHour)
         val jordanClock = formatClock(clocks.jordan, twelveHour)
@@ -314,8 +305,6 @@ class WallViewModel(
             athkarCaption = if (playing) "" else athkar?.caption.orEmpty(),
             cells = cells,
             twelveHour = twelveHour,
-            themeMode = currentThemeMode,
-            darkTheme = resolveDarkTheme(currentThemeMode, now, day),
             weatherLine = weatherLine,
             weatherCondition = weatherCondition,
             athanSoundId = audioSettings.soundId(),
@@ -437,19 +426,6 @@ class WallViewModel(
 
         fun formatCoord(value: Double): String =
             String.format(Locale.US, "%.6f", value).trimEnd('0').trimEnd('.')
-
-        fun resolveDarkTheme(mode: ThemeMode, now: Instant, day: PrayerDay): Boolean {
-            return when (mode) {
-                ThemeMode.LIGHT -> false
-                ThemeMode.DARK -> true
-                ThemeMode.AUTO -> {
-                    val sunrise = day.times.firstOrNull { it.name == PrayerName.SUNRISE }?.at
-                    val maghrib = day.times.firstOrNull { it.name == PrayerName.MAGHRIB }?.at
-                    if (sunrise == null || maghrib == null) return true
-                    now < sunrise || now >= maghrib
-                }
-            }
-        }
 
         fun formatClock(time: ZonedDateTime, twelveHour: Boolean): Pair<String, String> {
             if (!twelveHour) {

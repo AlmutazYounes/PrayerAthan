@@ -106,7 +106,7 @@ fun WallScreen(
         }
     }
 
-    CompositionLocalProvider(LocalWallPalette provides paletteFor(state.themeMode, state.darkTheme)) {
+    CompositionLocalProvider(LocalWallPalette provides DarkWallPalette) {
         Box(modifier.fillMaxSize()) {
             WallScreen(
                 state = state,
@@ -132,7 +132,6 @@ fun WallScreen(
                     latitude = state.locationLatitude,
                     longitude = state.locationLongitude,
                     locationError = state.locationError,
-                    themeMode = state.themeMode,
                     athanSoundId = state.athanSoundId,
                     athkarEnabled = state.athkarEnabled,
                     mutedPrayers = state.mutedPrayers,
@@ -148,7 +147,6 @@ fun WallScreen(
                         settingsOpen = false
                     },
                     onUseGps = viewModel::useGps,
-                    onThemeModeChange = viewModel::setThemeMode,
                     onSelectAthanSound = viewModel::setAthanSound,
                     onAthkarEnabledChange = viewModel::setAthkarEnabled,
                     onTogglePrayerMute = viewModel::togglePrayerMute,
@@ -171,7 +169,7 @@ fun WallScreen(
     onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    CompositionLocalProvider(LocalWallPalette provides paletteFor(state.themeMode, state.darkTheme)) {
+    CompositionLocalProvider(LocalWallPalette provides DarkWallPalette) {
         BoxWithConstraints(
             modifier = modifier
                 .fillMaxSize()
@@ -186,7 +184,7 @@ fun WallScreen(
             val type = typeScale(shortest)
             val inset = screenInset(shortest)
             val portrait = maxHeight >= maxWidth
-            WallBackdrop(themeMode = state.themeMode, darkTheme = state.darkTheme, portrait = portrait)
+            WallBackdrop(portrait = portrait)
             if (UseStackedClocks) {
                 if (portrait) {
                     PortraitStackedWall(state, type, inset, onOpenSettings)

@@ -77,7 +77,6 @@ fun SettingsSheet(
     latitude: String,
     longitude: String,
     locationError: String?,
-    themeMode: ThemeMode,
     athanSoundId: String,
     athkarEnabled: Boolean,
     mutedPrayers: Set<PrayerName>,
@@ -86,7 +85,6 @@ fun SettingsSheet(
     onSelectLocation: (String, Double, Double, String) -> Unit,
     onResetAlbany: () -> Unit,
     onUseGps: () -> Unit,
-    onThemeModeChange: (ThemeMode) -> Unit,
     onSelectAthanSound: (String) -> Unit,
     onAthkarEnabledChange: (Boolean) -> Unit,
     onTogglePrayerMute: (PrayerName) -> Unit,
@@ -275,11 +273,6 @@ fun SettingsSheet(
                                 onResetAlbany = onResetAlbany,
                                 onUseGps = onUseGps,
                             )
-                            Spacer(Modifier.height(22.dp))
-                            ThemeBlock(
-                                themeMode = themeMode,
-                                onThemeModeChange = onThemeModeChange,
-                            )
                         }
                         Column(
                             modifier = Modifier
@@ -376,11 +369,6 @@ fun SettingsSheet(
                         NightBlackoutBlock(
                             nightBlackoutEnabled = nightBlackoutEnabled,
                             onNightBlackoutChange = onNightBlackoutChange,
-                        )
-                        Spacer(Modifier.height(22.dp))
-                        ThemeBlock(
-                            themeMode = themeMode,
-                            onThemeModeChange = onThemeModeChange,
                         )
                     }
                 }
@@ -583,38 +571,6 @@ private fun NightBlackoutBlock(
                 title = "Off",
                 active = !nightBlackoutEnabled,
                 onClick = { onNightBlackoutChange(false) },
-                modifier = Modifier.weight(1f),
-            )
-        }
-    }
-}
-
-@Composable
-private fun ThemeBlock(
-    themeMode: ThemeMode,
-    onThemeModeChange: (ThemeMode) -> Unit,
-) {
-    SettingsSection(title = "Theme") {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            ChoiceChip(
-                title = "Light",
-                active = themeMode == ThemeMode.LIGHT,
-                onClick = { onThemeModeChange(ThemeMode.LIGHT) },
-                modifier = Modifier.weight(1f),
-            )
-            ChoiceChip(
-                title = "Dark",
-                active = themeMode == ThemeMode.DARK,
-                onClick = { onThemeModeChange(ThemeMode.DARK) },
-                modifier = Modifier.weight(1f),
-            )
-            ChoiceChip(
-                title = "Auto",
-                active = themeMode == ThemeMode.AUTO,
-                onClick = { onThemeModeChange(ThemeMode.AUTO) },
                 modifier = Modifier.weight(1f),
             )
         }

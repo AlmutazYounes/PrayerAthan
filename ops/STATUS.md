@@ -12,7 +12,7 @@ Location is searchable country then city. Athan sound is selectable with a PLAY 
 
 ## Next
 
-Hourly athkar and Night blackout (11 PM - 4 AM tap-to-wake) are in. Palettes landed. Wall fill is the two backdrop WebPs, Light/Dark/Auto only. Location settings landed. Device QA on the real 7-inch and 10-inch. Licensed MP3s before an honest public ship. Closed testing 12/14 after that.
+Hourly athkar and Night blackout (11 PM - 4 AM tap-to-wake) are in. Palettes landed. Wall fill is the two dark backdrop WebPs (dark wall only). Location settings landed. Device QA on the real 7-inch and 10-inch. Licensed MP3s before an honest public ship. Closed testing 12/14 after that.
 
 ## Board
 

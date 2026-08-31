@@ -1,5 +1,6 @@
 package com.mutazyounes.prayerathan.ui
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -22,5 +23,11 @@ class WallViewModelTest {
         assertFalse(WallViewModel.isNightBlackoutWindow(20))
         assertFalse(WallViewModel.isNightBlackoutWindow(21))
         assertFalse(WallViewModel.isNightBlackoutWindow(22))
+    }
+
+    @Test
+    fun wallPaletteIsDark() {
+        assertEquals(DarkWallPalette.background, DarkWallPalette.background)
+        assertTrue(DarkWallPalette.cellBackground.alpha == 0.0f)
     }
 }

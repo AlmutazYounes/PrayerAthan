@@ -167,15 +167,6 @@ fun LandscapeStackedWall(
                 .width(screenWidth * layout.countdownWidth)
                 .height(screenHeight * layout.countdownHeight),
         )
-        if (state.themeMode == ThemeMode.LIGHT ||
-            (state.themeMode == ThemeMode.AUTO && !state.darkTheme)
-        ) {
-            HorizontalHairline(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = screenHeight * layout.prayerHeight),
-            )
-        }
         PrayerGrid(
             cells = state.cells,
             portrait = false,
