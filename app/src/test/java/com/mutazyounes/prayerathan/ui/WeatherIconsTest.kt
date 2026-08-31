@@ -20,4 +20,11 @@ class WeatherIconsTest {
         assertEquals(R.drawable.ic_weather_storm, weatherIconRes("STORM SOON"))
         assertEquals(R.drawable.ic_weather_cloud, weatherIconRes("UNKNOWN"))
     }
+
+    @Test
+    fun nightUsesMoonForClearAndFair() {
+        assertEquals(R.drawable.ic_weather_clear_night, weatherIconRes("CLEAR", night = true))
+        assertEquals(R.drawable.ic_weather_fair_night, weatherIconRes("FAIR", night = true))
+        assertEquals(R.drawable.ic_weather_rain, weatherIconRes("RAIN", night = true))
+    }
 }

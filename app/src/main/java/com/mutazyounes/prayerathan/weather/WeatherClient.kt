@@ -13,8 +13,15 @@ data class WeatherNow(
     val line: String get() = "$temperatureC°C  $condition"
 }
 
+data class HourlyWeather(
+    val hourEpochSeconds: Long,
+    val temperatureC: Int,
+    val condition: String,
+)
+
 interface WeatherClient {
     fun fetch(): WeatherNow?
+    fun fetchHourly(): List<HourlyWeather>?
 }
 
 class OpenMeteoWeather(
@@ -42,6 +49,34 @@ class OpenMeteoWeather(
             if (connection.responseCode != 200) return null
             val body = connection.inputStream.bufferedReader().use { it.readText() }
             parse(body)
+        } catch (_: Exception) {
+            null
+        } finally {
+            connection.disconnect()
+        }
+    }
+
+    override fun fetchHourly(): List<HourlyWeather>? {
+        val loc = locations.read()
+        val url = URL(
+            "https://api.open-meteo.com/v1/forecast" +
+                "?latitude=${loc.latitude}" +
+                "&longitude=${loc.longitude}" +
+                "&hourly=temperature_2m,weather_code" +
+                "&forecast_days=2" +
+                "&temperature_unit=celsius",
+        )
+        val connection = (url.openConnection() as HttpURLConnection).apply {
+            connectTimeout = 8_000
+            readTimeout = 8_000
+            requestMethod = "GET"
+            setRequestProperty("Accept", "application/json")
+            setRequestProperty("User-Agent", "PrayerAthan/0.1 (wall clock)")
+        }
+        return try {
+            if (connection.responseCode != 200) return null
+            val body = connection.inputStream.bufferedReader().use { it.readText() }
+            parseHourly(body)
         } catch (_: Exception) {
             null
         } finally {
@@ -95,6 +130,38 @@ class OpenMeteoWeather(
             in 71..77, in 85..86 -> "SNOW"
             in 95..99 -> "STORM"
             else -> "CLOUD"
+        }
+
+        fun parseHourly(body: String): List<HourlyWeather>? {
+            val root = JSONObject(body)
+            val hourly = root.optJSONObject("hourly") ?: return null
+            val times = hourly.optJSONArray("time") ?: return null
+            val temps = hourly.optJSONArray("temperature_2m") ?: return null
+            val codes = hourly.optJSONArray("weather_code") ?: return null
+            val count = minOf(times.length(), temps.length(), codes.length())
+            val result = ArrayList<HourlyWeather>(count)
+            for (i in 0 until count) {
+                val iso = times.optString(i)
+                val epoch = parseIsoToEpochSeconds(iso) ?: continue
+                val temp = temps.optDouble(i, 0.0)
+                val code = codes.optInt(i, -1)
+                result.add(
+                    HourlyWeather(
+                        hourEpochSeconds = epoch,
+                        temperatureC = kotlin.math.round(temp).toInt(),
+                        condition = conditionLabel(code),
+                    ),
+                )
+            }
+            return result.ifEmpty { null }
+        }
+
+        private fun parseIsoToEpochSeconds(iso: String): Long? {
+            return runCatching {
+                java.time.LocalDateTime.parse(iso)
+                    .atZone(java.time.ZoneOffset.UTC)
+                    .toEpochSecond()
+            }.getOrNull()
         }
     }
 }
