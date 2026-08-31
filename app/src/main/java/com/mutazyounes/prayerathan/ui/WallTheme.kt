@@ -28,6 +28,7 @@ data class WallPalette(
     val gold: Color,
     val goldDim: Color,
     val prayerPast: Color,
+    val prayerNext: Color,
     val hairline: Color,
     val star: Color,
     val geometry: Color,
@@ -50,6 +51,7 @@ val DarkWallPalette = WallPalette(
     gold = Color(0xFFFFD54F),
     goldDim = Color(0xFFFFE082),
     prayerPast = Color(0xFFB0BEC5),
+    prayerNext = Color(0xFFEAE0C8),
     hairline = Color(0x66FFFFFF),
     star = Color(0xFFFFD54F).copy(alpha = 0.15f),
     geometry = Color(0xFFFFD54F).copy(alpha = 0.12f),
@@ -64,6 +66,7 @@ val LightWallPalette = WallPalette(
     gold = Color(0xFF7A450A),
     goldDim = Color(0xFF5A3206),
     prayerPast = Color(0xFF756A63),
+    prayerNext = Color(0xFF6B4A1E),
     hairline = Color(0x664E341C),
     star = Color(0xFF7A450A).copy(alpha = 0.22f),
     geometry = Color(0xFF7A450A).copy(alpha = 0.16f),
@@ -82,6 +85,30 @@ val HairlineWidth = 1.5.dp
 val HighlightStrokeWidth = 1.5.dp
 val HighlightCornerRadius = 16.dp
 val ScreenInset = 16.dp
+
+/**
+ * Landscape wall knobs. Each field is independent.
+ * Change clock height and the countdown does not move.
+ * Change countdownFromTop and the clock does not resize.
+ * Prayer cell fractions only affect the prayer row.
+ *
+ * Heights and fromTop values are fractions of the screen height.
+ */
+object LandscapeWallLayout {
+    val clockHeight = 0.28f
+    val weatherHeight = 0.28f
+    val heroRowFromTop = 0.16f
+    val countdownHeight = 0.13f
+    val countdownFromTop = 0.50f
+    val countdownWidth = 0.46f
+    val countdownFromStart = 0.52f
+    val prayerHeight = 0.50f
+    val prayerTimeFrac = 0.42f
+    val prayerNameFrac = 0.18f
+    val prayerWeatherFrac = 0.15f
+    val prayerWeatherIconFrac = 0.13f
+    val prayerWeatherTempScale = 0.70f
+}
 
 @OptIn(ExperimentalTextApi::class)
 val EnglishFontFamily = FontFamily(

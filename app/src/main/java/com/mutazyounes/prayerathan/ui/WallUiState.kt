@@ -78,6 +78,8 @@ data class PrayerCellState(
     val time: String,
     val kind: CellKind,
     val muted: Boolean = false,
+    val weatherCondition: String = "",
+    val weatherTempC: Int? = null,
 )
 
 enum class CellKind { PAST, NEXT, LATER }

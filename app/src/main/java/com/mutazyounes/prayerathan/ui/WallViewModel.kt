@@ -17,6 +17,7 @@ import com.mutazyounes.prayerathan.engine.WallClock
 import com.mutazyounes.prayerathan.engine.WallTime
 import com.mutazyounes.prayerathan.shell.LocationFixer
 import com.mutazyounes.prayerathan.weather.WeatherClient
+import com.mutazyounes.prayerathan.weather.HourlyWeather
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -54,6 +55,7 @@ class WallViewModel(
     private var wasAthkar: Boolean = false
     private var weatherLine: String = ""
     private var weatherCondition: String = ""
+    private var hourlyWeather: List<HourlyWeather> = emptyList()
     private var locationError: String? = null
     private var resolvedLocation: SavedLocation? = null
     private var lastCellKinds: List<CellKind>? = null
@@ -108,6 +110,11 @@ class WallViewModel(
         if (fetched != null) {
             weatherLine = fetched.line
             weatherCondition = fetched.weatherCondition
+            refresh(now())
+        }
+        val hourly = withContext(Dispatchers.IO) { weather.fetchHourly() }
+        if (hourly != null) {
+            hourlyWeather = hourly
             refresh(now())
         }
     }
@@ -279,7 +286,8 @@ class WallViewModel(
             previous.playingName == playingName &&
             previous.mutedPrayers == mutedPrayers &&
             previous.locationTimeZoneId == location.timeZoneId &&
-            cellKindsUnchanged(now, day, playingName, previous)
+            cellKindsUnchanged(now, day, playingName, previous) &&
+            previous.cells.firstOrNull()?.weatherCondition == weatherConditionFor(day.times.first().at)?.condition.orEmpty()
         ) {
             previous.cells
         } else {
@@ -374,8 +382,16 @@ class WallViewModel(
                 time = formatPrayerTime(instant.at.atZone(zone), twelveHour),
                 kind = kind,
                 muted = instant.name in mutedPrayers,
+                weatherCondition = weatherConditionFor(instant.at)?.condition.orEmpty(),
+                weatherTempC = weatherConditionFor(instant.at)?.temperatureC,
             )
         }
+    }
+
+    private fun weatherConditionFor(at: Instant): HourlyWeather? {
+        if (hourlyWeather.isEmpty()) return null
+        val target = at.epochSecond
+        return hourlyWeather.minByOrNull { Math.abs(it.hourEpochSeconds - target) }
     }
 
     companion object {

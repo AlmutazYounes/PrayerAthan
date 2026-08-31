@@ -112,13 +112,13 @@ fun CountdownBlock(
             .fillMaxSize()
             .clipToBounds(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.Bottom,
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(if (portrait) Modifier.weight(1f) else Modifier.fillMaxHeight(0.78f)),
-            contentAlignment = Alignment.Center,
+                .weight(1f),
+            contentAlignment = Alignment.BottomCenter,
         ) {
             CountdownDigits(
                 hours = hours,
@@ -169,7 +169,7 @@ private fun LandscapeCountdown(
         val palette = LocalWallPalette.current
         val density = LocalDensity.current
         val textMeasurer = rememberTextMeasurer()
-        val heightPercent = 0.42f
+        val heightPercent = 1.0f
         val widthPercent = 0.92f
         // Measure the exact string at a reference size instead of guessing a
         // char count, then scale to fit. A guessed width let seconds run off
@@ -296,7 +296,7 @@ private fun DigitPair(
                 maxWidthDp = maxWidth.value,
                 maxHeightDp = maxHeight.value,
                 widthChars = if (landscape) 1.45f else 1.20f,
-                heightPercent = if (landscape) 0.58f else 0.64f,
+                heightPercent = if (landscape) 0.88f else 0.78f,
                 widthPercent = if (landscape) 0.96f else 0.94f,
             )
             Text(
@@ -359,7 +359,7 @@ fun ClockBlock(
             .clipToBounds()
             .padding(horizontal = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.Bottom,
     ) {
         if (label.isNotEmpty()) {
             Text(
@@ -371,8 +371,8 @@ fun ClockBlock(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(if (portrait) Modifier.weight(1f) else Modifier.fillMaxHeight(0.78f)),
-            contentAlignment = Alignment.Center,
+                .then(if (portrait) Modifier.weight(1f) else Modifier.fillMaxHeight()),
+            contentAlignment = Alignment.BottomCenter,
         ) {
             ClockDigits(
                 hourMinute = hourMinute,
@@ -423,7 +423,7 @@ private fun ClockDigits(
             } else {
                 referenceSize.value
             }
-            val byHeight = maxHeight.value * if (landscape) 0.52f else 0.74f
+            val byHeight = maxHeight.value * if (landscape) 0.90f else 0.86f
             min(byWidth, byHeight).coerceAtLeast(8f).sp
         } else {
             fallbackSize
