@@ -61,7 +61,7 @@ Jordan is `now.atZone(ZoneId.of("Asia/Amman"))`. Never `albany plus hours`.
 
 ## Persistence
 
-`LocationStore` reads and writes `SavedLocation`. First launch returns Albany defaults. Production is `PrefsLocationStore(context)` (SharedPreferences file `prayerathan_location`, keys `label`, `latitude`, `longitude`, `timeZoneId`). Engine tests may use `InMemoryLocationStore`. `PrefsLocationStore` tests inject `LocationPrefsBackend`.
+`LocationStore` reads and writes `SavedLocation`. `hasPersistedLocation()` is true after a write (or when prefs already have lat, long, and zone). First open with empty prefs asks for one GPS fix. Deny or fail writes Albany so the prompt does not repeat. Production is `PrefsLocationStore(context)` (SharedPreferences file `prayerathan_location`, keys `label`, `latitude`, `longitude`, `timeZoneId`). Engine tests may use `InMemoryLocationStore`. `PrefsLocationStore` tests inject `LocationPrefsBackend`.
 
 Settings calls `SavedLocation.parse(label, latitude, longitude, timeZoneId)` before write. It returns null for unknown timezone ids (`ZoneId.of` throws) or coords outside lat [-90, 90] / long [-180, 180]. City comes from the bundled GeoNames list. Do not geocode over HTTP.
 

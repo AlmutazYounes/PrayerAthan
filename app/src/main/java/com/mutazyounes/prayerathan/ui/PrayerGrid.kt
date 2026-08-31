@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun PrayerGrid(
@@ -110,38 +112,48 @@ fun PrayerCell(
         CellKind.LATER -> palette.clock
     }
     val shape = RoundedCornerShape(HighlightCornerRadius)
-    val cellPad = if (portrait) 4.dp else 2.dp
-    val timeFrac = if (portrait) 0.66f else 0.70f
-    val enFrac = if (portrait) 0.28f else 0.26f
-    val timeChars = if (portrait) 5.5f else 4.2f
-    val cellBg = if (cell.kind == CellKind.NEXT) palette.highlightFill else palette.cellBackground
-    Box(
+    val arcadeSlots = !portrait && palette == DarkWallPalette
+    val cellPad = if (portrait) 4.dp else if (arcadeSlots) 0.dp else 2.dp
+    val timeFrac = if (portrait) 0.76f else if (arcadeSlots) 0.88f else 0.82f
+    val enFrac = if (portrait) 0.20f else if (arcadeSlots) 0.16f else 0.16f
+    val timeChars = if (portrait) 3.6f else if (arcadeSlots) 3.0f else 3.4f
+    val cellBg = when {
+        arcadeSlots -> Color.Transparent
+        cell.kind == CellKind.NEXT -> palette.highlightFill
+        else -> palette.cellBackground
+    }
+    BoxWithConstraints(
         modifier = modifier
             .padding(cellPad)
             .then(
-                if (cell.kind == CellKind.NEXT) {
+                if (!arcadeSlots && cell.kind == CellKind.NEXT) {
                     Modifier.border(HighlightStrokeWidth, palette.highlightStroke, shape)
                 } else {
                     Modifier
                 },
             )
             .background(cellBg, shape),
-        contentAlignment = Alignment.Center,
+        contentAlignment = if (arcadeSlots) Alignment.BottomCenter else Alignment.Center,
     ) {
+        val sidePad = if (arcadeSlots) maxWidth * 0.01f else 4.dp
+        val topPad = if (arcadeSlots) maxHeight * 0.04f else 2.dp
+        val bottomPad = if (arcadeSlots) maxHeight * 0.02f else 2.dp
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .clipToBounds()
-                .padding(horizontal = 4.dp, vertical = 2.dp),
+                .padding(start = sidePad, end = sidePad, top = topPad, bottom = bottomPad),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = if (arcadeSlots) Arrangement.Bottom else Arrangement.Center,
         ) {
             CellLine(
                 text = cell.english,
                 color = textColor,
-                widthChars = if (portrait) 8.2f else 7.4f,
+                widthChars = if (portrait) 7.5f else if (arcadeSlots) 6.4f else 7.0f,
                 kind = CellLineKind.English,
-                heightPercent = 0.78f,
+                heightPercent = if (arcadeSlots) 0.85f else 0.80f,
+                letterSpacing = 0.sp,
+                lineAlign = Alignment.BottomCenter,
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(enFrac),
@@ -151,7 +163,9 @@ fun PrayerCell(
                 color = textColor,
                 widthChars = timeChars,
                 kind = CellLineKind.Time,
-                heightPercent = 0.90f,
+                heightPercent = if (arcadeSlots) 0.98f else 0.94f,
+                letterSpacing = 0.sp,
+                lineAlign = Alignment.TopCenter,
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(timeFrac),
@@ -169,20 +183,22 @@ private fun CellLine(
     widthChars: Float,
     kind: CellLineKind,
     heightPercent: Float,
+    letterSpacing: androidx.compose.ui.unit.TextUnit = 0.sp,
+    lineAlign: Alignment = Alignment.Center,
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .clipToBounds(),
-        contentAlignment = Alignment.Center,
+        contentAlignment = lineAlign,
     ) {
         val size = fitSp(
             maxWidthDp = maxWidth.value,
             maxHeightDp = maxHeight.value,
             widthChars = widthChars,
             heightPercent = heightPercent,
-            widthPercent = 0.94f,
+            widthPercent = 1f,
         )
         when (kind) {
             CellLineKind.Time -> Text(
@@ -190,7 +206,8 @@ private fun CellLine(
                 style = tabularStyle(
                     color = color,
                     size = size,
-                    weight = FontWeight.Normal,
+                    weight = FontWeight.Bold,
+                    letterSpacing = letterSpacing,
                     lineHeight = size,
                 ),
                 textAlign = TextAlign.Center,

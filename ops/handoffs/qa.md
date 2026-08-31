@@ -11,7 +11,7 @@ AVD `Tablet_10in`, Android 16 / API 36 Play image. `Tablet_7in` exists on disk a
 
 Hang checks that still stand: keep-screen-on, DST, midnight, reboot athan, tap vs long-press, GPS-denied Albany header.
 
-Shots from that pass: `ops/qa-shots/`.
+Emulator QA shots were deleted. Recapture from the APK if you need new frames. Upload listing crops live in `store/listing/play/`.
 
 ## Listing crops
 

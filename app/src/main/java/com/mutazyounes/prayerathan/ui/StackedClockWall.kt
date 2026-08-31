@@ -67,7 +67,7 @@ fun PortraitStackedWall(
                 portrait = true,
                 type = type,
                 modifier = Modifier
-                    .weight(40f)
+                    .weight(48f)
                     .fillMaxWidth(),
             )
         }
@@ -94,15 +94,12 @@ fun LandscapeStackedWall(
 ) {
     val (hours, minutes, seconds) = countdownParts(state.countdown)
     val playingName = state.playingName?.englishLabel()
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = inset),
-    ) {
+    Column(Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
-                .weight(64f)
-                .fillMaxWidth(),
+                .weight(52f)
+                .fillMaxWidth()
+                .padding(horizontal = inset),
         ) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 val albanyWeight = 1.08f
@@ -155,13 +152,17 @@ fun LandscapeStackedWall(
                     .align(Alignment.TopCenter),
             )
         }
-        HorizontalHairline()
+        if (state.themeMode == ThemeMode.LIGHT ||
+            (state.themeMode == ThemeMode.AUTO && !state.darkTheme)
+        ) {
+            HorizontalHairline()
+        }
         PrayerGrid(
             cells = state.cells,
             portrait = false,
             type = type,
             modifier = Modifier
-                .weight(36f)
+                .weight(48f)
                 .fillMaxWidth(),
         )
     }

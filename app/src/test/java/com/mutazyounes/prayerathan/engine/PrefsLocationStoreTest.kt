@@ -1,8 +1,10 @@
 package com.mutazyounes.prayerathan.engine
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 import java.time.LocalDate
@@ -20,6 +22,7 @@ class PrefsLocationStoreTest {
     @Test
     fun emptyPrefsReturnAlbany() {
         val store = PrefsLocationStore(MemoryLocationPrefs())
+        assertFalse(store.hasPersistedLocation())
         assertEquals(SavedLocation.albany, store.read())
         assertEquals("Albany, NY", store.read().label)
         assertEquals(42.6526, store.read().latitude, 0.0)
@@ -33,6 +36,7 @@ class PrefsLocationStoreTest {
         PrefsLocationStore(prefs).write(amman)
 
         val fresh = PrefsLocationStore(prefs)
+        assertTrue(fresh.hasPersistedLocation())
         assertEquals(amman, fresh.read())
         assertNotEquals(SavedLocation.albany, fresh.read())
     }

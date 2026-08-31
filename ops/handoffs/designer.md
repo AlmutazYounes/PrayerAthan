@@ -2,30 +2,37 @@
 
 Status: done
 
-When: 2026-08-29
+When: 2026-08-31
 Agent: designer
-
-## What was slow
-
-Settings opened the 2.1MB / 34k-row `cities.tsv` on every sheet open, even after `CityCatalog.bundled` had already parsed it. `fold()` compiled a Unicode regex per city per keystroke. Opening a city menu with a blank query still searched that country's full pool. `match()` for the saved pin ran on the UI thread.
 
 ## What changed
 
-- Wall warms the catalog on IO after the clock appears. Settings uses `CityCatalog.cached()` and skips the asset read when the parse is already in memory.
-- Cities wait for two typed letters, then show at most 50 hits. Countries stay searchable and cap at 60 once the user types.
-- Filter lists use `derivedStateOf`. Dropdowns stay `LazyColumn` with stable keys.
-- `match()` after load runs on `Dispatchers.Default`.
-- `fold()` uses one compiled regex. City name keys are stored at parse time so search does not renormalize every row.
+1. **Portrait Dark Wall Backdrop Asset**:
+   - Replaced old portrait dark fill with Mecca drone dark portrait artwork (`design/dark-wall-backdrop-portrait.png`).
+   - Converted to WebP at `app/src/main/res/drawable-nodpi/wall_backdrop_dark_portrait.webp`.
+   - Confirmed `WallBackdrop.kt` loads `R.drawable.wall_backdrop_dark_portrait` when `portrait && isDark`.
 
-Portrait and landscape sheet layout is unchanged. Same `settingsPanel` / gold / Cinzel fields. No lat/long typing.
+2. **Weather VectorDrawables**:
+   - Added clean, tintable Apache 2.0 / Public Domain VectorDrawables under `app/src/main/res/drawable/`:
+     - `ic_weather_clear.xml` (clear/sun)
+     - `ic_weather_fair.xml` (fair/sun behind cloud)
+     - `ic_weather_cloud.xml` (cloudy)
+     - `ic_weather_fog.xml` (fog)
+     - `ic_weather_drizzle.xml` (drizzle)
+     - `ic_weather_rain.xml` (rain)
+     - `ic_weather_snow.xml` (snow)
+     - `ic_weather_storm.xml` (storm/thunder)
+   - Created `design/WEATHER-ICONS-SOURCE.md` recording sources and license.
 
-## Files
+2. **Weather condition mapping & UI**:
+   - Added `weatherIconRes(condition: String)` in `ui/WeatherIcons.kt` with mapping tests in `WeatherIconsTest.kt`.
+   - Exposed `weatherCondition` on `WeatherNow` and `WallUiState`.
+   - Updated `Header` in `WallScreen.kt` with a larger `WeatherRow` (gold icon sized ~1.15x line height next to temperature + condition, aligned vertically).
 
-- `app/src/main/java/com/mutazyounes/prayerathan/ui/SettingsSheet.kt`
-- `app/src/main/java/com/mutazyounes/prayerathan/ui/WallScreen.kt` (prefetch only)
-- `app/src/main/java/com/mutazyounes/prayerathan/engine/CityCatalog.kt`
-- `app/src/test/java/com/mutazyounes/prayerathan/engine/CityCatalogTest.kt`
+3. **Prayer Times & Layout**:
+   - Earlier prayer times enlargement on landscape/portrait retained and verified.
 
-## Hangs
+## Verification
 
-`./gradlew test assembleDebug` after this pass.
+Run `./gradlew test assembleDebug` and install to device.
+

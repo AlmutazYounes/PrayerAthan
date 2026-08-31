@@ -2,11 +2,27 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-31 Mutaz: internal testing 20 (0.20.0). Mecca dark wall, larger prayer times, weather icons, unused images removed. Not production.
+- 2026-08-31 Mutaz: deleted unused images. Kept app drawables, launcher, design dark backdrops, and Play listing graphics.
+- 2026-08-31 Mutaz: portrait dark wall is the Mecca drone image.
+- 2026-08-31 Mutaz: enlarged weather row and added gold condition VectorDrawable icons to wall header.
+- 2026-08-31 Mutaz: prayer times still too small from the sofa. Bumped again.
+- 2026-08-31 Mutaz: huge prayer times on wall, no AM/PM, tracking on arcade times, expanded landscape prayer row weight to 40%.
+- 2026-08-31 Mutaz: prayer grid times are hour and minute only. No AM/PM.
+- 2026-08-31 Mutaz: dark landscape arcade. Next prayer is gold text only, no rounded box.
+- 2026-08-31 Mutaz: dark landscape uses candidate_03 arcade. No code boxes on the prayer row.
+- 2026-08-30 Mutaz: added abdelrahmanalsaleh6@gmail.com to ClosedTesters.
+- 2026-08-30 Mutaz: added tradibraheem@gmail.com to ClosedTesters.
+- 2026-08-29 Mutaz: added abdyounes2006@gmail.com to ClosedTesters.
+- 2026-08-29 Mutaz: added manalyounes1966@gmail.com and aliyounes1962@gmail.com to ClosedTesters.
+- 2026-08-29 Mutaz: internal testing 19 (0.19.0). New app icon featuring minimalist satin brass minaret.. Not production.
+- 2026-08-29 Mutaz: first open asks for location, one GPS fix, then city and prayer times. Deny keeps Albany.
 - 2026-08-29 Mutaz: internal testing 18 (0.18.0). Saudi athan, faster search, date format updates, sounds default off. Not production.
 - 2026-08-29 Mutaz: one tester list. ClosedTesters has all 7 invited. Closed track uses that list only. Internal track stays for /push.
 - 2026-08-29 Dashboard: 3 closed testers opted in. Need 12 for 14 days before production.
 - 2026-08-29 Mutaz: added aljghimi.bayan@gmail.com to ClosedTesters (Alpha).
 - 2026-08-29 Mutaz: internal testing 17 (0.17.0). New app icon featuring minimalist satin brass minaret. Not production.
+- 2026-08-29 Mutaz: closed testing Alpha 19 (0.19.0) uploaded and submitted for Google review. New satin brass minaret icon.
 - 2026-08-29 Mutaz: updated app icon to satin brass minaret artwork across adaptive mipmaps and store listing.
 - 2026-08-29 Mutaz: closed testing Alpha 16 (0.16.0) sent for review.
 - 2026-08-29 Mutaz: internal testing 16 (0.16.0). Saudi athan, faster city search, city name on wall, date without year, sounds off by default. Not production.

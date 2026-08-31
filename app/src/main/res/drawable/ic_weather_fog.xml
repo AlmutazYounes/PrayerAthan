@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Cloud base -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M19.35,9.04C18.67,5.59 15.64,3 12,3 9.11,3 6.6,4.64 5.35,7.04 2.34,7.36 0,9.91 0,13c0,3.08 2.33,5.61 5.31,5.94A6.8,6.8 0,0 1,5 18h14c2.76,0 5,-2.24 5,-5 0,-2.64 -2.05,-4.78 -4.65,-4.96z" />
+    <!-- Horizontal fog bars -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M3,18h18v2h-18zM5,21h14v2h-14z" />
+</vector>

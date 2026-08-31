@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -396,13 +397,15 @@ fun Header(
                 modifier = Modifier.fillMaxWidth(),
             )
             if (weatherLine.isNotEmpty()) {
-                FittingLine(
+                val iconRes = weatherIconRes(weatherLine)
+                val weatherMaxSp = if (split) type.dateLine.value * 1.15f else type.dateLine.value
+                val weatherMinSp = type.label.value
+                WeatherRow(
                     text = weatherLine,
+                    iconRes = iconRes,
                     color = palette.gold,
-                    weight = FontWeight.Medium,
-                    align = TextAlign.Start,
-                    maxSp = if (split) type.dateLine.value * 1.05f else type.label.value * 1.55f,
-                    minSp = type.label.value,
+                    maxSp = weatherMaxSp,
+                    minSp = weatherMinSp,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -427,6 +430,68 @@ fun Header(
                 maxSp = if (split) type.dateLine.value * 1.15f else type.dateLine.value,
                 minSp = type.label.value,
                 modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun WeatherRow(
+    text: String,
+    iconRes: Int,
+    color: Color,
+    maxSp: Float,
+    minSp: Float,
+    modifier: Modifier = Modifier,
+) {
+    BoxWithConstraints(modifier = modifier) {
+        val density = LocalDensity.current
+        val textMeasurer = rememberTextMeasurer()
+        val fitted = remember(text, maxWidth, maxSp, minSp, density) {
+            if (maxWidth.value <= 0f || text.isEmpty()) {
+                minSp
+            } else {
+                val referenceSize = 100f
+                val referenceStyle = tabularStyle(
+                    color = color,
+                    size = referenceSize.sp,
+                    weight = FontWeight.Medium,
+                )
+                val referenceTextWidth = with(density) {
+                    textMeasurer.measure(text, referenceStyle).size.width.toDp().value
+                }
+                // Icon size is ~1.15x line height, plus 6dp gap.
+                // At referenceSize 100sp, icon is ~115dp + 6dp gap = 121dp.
+                val referenceTotalWidth = referenceTextWidth + 121f
+                val byWidth = if (referenceTotalWidth > 0f) {
+                    referenceSize * maxWidth.value / referenceTotalWidth
+                } else {
+                    maxSp
+                }
+                byWidth.coerceIn(minSp, maxSp)
+            }
+        }
+        val iconSizeDp = with(density) { (fitted * 1.15f).sp.toDp() }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(iconSizeDp),
+            )
+            Spacer(modifier = Modifier.size(6.dp))
+            Text(
+                text = text,
+                style = tabularStyle(
+                    color = color,
+                    size = fitted.sp,
+                    weight = FontWeight.Medium,
+                ),
+                textAlign = TextAlign.Start,
+                maxLines = 1,
             )
         }
     }

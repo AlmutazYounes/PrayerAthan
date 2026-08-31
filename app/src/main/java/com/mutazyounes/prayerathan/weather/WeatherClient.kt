@@ -8,6 +8,7 @@ import org.json.JSONObject
 data class WeatherNow(
     val temperatureC: Int,
     val condition: String,
+    val weatherCondition: String = condition.removeSuffix(" SOON").trim(),
 ) {
     val line: String get() = "$temperatureC°C  $condition"
 }

@@ -53,11 +53,15 @@ class WallViewModel(
     private var wasPlaying: Boolean = false
     private var wasAthkar: Boolean = false
     private var weatherLine: String = ""
+    private var weatherCondition: String = ""
     private var locationError: String? = null
     private var resolvedLocation: SavedLocation? = null
     private var lastCellKinds: List<CellKind>? = null
 
     init {
+        if (!locationStore.hasPersistedLocation()) {
+            useGps(keepAlbanyIfFailed = true)
+        }
         refresh(now())
         viewModelScope.launch(Dispatchers.IO) {
             if (wallClock.syncIfDue()) {
@@ -103,6 +107,7 @@ class WallViewModel(
         val fetched = withContext(Dispatchers.IO) { weather.fetch() }
         if (fetched != null) {
             weatherLine = fetched.line
+            weatherCondition = fetched.weatherCondition
             refresh(now())
         }
     }
@@ -192,7 +197,7 @@ class WallViewModel(
         viewModelScope.launch { pullWeather() }
     }
 
-    fun useGps() {
+    fun useGps(keepAlbanyIfFailed: Boolean = false) {
         locationFixer.requestOneFix { outcome ->
             when (outcome) {
                 LocationFixer.Outcome.Saved -> {
@@ -202,8 +207,15 @@ class WallViewModel(
                     viewModelScope.launch { pullWeather() }
                 }
                 LocationFixer.Outcome.Failed -> {
-                    locationError = "GPS did not get a fix. Pick a city, or try again."
-                    refresh(now())
+                    if (keepAlbanyIfFailed && !locationStore.hasPersistedLocation()) {
+                        locationStore.write(SavedLocation.albany)
+                    }
+                    locationError = if (keepAlbanyIfFailed) {
+                        null
+                    } else {
+                        "GPS did not get a fix. Pick a city, or try again."
+                    }
+                    refresh(now(), forceSchedule = keepAlbanyIfFailed)
                 }
             }
         }
@@ -297,6 +309,7 @@ class WallViewModel(
             themeMode = currentThemeMode,
             darkTheme = resolveDarkTheme(currentThemeMode, now, day),
             weatherLine = weatherLine,
+            weatherCondition = weatherCondition,
             athanSoundId = audioSettings.soundId(),
             athkarEnabled = audioSettings.athkarEnabled(),
             mutedPrayers = mutedPrayers,
@@ -433,10 +446,8 @@ class WallViewModel(
             return "$displayHour:$minute" to amPm
         }
 
-        fun formatPrayerTime(time: ZonedDateTime, twelveHour: Boolean): String {
-            val pattern = if (twelveHour) "h:mm a" else "H:mm"
-            return time.format(DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH))
-        }
+        fun formatPrayerTime(time: ZonedDateTime, twelveHour: Boolean): String =
+            formatClock(time, twelveHour).first
 
         fun formatCountdown(duration: Duration): String {
             val totalSeconds = duration.seconds.coerceAtLeast(0)

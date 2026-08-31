@@ -51,12 +51,13 @@ The PNGs still show a Jordan clock. Ignore that. Mutaz dropped it.
 
 As of this writing the folder contains:
 
-- `design/athan-wall-horizontal-v2.png`
-- `design/athan-wall-vertical.png`
-- `design/light-wall-backdrop.png`
-- `design/dark-wall-backdrop.png`
+- `design/dark-wall-backdrop.png` (Mecca drone, landscape dark)
+- `design/dark-wall-backdrop-portrait.png` (Mecca drone, portrait dark)
+- `design/ic_launcher.png`
+- `design/ic_launcher_foreground.png`
+- `design/WEATHER-ICONS-SOURCE.md`
 
-The idle layouts are the two wall PNGs. The athan-playing state is specified in this document without a PNG. Light and dark fills are the two backdrop files. Do not resurrect deleted athan-playing frames.
+Live wall fills are the four WebPs in `app/src/main/res/drawable-nodpi/` (`wall_backdrop_{light,dark}` and `_portrait`). Light sources live only as those WebPs. The athan-playing state is specified in this document without a PNG. Do not resurrect deleted mockups or generated_candidates.
 
 ---
 
@@ -278,7 +279,7 @@ Five composables. Naming is a suggestion. Structure is not.
 Header(location: String, weekday: String, dateLine: String)
 ```
 
-Location top-start, two lines: city name then gold weather (`22°C  CLEAR`) from Open-Meteo, Celsius. Never lat/long on the wall. Date column top-end, one line: weekday then calendar date (`Thursday  27 August`). No year. In landscape, weather fills the Albany column and that day-date line fills the countdown column. No Hijri slot. No weather icon.
+Location top-start, two lines: city name then gold weather with condition icon (`22°C  CLEAR`) from Open-Meteo, Celsius. Gold weather icon sits beside the weather line. Never lat/long on the wall. Date column top-end, one line: weekday then calendar date (`Thursday  27 August`). No year. In landscape, weather fills the Albany column and that day-date line fills the countdown column. No Hijri slot.
 
 ### ClockBlock
 
@@ -374,6 +375,7 @@ The sheet is a bottom panel in `settingsPanel`. SETTINGS and CLOSE stay on one h
 ## Content rules
 
 - Clocks are 12-hour with `AM` / `PM` by default. `PROJECT.md` allows a 24-hour settings flag. When that flag is on, drop AM/PM and keep tabular digits.
+- Prayer grid times are hour and minute only. No `AM` / `PM` on Fajr through Isha.
 - Countdown is always `HH:MM:SS` with leading zeros, even for `00:04:09`.
 - Header location string is `ALBANY, NY` until the saved label changes. Still all-caps in the header. Gold weather line under it when Open-Meteo answers. No `NOW / ALBANY` on the clock.
 - No Jordan clock. No Jordan label.

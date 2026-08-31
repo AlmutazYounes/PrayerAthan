@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -111,7 +112,7 @@ fun CountdownBlock(
             .fillMaxSize()
             .clipToBounds(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = if (portrait) Arrangement.Top else Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
     ) {
         Box(
             modifier = Modifier
@@ -168,8 +169,8 @@ private fun LandscapeCountdown(
         val palette = LocalWallPalette.current
         val density = LocalDensity.current
         val textMeasurer = rememberTextMeasurer()
-        val heightPercent = 0.56f
-        val widthPercent = 0.98f
+        val heightPercent = 0.42f
+        val widthPercent = 0.92f
         // Measure the exact string at a reference size instead of guessing a
         // char count, then scale to fit. A guessed width let seconds run off
         // the right edge because "00:00:00" is wider than the old estimate.
@@ -219,28 +220,12 @@ private fun LandscapeCountdown(
                 FixedWidthDigits(":", colonWidth, digitStyle)
                 FixedWidthDigits(seconds, pairWidth, digitStyle)
             }
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "HRS",
-                    style = labelStyle(unitSize, palette.gold),
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                )
-                Text(
-                    text = "MIN",
-                    style = labelStyle(unitSize, palette.gold),
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                )
-                Text(
-                    text = "SEC",
-                    style = labelStyle(unitSize, palette.gold),
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                )
+            Row {
+                UnitCaption("HRS", pairWidth, unitSize, palette.gold)
+                Spacer(Modifier.width(colonWidth))
+                UnitCaption("MIN", pairWidth, unitSize, palette.gold)
+                Spacer(Modifier.width(colonWidth))
+                UnitCaption("SEC", pairWidth, unitSize, palette.gold)
             }
         }
     }
@@ -259,6 +244,28 @@ private fun FixedWidthDigits(
         Text(
             text = text,
             style = style.copy(textAlign = TextAlign.Center),
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Clip,
+        )
+    }
+}
+
+@Composable
+private fun UnitCaption(
+    text: String,
+    width: Dp,
+    size: TextUnit,
+    color: Color,
+) {
+    Box(
+        modifier = Modifier.width(width),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = text,
+            style = labelStyle(size, color),
+            textAlign = TextAlign.Center,
             maxLines = 1,
             softWrap = false,
             overflow = TextOverflow.Clip,
@@ -352,7 +359,7 @@ fun ClockBlock(
             .clipToBounds()
             .padding(horizontal = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = if (portrait && label.isNotEmpty()) Arrangement.Top else Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
     ) {
         if (label.isNotEmpty()) {
             Text(
@@ -416,7 +423,7 @@ private fun ClockDigits(
             } else {
                 referenceSize.value
             }
-            val byHeight = maxHeight.value * 0.74f
+            val byHeight = maxHeight.value * if (landscape) 0.52f else 0.74f
             min(byWidth, byHeight).coerceAtLeast(8f).sp
         } else {
             fallbackSize

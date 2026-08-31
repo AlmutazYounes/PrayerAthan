@@ -69,7 +69,7 @@ When athan plays, the countdown block becomes NOW, the prayer name, and "Adhan i
 
 Palette, type scale, hairlines, star motif, and 7-inch vs 10-inch sizing are specified in `DESIGN.md`. Dark is a night mosque wall, umber and bronze, not total black. Light is warm plaster, not white. Wall fill is `design/light-wall-backdrop.png` and `design/dark-wall-backdrop.png`. Ivory clocks, antique brass for next prayer and countdown. No second loud accent. No Hijri. One small gold gear in the header. Not a FAB, not on the prayer grid.
 
-English names, this spelling: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha. No Arabic on the wall. Clock format is 12-hour with AM/PM, matching the mockups. 24-hour can wait as a settings flag.
+English names, this spelling: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha. No Arabic on the wall. Clock format is 12-hour with AM/PM, matching the mockups. Prayer grid times are hour and minute only, no AM/PM. 24-hour can wait as a settings flag.
 
 ---
 
@@ -123,8 +123,8 @@ Madhab: Shafi. Decided. That is the earlier Asr (shadow factor 1) via adhan-kotl
 
 Location can be set three ways, all persisted on device:
 
-1. These Albany defaults, on first launch.
-2. One GPS fix, then save the nearest city name. Do not poll GPS forever on a wall tablet. Do not put lat/long on the wall.
+1. First open asks for location. One GPS fix, then save the nearest city name and its timezone. Prayer times follow that zone. Do not poll GPS forever. Do not put lat/long on the wall.
+2. If they deny or the fix fails, Albany defaults. Do not ask again until they tap GPS in settings.
 3. Searchable country, then searchable city, from the bundled GeoNames list (`assets/cities.tsv`). Picking a city writes the city name, coordinates, and timezone. No typed lat/long.
 
 Prayer math is a pure function of coordinates, date, method, and madhab. UI does not compute times. If the designer needs a preview, they call the engine.

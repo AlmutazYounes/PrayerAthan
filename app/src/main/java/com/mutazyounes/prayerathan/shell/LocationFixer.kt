@@ -42,7 +42,7 @@ class LocationFixer(
         permissionCallback = null
         previousPermission?.invoke(Outcome.Failed)
         if (hasPermission()) {
-            takeOneFix(onResult)
+            prepareThenFix(onResult)
             return
         }
         val launch = launchPermissionDialog
@@ -58,7 +58,7 @@ class LocationFixer(
         val callback = permissionCallback ?: return
         permissionCallback = null
         if (granted && hasPermission()) {
-            takeOneFix(callback)
+            prepareThenFix(callback)
         } else {
             callback(Outcome.Failed)
         }
@@ -68,6 +68,22 @@ class LocationFixer(
         val state = inFlight ?: return
         val manager = appContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
         complete(state, Outcome.Failed, manager)
+    }
+
+    private fun prepareThenFix(onResult: (Outcome) -> Unit) {
+        Thread({
+            ensureCatalog()
+            mainHandler.post { takeOneFix(onResult) }
+        }, "prayerathan-catalog").apply { isDaemon = true }.start()
+    }
+
+    private fun ensureCatalog() {
+        if (CityCatalog.cached() != null) return
+        runCatching {
+            CityCatalog.loadBundled { name ->
+                appContext.assets.open(name).bufferedReader().use { it.readText() }
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -143,7 +159,10 @@ class LocationFixer(
     }
 
     private fun saveFix(latitude: Double, longitude: Double): Outcome {
-        val catalog = CityCatalog.cached()
+        val catalog = CityCatalog.cached() ?: run {
+            ensureCatalog()
+            CityCatalog.cached()
+        }
         val hit = catalog?.nearest(latitude, longitude)
         val label = if (hit != null) {
             hit.second.label(hit.first.name)

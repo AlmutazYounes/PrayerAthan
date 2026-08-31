@@ -33,8 +33,8 @@ data class WallPalette(
     val geometry: Color,
 ) {
     val highlightStroke: Color get() = if (this == DarkWallPalette) Color(0xFFFFD54F) else Color(0xFF7A450A)
-    val highlightFill: Color get() = if (this == DarkWallPalette) Color(0x99000000) else Color(0xDDFFFFFF)
-    val cellBackground: Color get() = if (this == DarkWallPalette) Color(0x66000000) else Color(0x99FFFFFF)
+    val highlightFill: Color get() = if (this == DarkWallPalette) Color(0x22FFD54F) else Color(0xDDFFFFFF)
+    val cellBackground: Color get() = if (this == DarkWallPalette) Color.Transparent else Color(0x99FFFFFF)
     val date: Color get() = clock
     val location: Color get() = clock
     val label: Color get() = gold

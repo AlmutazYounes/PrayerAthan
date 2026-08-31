@@ -27,8 +27,8 @@ android {
         applicationId = "com.mutazyounes.prayerathan"
         minSdk = 26
         targetSdk = 36
-        versionCode = 18
-        versionName = "0.18.0"
+        versionCode = 20
+        versionName = "0.20.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

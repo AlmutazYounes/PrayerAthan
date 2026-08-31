@@ -9,7 +9,7 @@ How PrayerAthan sits on Google Play. Not the product spec. `PROJECT.md` wins for
 | Package | `com.mutazyounes.prayerathan` |
 | Price | **Free**. Cannot become paid on this package. |
 | Production | Inactive. Apply disabled. 3 closed testers opted in. Need 12 for 14 days. |
-| Internal testing | Live. Release 18 (0.18.0). |
+| Internal testing | Live. Release 20 (0.20.0). |
 | Closed testing | Alpha track. Countries targeted. Release 16 (0.16.0) in review. Testers keep 15 until Google clears it. |
 | Listing in Console | Name, copy, icon, graphic, six wall screenshots saved. |
 | Listing on Play URL | Gray stub until Google reviews a closed or production send. |

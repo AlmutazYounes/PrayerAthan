@@ -5,10 +5,12 @@ import android.content.Context
 interface LocationStore {
     fun read(): SavedLocation
     fun write(location: SavedLocation)
+    fun hasPersistedLocation(): Boolean
 }
 
 class InMemoryLocationStore(
     initial: SavedLocation = SavedLocation.albany,
+    private var persisted: Boolean = false,
 ) : LocationStore {
     private var stored: SavedLocation = initial
 
@@ -16,7 +18,10 @@ class InMemoryLocationStore(
 
     override fun write(location: SavedLocation) {
         stored = location
+        persisted = true
     }
+
+    override fun hasPersistedLocation(): Boolean = persisted
 }
 
 class PrefsLocationStore internal constructor(
@@ -47,6 +52,12 @@ class PrefsLocationStore internal constructor(
         } catch (_: Exception) {
             SavedLocation.albany
         }
+    }
+
+    override fun hasPersistedLocation(): Boolean {
+        return prefs.contains(KEY_LATITUDE) &&
+            prefs.contains(KEY_LONGITUDE) &&
+            prefs.contains(KEY_TIMEZONE)
     }
 
     override fun write(location: SavedLocation) {

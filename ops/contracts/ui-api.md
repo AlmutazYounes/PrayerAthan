@@ -41,7 +41,7 @@ enum class ThemeMode { LIGHT, DARK, AUTO }
 data class PrayerCellState(
     val name: PrayerName,
     val english: String,            // FAJR, SUNRISE, ...
-    val time: String,               // "5:09 AM"
+    val time: String,               // "5:09"
     val kind: CellKind,             // PAST, NEXT, LATER
     val muted: Boolean = false,
 )

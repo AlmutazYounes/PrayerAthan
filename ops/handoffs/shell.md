@@ -7,14 +7,14 @@ Agent: android-shell
 
 ## What landed
 
-`shell/LocationFixer`. Use GPS in settings asks for FINE/COARSE at that tap, takes one fix, writes `PrefsLocationStore`, then stops updates. Launch still only asks for notifications.
+`shell/LocationFixer`. First open with no saved location asks for FINE/COARSE, takes one fix, writes `PrefsLocationStore`, then stops. Settings GPS does the same. Deny or fail on first open writes Albany so the dialog does not repeat.
 
 - `LocationFixer` lives on `PrayerAthanApp`, same store as engine (`PrefsLocationStore`). Not `InMemoryLocationStore`.
 - Provider order: platform `fused` (API 31+), else GPS, else NETWORK. No Play Services library.
 - API 30+: `getCurrentLocation` (one shot). Older: `requestLocationUpdates` then `removeUpdates` on the first callback. 20s timeout; last-known is a fallback, not a poll.
 - Label is the coords (`42.6526, -73.7562`). No geocoder. Timezone is `TimeZone.getDefault().id`. Write goes through `SavedLocation.parse`. Parse fail or deny uses the gold line `Check city, coordinates, and timezone id.` Manual save still works.
 - `WallViewModel.useGps()` calls the fixer, then `refresh(..., forceSchedule = true)` on success so `athan.schedule` runs the same way as Save.
-- Permission launcher is on `MainActivity`. It is not fired from `onCreate`.
+- Permission launcher is on `MainActivity`. First open with empty prefs fires it from `WallViewModel`.
 
 Manifest orientation is still `sensor`. INTERNET was already there for weather; this job did not add it.
 
