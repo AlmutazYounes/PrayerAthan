@@ -35,7 +35,7 @@ Same tokens. Two layouts. Portrait is not a squeezed landscape. Landscape is not
 
 Live when `UseStackedClocks` is true in `WallScreen.kt`. Code is `ui/StackedClockWall.kt`.
 
-No Jordan clock on the wall. Albany is hours and minutes. Landscape hero is two columns: Albany `1.08f`, countdown `0.92f`. Hero is `64f`, prayer row `36f`. Portrait column: header spacer `5`, Albany `32`, gap `1`, countdown `18`, gap `4`, prayer grid `40`. Clocks sit smaller. Prayer times sit larger.
+No Jordan clock on the wall. Albany is hours and minutes. Landscape sizes live in `LandscapeWallLayout` in `WallTheme.kt`. Each field is independent: clock height, weather height, countdown height, countdown `fromTop`, and prayer row height. Prayer name / time / weather fractions only affect the prayer cells. Do not share Column weights between these pieces. Portrait column: header spacer `10`, Albany `34`, gap `1`, countdown `16`, gap `2`, prayer grid `52`.
 
 Only one hairline on the whole wall: the full-width `ColorHairline` rule between the hero and the prayer row. No vertical hairline between Albany and the countdown, none between prayer tiles, none between portrait grid rows or columns. The rule for hairlines in the Landscape and Portrait sections below describes the retired split layout (`UseStackedClocks = false`). It does not apply here.
 

@@ -2,6 +2,22 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-08-31 Mutaz: landscape countdown slid under the weather column. fromStart 0.52, width 0.46. Nothing else touched.
+- 2026-08-31 Mutaz: landscape pieces now have independent knobs in LandscapeWallLayout. Clock and weather got bigger, countdown sits lower, prayer times/names/weather got bigger. Changing one field no longer resizes the others.
+- 2026-08-31 Mutaz: landscape hero is clock left and current weather right at mid-screen, countdown centered under both. Prayer grid left at 46f, cells untouched.
+- 2026-08-31 Mutaz: landscape prayer grid restored to bigger (46f) and timer pushed down to sit just above it. Weights: hero 28, gap 18, countdown 8, prayer 46. Countdown height fraction bumped to 1.0 to keep digits readable in the thinner band.
+- 2026-08-31 Mutaz: landscape countdown pushed down to sit just above the prayer grid. Gap now sits between the hero and the countdown. Weights: hero 42, gap 6, countdown 14, prayer 38.
+- 2026-08-31 Mutaz: landscape swapped clock to the left and weather to the right (clock carries the date label, weather carries the location). Added a gap above the prayer grid so the prayer times sit lower on the screen.
+- 2026-08-31 Mutaz: landscape reorganized into three bands. Top split into weather (left, big icon + temp/condition) and clock (right, with date label). Middle band is the countdown timer. Bottom is the prayer grid with per-prayer weather + temp + name + time. Location and date are small header labels, settings gear centered.
+- 2026-08-31 Mutaz: landscape rearranged. Clock fills the hero (bigger), countdown moved below the clock and above the prayer grid. Hero 40f, countdown 16f, prayer 44f. Header clearance trimmed to 0.14.
+- 2026-08-31 Mutaz: landscape hero now stacks the countdown under the clock (centered column) instead of side-by-side. Top half breathes more.
+- 2026-08-31 Mutaz: swapped accent to moonlight (0xFFDCE6F0) cool pale blue-white. Bronze was unreadable on the warm dark backdrop; moonlight contrasts it and pairs with the night icons.
+- 2026-08-31 Mutaz: swapped the saturated amber accent (0xFFFFD54F) for a desaturated bronze gold (0xFFC9A96E) across gold, goldDim, highlight stroke/fill, star, geometry. Ties into the Mecca glow instead of clashing.
+- 2026-08-31 Mutaz: replaced hand-drawn weather icons with Material Design Icons set. Night prayers (Fajr, Maghrib, Isha) now show moon-based icons for cloudy conditions too, not bare clouds.
+- 2026-08-31 Mutaz: night prayers (Fajr, Maghrib, Isha) use moon icons for clear/fair weather instead of sun.
+- 2026-08-31 Mutaz: added per-prayer weather icons above each prayer name from hourly OpenMeteo forecast.
+- 2026-08-31 Mutaz: added scrolling athkar ticker (right-to-left) above prayer names in landscape.
+- 2026-08-31 Mutaz: clock and prayer times sit lower and taller on the wall.
 - 2026-08-31 Mutaz: internal testing 20 (0.20.0). Mecca dark wall, larger prayer times, weather icons, unused images removed. Not production.
 - 2026-08-31 Mutaz: deleted unused images. Kept app drawables, launcher, design dark backdrops, and Play listing graphics.
 - 2026-08-31 Mutaz: portrait dark wall is the Mecca drone image.
