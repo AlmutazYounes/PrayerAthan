@@ -5,7 +5,7 @@ Facts 27 August 2026.
 ## Already true
 
 - Package `com.mutazyounes.prayerathan`. Do not change it.
-- minSdk 26, targetSdk 36, versionCode 20, versionName `0.20.0`.
+- minSdk 26, targetSdk 36, versionCode 25, versionName `0.25.0`.
 - Upload keystore in `keystore/` (gitignored). `signingConfig` release. Signed AAB is on internal testing.
 - Keep-screen-on. Both orientations `sensor`.
 - On-device ISNA + Shafi. No Aladhan HTTP.
@@ -21,7 +21,7 @@ Facts 27 August 2026.
 
 **Permissions.** Both `USE_EXACT_ALARM` and `SCHEDULE_EXACT_ALARM`. Console still wants FGS and exact-alarm demo videos.
 
-**Version.** Internal test is `0.20.0`.
+**Version.** Internal test is `0.25.0`.
 
 ## Store-ready bar
 

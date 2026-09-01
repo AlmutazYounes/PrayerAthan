@@ -2,7 +2,46 @@
 
 Append one line per event. Newest at the top.
 
-- 2026-08-31 Mutaz: dropped light mode and Auto. Dark wall only. Removed theme settings and leftover light images.
+- 2026-09-01 Mutaz: landscape hero matches portrait arc timer. Clock in horseshoe ring, countdown in bottom notch. Top bar unchanged.
+- 2026-09-01 Mutaz: closed testing Alpha 25 (0.25.0) promoted from internal and sent for review. Portrait arc timer wall, Rub el Hizb icon. Testers stay on 19 until Google clears it.
+- 2026-09-01 Mutaz: internal testing 25 (0.25.0). Portrait arc timer wall, Rub el Hizb icon, header and typography polish.. Not production.
+- 2026-09-01 Mutaz: replaced launcher icon with minimalist flat Rub el Hizb (gold on #050403). Dropped 3D minaret art.
+- 2026-09-01 Mutaz: portrait — remove hairline above Fajr/Sunrise row.
+- 2026-09-01 Mutaz: portrait type brass gold (#E2B85C) instead of sandy ivory; header weather smaller.
+- 2026-09-01 Mutaz: portrait wall-clock hero — centered clock, shrinking prayer ring, countdown under clock; portrait grid drops per-prayer weather. landscape top bar: date, settings, location+weather pinned to top edge. Not production.
+- 2026-08-31 Mutaz: internal testing 23 (0.23.0). landscape 3x2 grid, countdown with location, weather chip top-right, portrait row hairlines, digits-only timer, no cell borders. Not production.
+- 2026-08-31 Mutaz: landscape header pins date, settings, and location (with weather) to the top edge.
+- 2026-08-31 Mutaz: remove dark plates behind landscape clock and countdown.
+- 2026-08-31 Mutaz: landscape clock gets the same dark scrim as the countdown.
+- 2026-08-31 Mutaz: landscape countdown sits on a dark scrim with ivory digits so it reads over the backdrop.
+- 2026-08-31 Mutaz: portrait countdown uses HH:MM:SS with colons (same as landscape) after dropping HRS/MIN/SEC.
+- 2026-08-31 Mutaz: portrait prayer grid gets a hairline between each row.
+- 2026-08-31 Mutaz: landscape clock and countdown nudged down (heroRowFromTop 0.15).
+- 2026-08-31 Mutaz: countdown shows digits only. Dropped HRS/MIN/SEC captions.
+- 2026-08-31 Mutaz: landscape countdown moves to location column. Current weather is a one-line chip top-right. Prayer cells no longer hold the timer.
+- 2026-08-31 Mutaz: landscape prayer cells put name + weather on one line; prayer time stays large below.
+- 2026-08-31 Mutaz: remove Default Albany button from settings. Location keeps country/city search and Use GPS only.
+- 2026-08-31 Mutaz: landscape hero weather stacks temp over condition (20°C / CLOUD), not one line.
+- 2026-08-31 Mutaz: remove prayer cell borders and fills. Landscape keeps one hairline between the two prayer rows only.
+- 2026-08-31 Mutaz: fix landscape next-prayer countdown. Mark NEXT by prayer name (after-Isha Fajr works). Next tile stacks name/weather/time/timer so countdown is not clipped.
+- 2026-08-31 Mutaz: keep landscape 3×2. Bigger landscape prayer names (per-name fitSp) and bigger weather in hero + cells. Hero weather uses fitSp so it does not clip.
+- 2026-08-31 Mutaz: landscape experiment. Prayer grid 3 per row × 2 rows (Maghrib/Isha + empty spacer). Clock/weather pushed up (clockHeight/weatherHeight 0.28, heroRowFromTop 0.08, prayerHeight 0.44). Portrait unchanged.
+- 2026-08-31 Mutaz: internal testing 22 (0.22.0). portrait classic stack restored, bigger weather type in header and prayer cells. Not production.
+- 2026-08-31 Mutaz: weather type bigger. Portrait header left column wider for the weather line. Per-prayer weather temps and icons larger in portrait cells. Landscape hero weather text bumped too.
+- 2026-08-31 Mutaz: weather type bigger. Portrait header weather ~1.55x dateLine. Landscape hero weather text 0.48 of slot.
+- 2026-08-31 Mutaz: portrait reinstalled and verified. Clock, countdown under it, equal 2x3 prayer grid. Landscape boxed next-cell countdown unchanged.
+- 2026-08-31 Mutaz: portrait wall restored. Clock, countdown under it, 2x3 prayer grid. Landscape boxed next-cell countdown unchanged.
+- 2026-08-31 Mutaz: refreshed Play listing screenshots, icon, graphic, and copy.
+- 2026-08-31 Mutaz: internal testing 21 (0.21.0). dark-only wall, Inter type, boxed prayer tiles with sandy borders, countdown in the next-prayer cell, lighter box fill. Not production.
+- 2026-08-31 Mutaz: redesigned settings sheet with dark bronze/indigo gradient backdrop, grouped cards, icon headers, modern search fields, and segmented toggles.
+- 2026-08-31 Mutaz: prayer boxes back. Blackish fill, sandy borders (#D4C4A8 / #E8D5B5).
+- 2026-08-31 Mutaz: tried prayer tiles with no boxes. Chrome off. Layout and type unchanged.
+- 2026-08-31 Mutaz: landscape clock and current-weather type got bigger. clockHeight and weatherHeight 0.36. Prayer row untouched.
+- 2026-08-31 Mutaz: prayer names sized down. Only the English label slot. Times and countdown unchanged.
+- 2026-08-31 Mutaz: prayer tiles use DESIGN.md brass/ivory (gold #E2B85C, clock #F5EBDA) and 8.dp plaque corners instead of highlighter yellow and 16.dp bubbles.
+- 2026-08-31 Mutaz: wide next tile puts weather beside the prayer time. Prayer names stay large on every tile.
+- 2026-08-31 Mutaz: prayer boxes shorter (prayerHeight 0.36), next tile wider (weight 2.3), cell countdown type bumped to 0.042.
+- 2026-08-31 Mutaz: next-prayer cell is boxed and expanded. Live countdown lives in that cell. Floating hero countdown removed.
 - 2026-08-31 Mutaz: landscape countdown slid under the weather column. fromStart 0.52, width 0.46. Nothing else touched.
 - 2026-08-31 Mutaz: landscape pieces now have independent knobs in LandscapeWallLayout. Clock and weather got bigger, countdown sits lower, prayer times/names/weather got bigger. Changing one field no longer resizes the others.
 - 2026-08-31 Mutaz: landscape hero is clock left and current weather right at mid-screen, countdown centered under both. Prayer grid left at 46f, cells untouched.

@@ -2,16 +2,16 @@
 
 How PrayerAthan sits on Google Play. Not the product spec. `PROJECT.md` wins for what the wall does.
 
-## Where we are, 27 August 2026
+## Where we are, 1 September 2026
 
 | Thing | State |
 | --- | --- |
 | Package | `com.mutazyounes.prayerathan` |
 | Price | **Free**. Cannot become paid on this package. |
 | Production | Inactive. Apply disabled. 3 closed testers opted in. Need 12 for 14 days. |
-| Internal testing | Live. Release 20 (0.20.0). |
-| Closed testing | Alpha track. Countries targeted. Release 16 (0.16.0) in review. Testers keep 15 until Google clears it. |
-| Listing in Console | Name, copy, icon, graphic, six wall screenshots saved. |
+| Internal testing | Live. Release 25 (0.25.0). |
+| Closed testing | Alpha track. Countries targeted. Release 25 (0.25.0) in review. Testers keep 19 until Google clears it. |
+| Listing in Console | Name, copy, icon, graphic, four dark wall screenshots. Sent for review 31 Aug 2026. |
 | Listing on Play URL | Gray stub until Google reviews a closed or production send. |
 | App content | Privacy, ads no, IARC, 13+, Data safety none, gov/finance/health no. Advertising ID no. FGS mediaPlayback + demo video. Exact alarm = alarm clock. |
 | Privacy URL | https://almutazyounes.github.io/prayerathan-privacy/ |

@@ -11,7 +11,7 @@ Product behavior is still `PROJECT.md`.
 ## Done in Console
 
 - App created. Then converted to free.
-- Signed AAB on internal testing, version 20 / 0.20.0.
+- Signed AAB on internal testing, version 25 / 0.25.0.
 - Store listing filled: Athan Wall Clock, short/full copy, icon, feature graphic, phone + 7-inch + 10-inch shots.
 - Privacy, sign-in none, ads no, IARC Everyone / PEGI 3, audience 13+, Data safety none collected, government / financial / health no.
 

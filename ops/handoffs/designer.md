@@ -7,37 +7,32 @@ Agent: designer
 
 ## What changed
 
-1. **Light Mode & Auto Removed (Dark Wall Only)**:
-   - Removed `ThemeMode` enum, `LightWallPalette`, `paletteFor()`, and light mode theme resolution.
-   - Wall is always dark with `DarkWallPalette` and dark backdrop assets (`wall_backdrop_dark` / `wall_backdrop_dark_portrait`).
-   - Removed the Theme section from `SettingsSheet` (Light / Dark / Auto chips).
-   - Removed `themeMode` plumbing from `WallSettingsStore`, `WallViewModel`, `WallUiState`, `SettingsSheet`, `WallScreen`, and `StackedClockWall`.
-   - Updated `PROJECT.md`, `DESIGN.md`, `ops/contracts/ui-api.md`, `ops/STATUS.md`, and `ops/LOG.md`.
+Landscape layout experiment only. Portrait untouched.
 
-2. **Portrait Dark Wall Backdrop Asset**:
-   - Replaced old portrait dark fill with Mecca drone dark portrait artwork (`design/dark-wall-backdrop-portrait.png`).
-   - Converted to WebP at `app/src/main/res/drawable-nodpi/wall_backdrop_dark_portrait.webp`.
-   - Confirmed `WallBackdrop.kt` loads `R.drawable.wall_backdrop_dark_portrait` when portrait.
+1. **`PrayerGrid.kt` — `LandscapePrayerGrid`**
+   - Was one `Row` of five cells.
+   - Now `cells.chunked(3)` in a `Column` of two equal-height rows with 6.dp gaps.
+   - Row 1: Fajr, Dhuhr, Asr.
+   - Row 2: Maghrib, Isha, empty `Box` at `NormalCellWeight` so card widths match the top row.
+   - Next cell still uses `NextCellWeight` (2.3) within its row. In-cell countdown unchanged.
 
-3. **Weather VectorDrawables**:
-   - Added clean, tintable Apache 2.0 / Public Domain VectorDrawables under `app/src/main/res/drawable/`:
-     - `ic_weather_clear.xml` (clear/sun)
-     - `ic_weather_fair.xml` (fair/sun behind cloud)
-     - `ic_weather_cloud.xml` (cloudy)
-     - `ic_weather_fog.xml` (fog)
-     - `ic_weather_drizzle.xml` (drizzle)
-     - `ic_weather_rain.xml` (rain)
-     - `ic_weather_snow.xml` (snow)
-     - `ic_weather_storm.xml` (storm/thunder)
-   - Created `design/WEATHER-ICONS-SOURCE.md` recording sources and license.
+2. **`WallTheme.kt` — `LandscapeWallLayout`**
+   - `clockHeight` / `weatherHeight`: 0.36 → **0.28**
+   - `heroRowFromTop`: 0.16 → **0.08**
+   - `prayerHeight`: 0.36 → **0.44**
+   - `NextCellWeight` still 2.3. Countdown knobs unused by current stacked wall (left alone).
 
-4. **Weather condition mapping & UI**:
-   - Added `weatherIconRes(condition: String)` in `ui/WeatherIcons.kt` with mapping tests in `WeatherIconsTest.kt`.
-   - Exposed `weatherCondition` on `WeatherNow` and `WallUiState`.
-   - Updated `Header` in `WallScreen.kt` with a larger `WeatherRow` (gold icon sized ~1.15x line height next to temperature + condition, aligned vertically).
+3. **`StackedClockWall.kt`**
+   - No code change. Absolute positioning already reads the knobs above.
 
-## Verification
+4. **Docs**
+   - `DESIGN.md`: landscape prayer block is 3×2, not one 5/6-across row.
+   - `ops/LOG.md`: one line for the experiment.
 
-Ran `./gradlew test assembleDebug` successfully. All unit tests passed and debug APK built cleanly.
+## Not touched
 
+Portrait stack, keep-screen-on, palettes, athan-kotlin, GPS / LocationFixer.
 
+## Verify
+
+Open landscape on a 7" or 10". Clock and weather sit higher. Two prayer rows with wider cards. Maghrib/Isha align under Fajr/Dhuhr with a blank third slot. Rotate to portrait: classic clock → countdown → 2×3 grid.

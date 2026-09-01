@@ -2,16 +2,23 @@
 
 Status: emulator hang checks done. Physical 7-inch and 10-inch still waiting.
 
-When: 2026-08-27
+When: 2026-08-31
 Agent: device-qa
 
 ## Emulator
 
-AVD `Tablet_10in`, Android 16 / API 36 Play image. `Tablet_7in` exists on disk and was not started. 7-inch frames used `wm size` on the 10-inch AVD.
+AVD on `emulator-5554`, Android 16 / API 36 Play image. `Tablet_7in` exists on disk and was not started for this pass.
 
 Hang checks that still stand: keep-screen-on, DST, midnight, reboot athan, tap vs long-press, GPS-denied Albany header.
 
-Emulator QA shots were deleted. Recapture from the APK if you need new frames. Upload listing crops live in `store/listing/play/`.
+### 2026-08-31 landscape 3×2 hang
+
+App running `com.mutazyounes.prayerathan` on emulator-5554.
+
+- Landscape: **pass**. Two rows of three wider cards (Fajr / Sunrise / Dhuhr, then Asr / Maghrib / Isha). Clock left and Albany weather right sit high. No clipping. Sixth slot filled (Isha), no empty hole. Shot: `ops/shots-landscape-3x2.png` (1920×1080).
+- Portrait: **pass**. Classic stack: header, big clock, countdown, 2-col × 3-row grid. Shot: `ops/shots-portrait-check.png` (1080×1920). Rotated back to landscape after.
+
+Ship? Emulator hang for this layout: **yes**. Real tablets still needed before ship.
 
 ## Listing crops
 
