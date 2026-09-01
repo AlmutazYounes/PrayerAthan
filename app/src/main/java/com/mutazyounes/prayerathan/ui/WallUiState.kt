@@ -17,6 +17,8 @@ data class WallUiState(
     val jordanAmPm: String,
     val nextLabel: String,
     val countdown: String,
+    /** 1 = full ring at start of interval; shrinks toward 0 as next prayer nears. */
+    val nextPrayerRing: Float,
     val athanPlaying: Boolean,
     val playingName: PrayerName?,
     val athkarPlaying: Boolean,
@@ -48,6 +50,7 @@ data class WallUiState(
             jordanAmPm = "",
             nextLabel = "",
             countdown = "00:00:00",
+            nextPrayerRing = 1f,
             athanPlaying = false,
             playingName = null,
             athkarPlaying = false,

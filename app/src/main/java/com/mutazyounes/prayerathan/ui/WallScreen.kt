@@ -142,10 +142,6 @@ fun WallScreen(
                             settingsOpen = false
                         }
                     },
-                    onResetAlbany = {
-                        viewModel.resetToAlbany()
-                        settingsOpen = false
-                    },
                     onUseGps = viewModel::useGps,
                     onSelectAthanSound = viewModel::setAthanSound,
                     onAthkarEnabledChange = viewModel::setAthkarEnabled,
@@ -249,6 +245,9 @@ private fun PortraitWall(
                 cells = state.cells,
                 portrait = true,
                 type = type,
+                countdown = state.countdown,
+                athanPlaying = state.athanPlaying,
+                playingName = playingName,
                 modifier = Modifier
                     .weight(28f)
                     .fillMaxWidth(),
@@ -354,6 +353,9 @@ private fun LandscapeWall(
             cells = state.cells,
             portrait = false,
             type = type,
+            countdown = state.countdown,
+            athanPlaying = state.athanPlaying,
+            playingName = playingName,
             modifier = Modifier
                 .weight(30f)
                 .fillMaxWidth(),
@@ -396,8 +398,8 @@ fun Header(
             )
             if (weatherLine.isNotEmpty()) {
                 val iconRes = weatherIconRes(weatherLine)
-                val weatherMaxSp = if (split) type.dateLine.value * 1.15f else type.dateLine.value
-                val weatherMinSp = type.label.value
+                val weatherMaxSp = if (split) type.label.value * 1.22f else type.dateLine.value * 1.35f
+                val weatherMinSp = type.label.value * 0.95f
                 WeatherRow(
                     text = weatherLine,
                     iconRes = iconRes,
@@ -408,10 +410,6 @@ fun Header(
                 )
             }
         }
-        SettingsButton(
-            onClick = onOpenSettings,
-            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
-        )
         Column(
             // Always weighted: an unweighted Row child that fills to max width
             // claims the Row's full incoming width, starving the location
@@ -428,6 +426,11 @@ fun Header(
                 maxSp = if (split) type.dateLine.value * 1.15f else type.dateLine.value,
                 minSp = type.label.value,
                 modifier = Modifier.fillMaxWidth(),
+            )
+            SettingsButton(
+                onClick = onOpenSettings,
+                compact = true,
+                modifier = Modifier.padding(top = 2.dp),
             )
         }
     }
@@ -469,7 +472,7 @@ private fun WeatherRow(
                 byWidth.coerceIn(minSp, maxSp)
             }
         }
-        val iconSizeDp = with(density) { (fitted * 1.15f).sp.toDp() }
+        val iconSizeDp = with(density) { (fitted * 1.05f).sp.toDp() }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(),
@@ -550,11 +553,14 @@ private fun FittingLine(
 fun SettingsButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
 ) {
     val palette = LocalWallPalette.current
+    val boxSize = if (compact) 36.dp else 48.dp
+    val iconSize = if (compact) 18.dp else 22.dp
     Box(
         modifier = modifier
-            .size(48.dp)
+            .size(boxSize)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -566,7 +572,7 @@ fun SettingsButton(
             imageVector = Icons.Filled.Settings,
             contentDescription = "Settings",
             tint = palette.gold,
-            modifier = Modifier.size(22.dp),
+            modifier = Modifier.size(iconSize),
         )
     }
 }

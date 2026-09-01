@@ -299,6 +299,7 @@ class WallViewModel(
             jordanAmPm = jordanClock.second,
             nextLabel = if (playing) "NOW" else "NEXT ${day.nextAthan.englishLabel()}",
             countdown = formatCountdown(remaining),
+            nextPrayerRing = if (playing) 0f else nextPrayerRingFraction(now, day),
             athanPlaying = playing,
             playingName = playingName,
             athkarPlaying = athkarOn,
@@ -316,6 +317,19 @@ class WallViewModel(
         )
     }
 
+    private fun nextPrayerRingFraction(now: Instant, day: PrayerDay): Float {
+        val nextAt = day.nextAthanAt
+        val remainingSec = Duration.between(now, nextAt).seconds.toDouble().coerceAtLeast(0.0)
+        val athanTargets = PrayerName.athanTargets().toSet()
+        val previousAt = day.times
+            .filter { it.name in athanTargets && it.at < nextAt }
+            .maxByOrNull { it.at }
+            ?.at
+            ?: day.times.filter { it.name in athanTargets }.maxBy { it.at }.at
+        val totalSec = Duration.between(previousAt, nextAt).seconds.toDouble().coerceAtLeast(1.0)
+        return (remainingSec / totalSec).toFloat().coerceIn(0f, 1f)
+    }
+
     private fun cellKindsUnchanged(
         now: Instant,
         day: PrayerDay,
@@ -326,7 +340,9 @@ class WallViewModel(
         val kinds = day.times.map { instant ->
             when {
                 playingName != null && instant.name == playingName -> CellKind.NEXT
-                playingName == null && instant.at == day.nextAthanAt -> CellKind.NEXT
+                // Match by prayer name so after-Isha still marks Fajr as NEXT
+                // even when nextAthanAt is tomorrow's Fajr.
+                playingName == null && instant.name == day.nextAthan -> CellKind.NEXT
                 instant.at <= now -> CellKind.PAST
                 else -> CellKind.LATER
             }
@@ -359,20 +375,26 @@ class WallViewModel(
     ): List<PrayerCellState> {
         val zone = ZoneId.of(timeZoneId)
         return day.times.map { instant ->
+            val isNext = when {
+                playingName != null && instant.name == playingName -> true
+                playingName == null && instant.name == day.nextAthan -> true
+                else -> false
+            }
             val kind = when {
-                playingName != null && instant.name == playingName -> CellKind.NEXT
-                playingName == null && instant.at == day.nextAthanAt -> CellKind.NEXT
+                isNext -> CellKind.NEXT
                 instant.at <= now -> CellKind.PAST
                 else -> CellKind.LATER
             }
+            // After Isha, next Fajr is tomorrow — show that clock time on the Fajr tile.
+            val displayAt = if (isNext) day.nextAthanAt else instant.at
             PrayerCellState(
                 name = instant.name,
                 english = instant.name.englishLabel(),
-                time = formatPrayerTime(instant.at.atZone(zone), twelveHour),
+                time = formatPrayerTime(displayAt.atZone(zone), twelveHour),
                 kind = kind,
                 muted = instant.name in mutedPrayers,
-                weatherCondition = weatherConditionFor(instant.at)?.condition.orEmpty(),
-                weatherTempC = weatherConditionFor(instant.at)?.temperatureC,
+                weatherCondition = weatherConditionFor(displayAt)?.condition.orEmpty(),
+                weatherTempC = weatherConditionFor(displayAt)?.temperatureC,
             )
         }
     }

@@ -35,13 +35,17 @@ Same tokens. Two layouts. Portrait is not a squeezed landscape. Landscape is not
 
 Live when `UseStackedClocks` is true in `WallScreen.kt`. Code is `ui/StackedClockWall.kt`.
 
-No Jordan clock on the wall. Albany is hours and minutes. Landscape sizes live in `LandscapeWallLayout` in `WallTheme.kt`. Each field is independent: clock height, weather height, countdown height, countdown `fromTop`, and prayer row height. Prayer name / time / weather fractions only affect the prayer cells. Do not share Column weights between these pieces. Portrait column: header spacer `10`, Albany `34`, gap `1`, countdown `16`, gap `2`, prayer grid `52`.
+No Jordan clock on the wall. Albany is hours and minutes. Landscape column: header clearance `12`, hero arc `44`, gap `8`, prayer grid `36`. Portrait column: header spacer `14`, hero arc `40`, gap `10`, prayer grid `34` (plus `10dp` top inset on the grid). Arc is ~66% of portrait width or ~38% of landscape width, top-aligned under the header, height-limited.
 
-Only one hairline on the whole wall: the full-width `ColorHairline` rule between the hero and the prayer row. No vertical hairline between Albany and the countdown, none between prayer tiles, none between portrait grid rows or columns. The rule for hairlines in the Landscape and Portrait sections below describes the retired split layout (`UseStackedClocks = false`). It does not apply here.
+No standalone countdown in the landscape prayer cells. Landscape top edge holds location + weather (start) and date + settings (end). Hero below matches portrait: Albany clock centered in a horseshoe arc (`nextPrayerRing`); countdown and `NEXT …` sit in the bottom notch. Arc ~38% of width, height-limited, top-aligned under the header. Prayer grid is 3×2 with no cell borders; one hairline between the two rows.
 
-No AM/PM beside the Albany clock. No `NEXT {PRAYER}` label above the countdown. Just `H:MM` and the bare `HH:MM:SS` with its `HRS` / `MIN` / `SEC` captions. The "Content rules" section below still describes the retired split layout's AM/PM and next-label behavior; it does not apply to the stacked wall.
+Portrait hero: big Albany clock centered inside a thick horseshoe arc (gap at bottom). Bright gold stroke = time left until next prayer (`nextPrayerRing`); dim track behind it. Countdown (`HH:MM:SS`) and `NEXT …` sit in the bottom gap of the arc, not below the widget. Arc ~66% of width, pinned under the header. No per-prayer weather in the grid. Prayer list is name + time only, 2 columns, hairline between rows. Column weights: header spacer `14`, hero `40`, gap `10`, prayer grid `34`.
 
-No star watermark behind Albany either (`showStar = false` in `StackedClockColumn`). The "Star watermark" component description below and its mentions elsewhere in this file describe the retired split layout. Bare digits, no octagram behind them.
+Landscape and portrait prayer grids use `HorizontalHairline` between rows only. No vertical hairlines between prayer tiles. No hairline above the first portrait row (Fajr / Sunrise).
+
+No AM/PM beside the Albany clock. Just `H:MM`.
+
+No star watermark behind Albany either (`showStar = false` in `StackedClockColumn`). Bare digits, no octagram behind them.
 
 The PNGs still show a Jordan clock. Ignore that. Mutaz dropped it.
 
@@ -73,8 +77,8 @@ Use these Compose names. Hex is sRGB. Dark values below. Light sits in the next 
 | `ColorBackgroundLift` | `#3E2C18` | Radial bronze under the clocks. |
 | `ColorBackgroundDeep` | `#151328` | Indigo plaster in the corners, vignette, and prayer shelf. Not `#020101`. You should still see color there. |
 | `ColorSettingsPanel` | `#2C241A` | Settings sheet fill. Bronze panel. Not the wall mid-tone, not the lift, not the indigo corners. |
-| `ColorClock` | `#EBDDC8` | Albany digits, AM/PM, date, header location, later prayer times and later English names. |
-| `ColorGold` | `#C5963A` | Section labels, countdown digits, HRS/MIN/SEC, next-prayer cell text, highlight stroke. Antique brass. |
+| `ColorClock` | `#F5EBDA` | Albany digits and prayer times. Warm cream white, not gold. |
+| `ColorGold` | `#C5963A` | Section labels, countdown digits, next-prayer cell text, highlight stroke. Antique brass. |
 | `ColorGoldDim` | `#8A6E28` | Unused in idle if past cells use ivory-dim. Keep for a gold label that must recede. |
 | `ColorPrayerPast` | `#A89880` | English name and time on a prayer whose time has passed. |
 | `ColorHairline` | `#8A7A68` | 1 to 2 px rules between columns, between hero and prayers, and inside the portrait grid. |
@@ -105,7 +109,8 @@ Dark is a night mosque wall: umber, bronze, deep indigo plaster. Not crushed OLE
 | `backgroundLift` | `#3E2C18` | Radial center. Bronze. Not `#FFF6E8`. |
 | `backgroundDeep` | `#151328` | Corners, vignette, prayer shelf. Indigo plaster. |
 | `settingsPanel` | `#2C241A` | Settings sheet fill. Not any wall-wash stop. |
-| `clock` | `#F5EBDA` | Ivory on dark. |
+| `clock` | `#F5EBDA` | Cream white digits and prayer times. |
+| `gold` | `#E2B85C` | Arc, labels, countdown, prayer names. |
 | `gold` | `#E2B85C` | Labels, countdown, next-prayer. Lighter brass on night plaster. |
 | `goldDim` | `#C5963A` | Receding gold. |
 | `prayerPast` | `#C8B498` | Past prayer text. |
@@ -125,7 +130,7 @@ Settings: Sheet fill is `settingsPanel`, not the wall mid-tone. Gold gear in the
 
 ### Family
 
-English and numerals: Cinzel, an engraved Roman serif, variable weight. Replaces the earlier Oswald condensed-sans direction and a short-lived Yeseva One pass. Font file is `res/font/cinzel.ttf`, `EnglishFontFamily` maps Normal/Medium/Bold to weight axis values 500/600/700. Cinzel's lowercase glyphs are small caps by design; that reads as a feature here, not a bug, since English labels are all-caps anyway.
+English and numerals: Inter Variable (`res/font/inter.ttf`, SIL OFL). `EnglishFontFamily` maps Normal/Medium/Bold to weight axis 400/500/650. Tabular lining figures stay on. Oswald and Cinzel are retired. Inter is the modern face: even widths, no condensed squeeze, no engraved small caps.
 
 All English labels are all-caps. No Arabic on the wall. Prayer cells are English name plus time only.
 
@@ -150,8 +155,8 @@ Type is a percent of the slot it sits in, not a global `sp` cap. `fitSp` takes t
 | Role | Size | Color | Notes |
 | --- | --- | --- | --- |
 | Albany / Jordan | `74%` of the digit slot height, or the width of `12:59` plus AM/PM, whichever is smaller. | `ColorClock` | AM/PM is `28%` of the clock size. Clip. Do not cap at `88.sp`. |
-| Countdown | `64%` of the countdown slot height in portrait, `58%` in landscape, or two digits in one third of the width. | `ColorGold` | `HRS` / `MIN` / `SEC` are `22%` of the digit size. |
-| Prayer time | Own slot: about `66%` of the cell in portrait, `70%` in landscape. Type is `90%` of that slot height. | state color | English about `28%` of the cell. Two lines. Each line is clipped to its slot so the time cannot cut the hairline. |
+| Countdown | `64%` of the countdown slot height in portrait, `58%` in landscape, or two digits in one third of the width. | `ColorGold` | Digits only (`HH:MM:SS`). No plate behind the digits. No `HRS` / `MIN` / `SEC` captions. |
+| Prayer time | Own slot: about `66%` of the cell in portrait, `70%` in landscape. Type is `90%` of that slot height. | state color | Landscape English uses per-name `fitSp` (~`0.78 ×` char count). Portrait English about `28%` of the cell. Two lines. Each line is clipped to its slot so the time cannot cut the hairline. |
 
 ---
 
@@ -186,11 +191,11 @@ Percent of screen height, top to bottom:
 | Region | Height | Content |
 | --- | --- | --- |
 | Header overlay | sits in the top `12%` | Location left, date right. Hero clocks occupy the space under and between them. |
-| Hero | top `0%` to `64%` | Two columns. Albany and countdown. Digits do not fill the slot as hard as the PNG. |
-| Hairline | at `64%` | Full-width `ColorHairline`. |
-| Prayer row | `64%` to `100%` | Six equal tiles. Taller than the PNG so prayer times read larger. |
+| Hero | top `0%` to `50%` | Clock and weather. |
+| Hairline | at `50%` | Full-width `ColorHairline`. |
+| Prayer block | bottom `36%` column weight | Two rows of three tiles, no cell borders. One hairline between the rows. Countdown lives in the arc notch above. |
 
-Percent of screen width: three hero columns at `33.3%` each. Six prayer tiles at `16.7%` each.
+Percent of screen width: clock and location+countdown split the hero. Current weather is a top-right one-liner. Prayer tiles share three equal slots per row.
 
 ### Hero columns
 
@@ -204,18 +209,11 @@ Vertical hairlines at `33.3%` and `66.7%` width, running through the hero only, 
 
 Albany and Jordan clocks are ivory and large. Countdown is gold and the same visual weight. On the PNG the three digit rows share one baseline band around `36%` to `54%` of height.
 
-### Prayer row
+### Prayer block
 
-One row. Order left to right: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha.
+Two rows of three equal-weight slots (`chunked(3)`). Row 1: Fajr, Dhuhr, Asr. Row 2: Maghrib, Isha, empty `Box` spacer so the two cards keep the same width as the top row. No Sunrise tile.
 
-Each tile is a vertical stack, centered:
-
-1. English name
-2. Time
-
-Vertical hairlines between tiles, same `ColorHairline`. No outer box around the whole row.
-
-Next prayer gets the highlight pill inside its tile, inset about `8.dp` to `12.dp` from the cell edges so the stroke does not collide with the vertical rules.
+Each tile is open on the backdrop. Landscape: prayer name and that prayer's weather share one top line; prayer time stays large below. Next tile also shows the live countdown under the time. No plaque border or fill. One hairline between the two rows. Portrait keeps name, weather, then time stacked.
 
 ---
 
@@ -230,13 +228,10 @@ Percent of screen height:
 | Region | Height | Content |
 | --- | --- | --- |
 | Header overlay | top `10%` | Same location / date as landscape. |
-| Albany block | about `12%` to `38%` | Label `NOW / ALBANY`, large ivory clock, star. |
-| Gap | about `2%` | Empty. Keep a gap. Do not pack Jordan under Albany. |
-| Jordan block | about `40%` to `56%` | Label `JORDAN`, smaller ivory clock. |
-| Gap | about `2%` | Empty. |
-| Countdown block | about `58%` to `70%` | Label `NEXT ASR`, gold timer, unit captions. |
-| Hairline | about `71%` | Full-width rule. |
-| Prayer grid | `60%` to `100%` | 2 columns, 3 rows. Taller than the PNG so the six times read larger. |
+| Albany block | about `10%` to `44%` | Large ivory clock. |
+| Countdown | about `45%` to `61%` | Standalone `CountdownBlock` under the clock. |
+| Hairline | about `62%` | Full-width rule. |
+| Prayer grid | `63%` to `100%` | 2 columns, 3 equal rows. No expanded next cell. |
 
 All hero blocks are horizontally centered.
 
@@ -268,7 +263,7 @@ Five composables. Naming is a suggestion. Structure is not.
 Header(location: String, weekday: String, dateLine: String)
 ```
 
-Location top-start, two lines: city name then gold weather with condition icon (`22°C  CLEAR`) from Open-Meteo, Celsius. Gold weather icon sits beside the weather line. Never lat/long on the wall. Date column top-end, one line: weekday then calendar date (`Thursday  27 August`). No year. In landscape, weather fills the Albany column and that day-date line fills the countdown column. No Hijri slot.
+Location top-start, two lines: city name then gold weather with condition icon (`22°C  CLEAR`) from Open-Meteo, Celsius. Gold weather icon sits beside the weather line. Never lat/long on the wall. Date column top-end, one line: weekday then calendar date (`Thursday  27 August`). No year. In landscape, location and weather sit top-start; date and settings top-end. Countdown is in the arc notch, not a separate hero column. No Hijri slot.
 
 ### ClockBlock
 
@@ -314,20 +309,26 @@ Do not open another activity. Swap the body of this block.
 
 ```
 PrayerCell(
-  nameEn: String,
-  nameAr: String,
-  time: String,
-  state: PrayerCellState  // Past, Next, Later
+  cell: PrayerCellState,
+  type: TypeScale,
+  portrait: Boolean,
+  countdown: String,
+  athanPlaying: Boolean,
+  playingName: String?
 )
 ```
 
-| State | Text | Chrome |
-| --- | --- | --- |
-| Past | `ColorPrayerPast` | None |
-| Next | `ColorGold` | `ColorHighlightStroke` rounded rect, `ColorHighlightFill` transparent, stroke 1.5.dp to 2.dp |
-| Later | `ColorClock` | None |
+| State | Name Text | Time Text | Fill | Stroke |
+| --- | --- | --- | --- | --- |
+| Past | `ColorGold` | `ColorPrayerPast` | none | none |
+| Next | `ColorGold` | `ColorClock` | none | none (countdown in cell) |
+| Later | `ColorGold` | `ColorClock` | none | none |
 
-Corner radius `16.dp` on a 10-inch, or `0.08` of the cell's shorter side. Large enough to read as a rounded rect. Small enough that a near-square landscape cell does not become a circle. This is not a stadium `50%` pill if the cell is square. Portrait cells are wide, so the same radius looks more pill-like there. One radius token, both axes.
+No cell corner radius, border, or fill. Landscape and portrait row separators are `HorizontalHairline` (`HairlineWidth`, `palette.hairline`).
+Normal tiles have width weight `1.0f` in landscape and standard 2-column pairing in portrait.
+Next tile expands with width weight `1.35f` in landscape only. Portrait next cell stays equal width.
+
+Landscape next cell includes a live gold countdown `HH:MM:SS` (tabular lining figures, size `type.cellCountdown`) below the prayer time, or "Adhan is playing" when active. Portrait keeps that countdown in the hero `CountdownBlock`.
 
 ### Star watermark
 
@@ -357,7 +358,7 @@ Tap to stop is a distinct gesture from long-press settings. Visual of the tap is
 
 Small gold gear in the header, between location and date. Long-press anywhere is the backup. Not a FAB. Not on the prayer grid.
 
-The sheet is a bottom panel in `settingsPanel`. SETTINGS and CLOSE stay on one header row. Gold section titles with a thin rule: Location, Prayer athans, Athan, Hourly athkar, Night blackout, Theme. Country and city are bordered search fields. GPS and Albany are quiet links under location. Prayer athans has five chips (Fajr, Dhuhr, Asr, Maghrib, Isha) to mute or unmute individual athans. Athan is a compact list with a gold tick on the selected file and PLAY on the right. Athkar is On / Off, no clip demos. Subtitle is `8 AM to 10 PM · athan wins`. Night blackout is On / Off with subtitle `11 PM to 4 AM · tap to wake`. Theme is Light / Dark / Auto. Landscape splits location+theme on the left and prayer athans+athan+athkar+blackout on the right. Same Oswald and gold. No Material You cards. Scroll inside a column if the 7-inch cannot fit.
+The sheet is a bottom panel in `settingsPanel`. SETTINGS and CLOSE stay on one header row. Gold section titles with a thin rule: Location, Prayer athans, Athan, Hourly athkar, Night blackout. Country and city are bordered search fields. GPS is a quiet action under location. No Default Albany button. Prayer athans has five chips (Fajr, Dhuhr, Asr, Maghrib, Isha) to mute or unmute individual athans. Athan is a compact list with a gold tick on the selected file and PLAY on the right. Athkar is On / Off, no clip demos. Subtitle is `8 AM to 10 PM · athan wins`. Night blackout is On / Off with subtitle `11 PM to 4 AM · tap to wake`. Landscape splits location on the left and prayer athans+athan+athkar+blackout on the right. Same Inter and gold. No Material You cards. Scroll inside a column if the 7-inch cannot fit.
 
 ---
 
@@ -424,7 +425,17 @@ val DarkWallPalette = WallPalette(
 val HairlineWidth = 1.5.dp
 val HighlightStrokeWidth = 1.5.dp
 val HighlightCornerRadius = 16.dp
+val CellCornerRadius = 8.dp
 val ScreenInset = 16.dp // floor. Prefer 0.04 * shortest side when window size is known.
+
+val ColorCellFill = Color(0xFF0A0A0A).copy(alpha = 0.38f)
+val ColorCellFillNext = Color(0xFF0A0A0A).copy(alpha = 0.48f)
+val ColorCellStroke = Color(0xFFD4C4A8)
+val ColorCellStrokeNext = Color(0xFFE8D5B5)
+val CellStrokeNormal = HairlineWidth
+val CellStrokeNext = HighlightStrokeWidth * 2
+val NextCellWeight = 1.5f
+val NormalCellWeight = 1.0f
 
 fun typeScale(shortestSideDp: Float) = object {
     val albanyLandscape = (shortestSideDp * 0.26f).sp
@@ -441,6 +452,7 @@ fun typeScale(shortestSideDp: Float) = object {
     val prayerEn = (shortestSideDp * 0.024f).sp
     val prayerAr = (shortestSideDp * 0.020f).sp
     val prayerTime = (shortestSideDp * 0.022f).sp
+    val cellCountdown = (shortestSideDp * 0.026f).sp
 }
 ```
 

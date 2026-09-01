@@ -1,7 +1,6 @@
 package com.mutazyounes.prayerathan.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,11 +37,28 @@ fun PrayerGrid(
     portrait: Boolean,
     type: TypeScale,
     modifier: Modifier = Modifier,
+    countdown: String = "00:00:00",
+    athanPlaying: Boolean = false,
+    playingName: String? = null,
 ) {
     if (portrait) {
-        PortraitPrayerGrid(cells, type, modifier)
+        PortraitPrayerGrid(
+            cells = cells,
+            type = type,
+            countdown = countdown,
+            athanPlaying = athanPlaying,
+            playingName = playingName,
+            modifier = modifier,
+        )
     } else {
-        LandscapePrayerGrid(cells, type, modifier)
+        LandscapePrayerGrid(
+            cells = cells,
+            type = type,
+            countdown = countdown,
+            athanPlaying = athanPlaying,
+            playingName = playingName,
+            modifier = modifier,
+        )
     }
 }
 
@@ -52,18 +66,52 @@ fun PrayerGrid(
 private fun LandscapePrayerGrid(
     cells: List<PrayerCellState>,
     type: TypeScale,
+    countdown: String,
+    athanPlaying: Boolean,
+    playingName: String?,
     modifier: Modifier,
 ) {
-    Row(modifier.fillMaxSize()) {
-        cells.forEach { cell ->
-            PrayerCell(
-                cell = cell,
-                type = type,
-                portrait = false,
+    val rows = cells.chunked(3)
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 4.dp),
+    ) {
+        rows.forEachIndexed { index, rowCells ->
+            if (index > 0) {
+                HorizontalHairline(
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
+                )
+            }
+            Row(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxHeight(),
-            )
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                rowCells.forEach { cell ->
+                    val isNext = cell.kind == CellKind.NEXT
+                    val weight = if (isNext) NextCellWeight else NormalCellWeight
+                    PrayerCell(
+                        cell = cell,
+                        type = type,
+                        portrait = false,
+                        countdown = countdown,
+                        athanPlaying = athanPlaying,
+                        playingName = playingName,
+                        modifier = Modifier
+                            .weight(weight)
+                            .fillMaxHeight(),
+                    )
+                }
+                repeat(3 - rowCells.size) {
+                    Box(
+                        modifier = Modifier
+                            .weight(NormalCellWeight)
+                            .fillMaxHeight(),
+                    )
+                }
+            }
         }
     }
 }
@@ -72,29 +120,34 @@ private fun LandscapePrayerGrid(
 private fun PortraitPrayerGrid(
     cells: List<PrayerCellState>,
     type: TypeScale,
+    countdown: String,
+    athanPlaying: Boolean,
+    playingName: String?,
     modifier: Modifier,
 ) {
     val rows = cells.chunked(2)
-    Column(modifier.fillMaxSize()) {
-        rows.forEach { rowCells ->
+    Column(
+        modifier = modifier.fillMaxSize(),
+    ) {
+        rows.forEachIndexed { index, rowCells ->
+            if (index > 0) {
+                HorizontalHairline(
+                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
+                )
+            }
             Row(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
             ) {
-                PrayerCell(
-                    cell = rowCells[0],
-                    type = type,
-                    portrait = true,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                )
-                if (rowCells.size > 1) {
+                rowCells.forEach { cell ->
                     PrayerCell(
-                        cell = rowCells[1],
+                        cell = cell,
                         type = type,
                         portrait = true,
+                        countdown = countdown,
+                        athanPlaying = athanPlaying,
+                        playingName = playingName,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(),
@@ -111,122 +164,143 @@ fun PrayerCell(
     type: TypeScale,
     portrait: Boolean,
     modifier: Modifier = Modifier,
+    countdown: String = "00:00:00",
+    athanPlaying: Boolean = false,
+    playingName: String? = null,
 ) {
     val palette = LocalWallPalette.current
-    val textColor = when (cell.kind) {
+    val isNext = cell.kind == CellKind.NEXT
+
+    val nameColor = palette.gold
+    val timeColor = when (cell.kind) {
         CellKind.PAST -> palette.prayerPast
-        CellKind.NEXT -> palette.prayerNext
+        CellKind.NEXT -> palette.clock
         CellKind.LATER -> palette.clock
     }
-    val shape = RoundedCornerShape(HighlightCornerRadius)
-    val arcadeSlots = !portrait && palette == DarkWallPalette
-    val cellPad = if (portrait) 4.dp else if (arcadeSlots) 0.dp else 2.dp
-    val timeFrac = if (portrait) 0.80f else if (arcadeSlots) LandscapeWallLayout.prayerTimeFrac else 0.46f
-    val enFrac = if (portrait) 0.18f else if (arcadeSlots) LandscapeWallLayout.prayerNameFrac else 0.16f
-    val timeChars = if (portrait) 3.2f else if (arcadeSlots) 2.65f else 2.8f
-    val timeTracking = if (portrait) 0.sp else if (arcadeSlots) (-0.03).em else (-0.02).em
-    val timeCondenseX = if (portrait) 1f else if (arcadeSlots) 0.98f else 0.98f
-    val cellBg = when {
-        arcadeSlots -> Color.Transparent
-        cell.kind == CellKind.NEXT -> palette.highlightFill
-        else -> palette.cellBackground
-    }
+
     BoxWithConstraints(
-        modifier = modifier
-            .padding(cellPad)
-            .then(
-                if (!arcadeSlots && cell.kind == CellKind.NEXT) {
-                    Modifier.border(HighlightStrokeWidth, palette.highlightStroke, shape)
-                } else {
-                    Modifier
-                },
-            )
-            .background(cellBg, shape),
-        contentAlignment = Alignment.BottomCenter,
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
     ) {
-        val sidePad = if (arcadeSlots) maxWidth * 0.01f else 4.dp
-        val topPad = if (arcadeSlots) maxHeight * 0.0f else 8.dp
-        val bottomPad = if (arcadeSlots) maxHeight * 0.12f else 4.dp
         val cellHeight = maxHeight
+        val isLandscape = !portrait
+        val iconFrac = when {
+            isLandscape -> 0.12f
+            else -> 0.22f
+        }
         val iconSizeDp = if (cellHeight.value > 0f) {
-            cellHeight.value * if (arcadeSlots) LandscapeWallLayout.prayerWeatherIconFrac else 0.10f
+            (cellHeight.value * iconFrac).coerceIn(14f, if (isLandscape) 26f else 48f)
         } else {
             16f
         }
+        val night = cell.name == PrayerName.FAJR ||
+            cell.name == PrayerName.MAGHRIB ||
+            cell.name == PrayerName.ISHA
+        val hasWeather = cell.weatherCondition.isNotEmpty()
+
+        @Composable
+        fun WeatherRow(modifier: Modifier = Modifier) {
+            if (!hasWeather) return
+            val iconRes = weatherIconRes(cell.weatherCondition, night = night)
+            Row(
+                modifier = modifier,
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = cell.weatherCondition,
+                    tint = palette.gold,
+                    modifier = Modifier.size(iconSizeDp.dp),
+                )
+                if (cell.weatherTempC != null) {
+                    Text(
+                        text = "${cell.weatherTempC}°C",
+                        style = labelStyle(
+                            size = (iconSizeDp * if (isLandscape) 0.95f else 0.88f).coerceAtLeast(12f).sp,
+                            color = palette.gold,
+                        ).copy(letterSpacing = 0.sp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Clip,
+                        softWrap = false,
+                        modifier = Modifier.padding(start = 4.dp),
+                    )
+                }
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .clipToBounds()
-                .padding(start = sidePad, end = sidePad, top = topPad, bottom = bottomPad),
+                .padding(horizontal = 6.dp, vertical = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom,
+            verticalArrangement = Arrangement.SpaceEvenly,
         ) {
-            if (cell.weatherCondition.isNotEmpty()) {
-                val night = cell.name == PrayerName.FAJR ||
-                    cell.name == PrayerName.MAGHRIB ||
-                    cell.name == PrayerName.ISHA
-                val iconRes = weatherIconRes(cell.weatherCondition, night = night)
-                val iconColor = if (cell.kind == CellKind.NEXT) palette.prayerNext else palette.gold
+            if (isLandscape) {
+                // Name + weather on one line; prayer time stays large below.
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(
-                            if (arcadeSlots) LandscapeWallLayout.prayerWeatherFrac else 0.10f,
-                        ),
+                        .weight(0.85f),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.Bottom,
                 ) {
-                    val iconSize = iconSizeDp
-                    Icon(
-                        painter = painterResource(id = iconRes),
-                        contentDescription = cell.weatherCondition,
-                        tint = iconColor,
-                        modifier = Modifier.size(iconSize.dp),
+                    CellLine(
+                        text = cell.english,
+                        color = nameColor,
+                        widthChars = cell.english.length.coerceAtLeast(4) * 0.78f,
+                        kind = CellLineKind.English,
+                        heightPercent = 0.90f,
+                        letterSpacing = 0.04.em,
+                        lineAlign = Alignment.Center,
+                        modifier = Modifier.fillMaxHeight(),
                     )
-                    if (cell.weatherTempC != null) {
-                        Text(
-                            text = "${cell.weatherTempC}°C",
-                            style = labelStyle(
-                                    size = (iconSizeDp * if (arcadeSlots) {
-                                        LandscapeWallLayout.prayerWeatherTempScale
-                                    } else {
-                                        0.62f
-                                    }).coerceAtLeast(10f).sp,
-                                color = iconColor,
-                            ).copy(letterSpacing = 0.sp),
-                            maxLines = 1,
-                            overflow = TextOverflow.Clip,
-                            softWrap = false,
-                            modifier = Modifier.padding(start = 4.dp, bottom = 1.dp),
-                        )
+                    if (hasWeather) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        WeatherRow(Modifier.fillMaxHeight())
                     }
                 }
+                CellLine(
+                    text = cell.time,
+                    color = timeColor,
+                    widthChars = 2.4f,
+                    kind = CellLineKind.Time,
+                    heightPercent = 0.98f,
+                    letterSpacing = (-0.02).em,
+                    condenseX = 0.98f,
+                    lineAlign = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1.45f),
+                )
+            } else {
+                CellLine(
+                    text = cell.english,
+                    color = nameColor,
+                    widthChars = if (isNext) 10.0f else 8.0f,
+                    kind = CellLineKind.English,
+                    heightPercent = 0.58f,
+                    letterSpacing = 0.10.em,
+                    lineAlign = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.48f),
+                )
+                CellLine(
+                    text = cell.time,
+                    color = timeColor,
+                    widthChars = 2.8f,
+                    kind = CellLineKind.Time,
+                    heightPercent = 0.88f,
+                    letterSpacing = (-0.02).em,
+                    condenseX = 0.98f,
+                    lineAlign = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.95f),
+                )
             }
-            CellLine(
-                text = cell.english,
-                color = textColor,
-                widthChars = if (portrait) 7.5f else if (arcadeSlots) 6.4f else 7.0f,
-                kind = CellLineKind.English,
-                heightPercent = if (arcadeSlots) 0.92f else 0.88f,
-                letterSpacing = 0.sp,
-                lineAlign = Alignment.BottomCenter,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(enFrac),
-            )
-            CellLine(
-                text = cell.time,
-                color = textColor,
-                widthChars = timeChars,
-                kind = CellLineKind.Time,
-                heightPercent = if (arcadeSlots) 0.98f else 0.96f,
-                letterSpacing = timeTracking,
-                condenseX = timeCondenseX,
-                lineAlign = Alignment.TopCenter,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(timeFrac),
-            )
         }
     }
 }
@@ -246,9 +320,7 @@ private fun CellLine(
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(
-        modifier = modifier
-            .fillMaxWidth()
-            .clipToBounds(),
+        modifier = modifier.clipToBounds(),
         contentAlignment = lineAlign,
     ) {
         val size = fitSp(

@@ -1,5 +1,12 @@
 package com.mutazyounes.prayerathan.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,7 +15,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,13 +24,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,15 +55,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -61,10 +82,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
-private val SheetShape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp)
+private val SheetShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+private val CardShape = RoundedCornerShape(16.dp)
+private val InnerCardShape = RoundedCornerShape(12.dp)
 private val ChipShape = RoundedCornerShape(10.dp)
-private val MenuShape = RoundedCornerShape(12.dp)
-private val FieldShape = RoundedCornerShape(10.dp)
+private val MenuShape = RoundedCornerShape(14.dp)
+private val FieldShape = RoundedCornerShape(12.dp)
 private const val CITY_QUERY_MIN = 2
 private const val CITY_RESULT_CAP = 50
 private const val COUNTRY_RESULT_CAP = 60
@@ -83,7 +106,6 @@ fun SettingsSheet(
     nightBlackoutEnabled: Boolean,
     demoId: String?,
     onSelectLocation: (String, Double, Double, String) -> Unit,
-    onResetAlbany: () -> Unit,
     onUseGps: () -> Unit,
     onSelectAthanSound: (String) -> Unit,
     onAthkarEnabledChange: (Boolean) -> Unit,
@@ -115,6 +137,7 @@ fun SettingsSheet(
             }
         }
     }
+
     LaunchedEffect(catalog, cityLabel, latitude, longitude) {
         val places = catalog ?: return@LaunchedEffect
         val hit = withContext(Dispatchers.Default) {
@@ -134,10 +157,12 @@ fun SettingsSheet(
             catalog?.searchCountries(countryQuery, limit = COUNTRY_RESULT_CAP).orEmpty()
         }
     }
+
     LaunchedEffect(cityQueryLive) {
         delay(90)
         cityQuery = cityQueryLive
     }
+
     val cityChoices by remember {
         derivedStateOf {
             val places = catalog
@@ -150,92 +175,148 @@ fun SettingsSheet(
             }
         }
     }
+
     val cityValue = selectedCity?.let { city ->
         val country = selectedCountry
         if (country != null) city.label(country.name) else city.name
     }.orEmpty()
 
     Box(modifier = Modifier.fillMaxSize()) {
+        // Scrim
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(palette.clock.copy(alpha = 0.32f))
+                .background(Color.Black.copy(alpha = 0.65f))
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = onDismiss,
                 ),
         )
+
         BoxWithConstraints(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(),
         ) {
             val landscape = maxWidth > maxHeight
-            val sheetMax = maxHeight
+            val sheetMax = maxHeight * if (landscape) 0.94f else 0.88f
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = sheetMax)
                     .clip(SheetShape)
-                    .background(palette.settingsPanel)
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                palette.settingsPanel,
+                                palette.backgroundDeep,
+                            ),
+                        ),
+                    )
+                    .border(
+                        width = 1.dp,
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                palette.gold.copy(alpha = 0.35f),
+                                Color.Transparent,
+                            ),
+                        ),
+                        shape = SheetShape,
+                    )
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                         onClick = {},
                     )
                     .imePadding()
-                    .padding(horizontal = 28.dp, vertical = 20.dp),
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
             ) {
+                // Drag handle pill
                 Box(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 16.dp)
-                        .height(4.dp)
-                        .fillMaxWidth(0.10f)
-                        .clip(RoundedCornerShape(2.dp))
-                        .background(palette.gold.copy(alpha = 0.45f)),
+                        .padding(bottom = 12.dp)
+                        .size(width = 44.dp, height = 4.dp)
+                        .clip(CircleShape)
+                        .background(palette.gold.copy(alpha = 0.30f)),
                 )
+
+                // Header
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = "SETTINGS",
-                        style = labelStyle(16.sp),
-                        modifier = Modifier.weight(1f),
-                    )
-                    Text(
-                        text = "CLOSE",
-                        style = labelStyle(13.sp),
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "SETTINGS",
+                            style = labelStyle(16.sp, palette.gold),
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.16.em,
+                        )
+                        Text(
+                            text = "Wall clock and athan preferences",
+                            color = palette.prayerPast.copy(alpha = 0.8f),
+                            fontSize = 12.sp,
+                            fontFamily = EnglishFontFamily,
+                        )
+                    }
+
+                    // Close round button
+                    Box(
                         modifier = Modifier
-                            .clickable(onClick = onDismiss)
-                            .padding(8.dp),
-                    )
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(palette.gold.copy(alpha = 0.12f))
+                            .border(1.dp, palette.gold.copy(alpha = 0.25f), CircleShape)
+                            .clickable(onClick = onDismiss),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = palette.gold,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
                 }
-                Spacer(Modifier.height(10.dp))
+
+                // Divider
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(HairlineWidth)
-                        .background(palette.gold.copy(alpha = 0.55f)),
+                        .height(1.dp)
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    Color.Transparent,
+                                    palette.gold.copy(alpha = 0.45f),
+                                    Color.Transparent,
+                                ),
+                            ),
+                        ),
                 )
-                Spacer(Modifier.height(18.dp))
+
+                Spacer(Modifier.height(16.dp))
+
                 if (landscape) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f, fill = false)
-                            .heightIn(max = sheetMax * 0.78f),
-                        horizontalArrangement = Arrangement.spacedBy(28.dp),
+                            .weight(1f, fill = false),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
                     ) {
                         Column(
                             modifier = Modifier
-                                .weight(1f)
+                                .weight(1.1f)
                                 .fillMaxHeight()
                                 .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
-                            LocationBlock(
+                            LocationSectionCard(
                                 placesReady = placesReady,
                                 selectedCountry = selectedCountry,
                                 selectedCity = selectedCity,
@@ -270,34 +351,32 @@ fun SettingsSheet(
                                         )
                                     }
                                 },
-                                onResetAlbany = onResetAlbany,
                                 onUseGps = onUseGps,
                             )
                         }
+
                         Column(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight()
                                 .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
-                            PrayerAthansBlock(
+                            PrayerAthansCard(
                                 mutedPrayers = mutedPrayers,
                                 onTogglePrayerMute = onTogglePrayerMute,
                             )
-                            Spacer(Modifier.height(22.dp))
-                            AthanBlock(
+                            AthanSoundCard(
                                 athanSoundId = athanSoundId,
                                 demoId = demoId,
                                 onSelectAthanSound = onSelectAthanSound,
                                 onPlayAthanDemo = onPlayAthanDemo,
                             )
-                            Spacer(Modifier.height(22.dp))
-                            AthkarBlock(
+                            AthkarCard(
                                 athkarEnabled = athkarEnabled,
                                 onAthkarEnabledChange = onAthkarEnabledChange,
                             )
-                            Spacer(Modifier.height(22.dp))
-                            NightBlackoutBlock(
+                            NightBlackoutCard(
                                 nightBlackoutEnabled = nightBlackoutEnabled,
                                 onNightBlackoutChange = onNightBlackoutChange,
                             )
@@ -309,8 +388,9 @@ fun SettingsSheet(
                             .fillMaxWidth()
                             .weight(1f, fill = false)
                             .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        LocationBlock(
+                        LocationSectionCard(
                             placesReady = placesReady,
                             selectedCountry = selectedCountry,
                             selectedCity = selectedCity,
@@ -345,28 +425,27 @@ fun SettingsSheet(
                                     )
                                 }
                             },
-                            onResetAlbany = onResetAlbany,
                             onUseGps = onUseGps,
                         )
-                        Spacer(Modifier.height(22.dp))
-                        PrayerAthansBlock(
+
+                        PrayerAthansCard(
                             mutedPrayers = mutedPrayers,
                             onTogglePrayerMute = onTogglePrayerMute,
                         )
-                        Spacer(Modifier.height(22.dp))
-                        AthanBlock(
+
+                        AthanSoundCard(
                             athanSoundId = athanSoundId,
                             demoId = demoId,
                             onSelectAthanSound = onSelectAthanSound,
                             onPlayAthanDemo = onPlayAthanDemo,
                         )
-                        Spacer(Modifier.height(22.dp))
-                        AthkarBlock(
+
+                        AthkarCard(
                             athkarEnabled = athkarEnabled,
                             onAthkarEnabledChange = onAthkarEnabledChange,
                         )
-                        Spacer(Modifier.height(22.dp))
-                        NightBlackoutBlock(
+
+                        NightBlackoutCard(
                             nightBlackoutEnabled = nightBlackoutEnabled,
                             onNightBlackoutChange = onNightBlackoutChange,
                         )
@@ -378,7 +457,90 @@ fun SettingsSheet(
 }
 
 @Composable
-private fun LocationBlock(
+private fun ModernCardContainer(
+    title: String,
+    icon: ImageVector,
+    subtitle: String? = null,
+    badge: String? = null,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    val palette = LocalWallPalette.current
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(CardShape)
+            .background(palette.backgroundDeep.copy(alpha = 0.65f))
+            .border(
+                width = 1.dp,
+                color = palette.hairline.copy(alpha = 0.35f),
+                shape = CardShape,
+            )
+            .padding(16.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(palette.gold.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = palette.gold,
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+
+            Spacer(Modifier.width(10.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title.uppercase(),
+                    style = labelStyle(13.sp, palette.gold),
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.10.em,
+                )
+                if (!subtitle.isNullOrBlank()) {
+                    Text(
+                        text = subtitle,
+                        color = palette.prayerPast,
+                        fontSize = 12.sp,
+                        fontFamily = EnglishFontFamily,
+                    )
+                }
+            }
+
+            if (!badge.isNullOrBlank()) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(palette.gold.copy(alpha = 0.15f))
+                        .padding(horizontal = 8.dp, vertical = 3.dp),
+                ) {
+                    Text(
+                        text = badge,
+                        color = palette.gold,
+                        fontSize = 11.sp,
+                        fontFamily = EnglishFontFamily,
+                        fontWeight = FontWeight.Medium,
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(14.dp))
+        content()
+    }
+}
+
+@Composable
+private fun LocationSectionCard(
     placesReady: Boolean,
     selectedCountry: PlaceCountry?,
     selectedCity: PlaceCity?,
@@ -394,15 +556,19 @@ private fun LocationBlock(
     onOpenMenu: (PlaceMenu?) -> Unit,
     onCountry: (PlaceCountry) -> Unit,
     onCity: (PlaceCity) -> Unit,
-    onResetAlbany: () -> Unit,
     onUseGps: () -> Unit,
 ) {
-    SettingsSection("Location") {
-        SearchSelect(
-            title = "Country",
+    val palette = LocalWallPalette.current
+    ModernCardContainer(
+        title = "Location",
+        icon = Icons.Default.LocationOn,
+        subtitle = "Search city or acquire GPS",
+    ) {
+        SearchSelectField(
+            label = "Country",
             value = selectedCountry?.name.orEmpty(),
-            placeholder = if (!placesReady) "Loading…" else "Search",
-            emptyHint = "No matches",
+            placeholder = if (!placesReady) "Loading countries…" else "Choose country…",
+            emptyHint = "No matching countries",
             query = countryQuery,
             onQueryChange = onCountryQuery,
             expanded = openMenu == PlaceMenu.Country,
@@ -418,19 +584,21 @@ private fun LocationBlock(
             onDismiss = { onOpenMenu(null) },
             onSelect = onCountry,
         )
-        Spacer(Modifier.height(12.dp))
-        SearchSelect(
-            title = "City",
+
+        Spacer(Modifier.height(10.dp))
+
+        SearchSelectField(
+            label = "City",
             value = cityValue,
             placeholder = when {
-                !placesReady -> "Loading…"
-                selectedCountry == null -> "Country first"
-                else -> "Type two letters"
+                !placesReady -> "Loading cities…"
+                selectedCountry == null -> "Select country first"
+                else -> "Type at least 2 characters…"
             },
             emptyHint = if (cityQuery.trim().length < CITY_QUERY_MIN) {
-                "Type two letters"
+                "Type at least 2 characters"
             } else {
-                "No matches"
+                "No matching cities found"
             },
             query = cityQuery,
             onQueryChange = onCityQuery,
@@ -441,63 +609,98 @@ private fun LocationBlock(
             optionText = { it.rowText() },
             optionKey = { "${it.name}|${it.admin1}|${it.latitude}|${it.longitude}" },
             onToggle = {
-                if (selectedCountry == null) return@SearchSelect
+                if (selectedCountry == null) return@SearchSelectField
                 onOpenMenu(if (openMenu == PlaceMenu.City) null else PlaceMenu.City)
                 onCityQuery("")
             },
             onDismiss = { onOpenMenu(null) },
             onSelect = onCity,
         )
+
         if (!locationError.isNullOrBlank()) {
-            Text(
-                text = locationError,
-                color = LocalWallPalette.current.gold,
-                fontSize = 13.sp,
-                fontFamily = EnglishFontFamily,
-                modifier = Modifier.padding(top = 10.dp),
-            )
+            Box(
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxWidth()
+                    .clip(InnerCardShape)
+                    .background(palette.gold.copy(alpha = 0.12f))
+                    .border(1.dp, palette.gold.copy(alpha = 0.45f), InnerCardShape)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            ) {
+                Text(
+                    text = locationError,
+                    color = palette.gold,
+                    fontSize = 12.sp,
+                    fontFamily = EnglishFontFamily,
+                )
+            }
         }
-        Spacer(Modifier.height(12.dp))
-        Row(
+
+        Spacer(Modifier.height(14.dp))
+
+        ModernActionButton(
+            title = "Use GPS",
+            icon = Icons.Default.LocationOn,
+            onClick = onUseGps,
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
-        ) {
-            Text(
-                text = "GPS",
-                style = labelStyle(12.sp),
-                modifier = Modifier
-                    .clickable(onClick = onUseGps)
-                    .padding(vertical = 6.dp),
-            )
-            Text(
-                text = "Albany",
-                style = labelStyle(12.sp),
-                modifier = Modifier
-                    .clickable(onClick = onResetAlbany)
-                    .padding(vertical = 6.dp),
-            )
-        }
+        )
     }
 }
 
 @Composable
-private fun PrayerAthansBlock(
+private fun ModernActionButton(
+    title: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val palette = LocalWallPalette.current
+    Row(
+        modifier = modifier
+            .clip(InnerCardShape)
+            .background(palette.gold.copy(alpha = 0.08f))
+            .border(1.dp, palette.hairline.copy(alpha = 0.45f), InnerCardShape)
+            .clickable(onClick = onClick)
+            .padding(vertical = 10.dp, horizontal = 12.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = palette.gold,
+            modifier = Modifier.size(16.dp),
+        )
+        Spacer(Modifier.width(6.dp))
+        Text(
+            text = title,
+            style = labelStyle(12.sp, palette.gold),
+            fontWeight = FontWeight.Medium,
+        )
+    }
+}
+
+@Composable
+private fun PrayerAthansCard(
     mutedPrayers: Set<PrayerName>,
     onTogglePrayerMute: (PrayerName) -> Unit,
 ) {
-    SettingsSection("Prayer athans", "Tap to mute or unmute") {
+    ModernCardContainer(
+        title = "Prayer Athans",
+        icon = Icons.Default.Check,
+        subtitle = "Tap a prayer to toggle athan audio",
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             PrayerName.athanTargets().forEach { prayer ->
-                val muted = prayer in mutedPrayers
-                ChoiceChip(
+                val active = prayer !in mutedPrayers
+                PrayerToggleChip(
                     title = prayer.englishLabel(),
-                    active = !muted,
+                    active = active,
                     onClick = { onTogglePrayerMute(prayer) },
                     modifier = Modifier.weight(1f),
-                    fontSize = 12.sp,
                 )
             }
         }
@@ -505,16 +708,73 @@ private fun PrayerAthansBlock(
 }
 
 @Composable
-private fun AthanBlock(
+private fun PrayerToggleChip(
+    title: String,
+    active: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val palette = LocalWallPalette.current
+    val bgAnim by animateColorAsState(
+        targetValue = if (active) palette.gold.copy(alpha = 0.20f) else Color.Transparent,
+        animationSpec = tween(150),
+        label = "bgAnim",
+    )
+    val borderAnim by animateColorAsState(
+        targetValue = if (active) palette.gold else palette.hairline.copy(alpha = 0.35f),
+        animationSpec = tween(150),
+        label = "borderAnim",
+    )
+    val textAnim by animateColorAsState(
+        targetValue = if (active) palette.gold else palette.prayerPast.copy(alpha = 0.65f),
+        animationSpec = tween(150),
+        label = "textAnim",
+    )
+
+    Column(
+        modifier = modifier
+            .clip(ChipShape)
+            .background(bgAnim)
+            .border(1.dp, borderAnim, ChipShape)
+            .clickable(onClick = onClick)
+            .padding(vertical = 10.dp, horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = title,
+            color = textAnim,
+            fontSize = 11.sp,
+            fontFamily = EnglishFontFamily,
+            fontWeight = if (active) FontWeight.Bold else FontWeight.Normal,
+            maxLines = 1,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(4.dp))
+        Box(
+            modifier = Modifier
+                .size(6.dp)
+                .clip(CircleShape)
+                .background(if (active) palette.gold else palette.prayerPast.copy(alpha = 0.35f)),
+        )
+    }
+}
+
+@Composable
+private fun AthanSoundCard(
     athanSoundId: String,
     demoId: String?,
     onSelectAthanSound: (String) -> Unit,
     onPlayAthanDemo: (String) -> Unit,
 ) {
     val current = AthanCatalog.choice(athanSoundId)
-    SettingsSection("Athan", current.title) {
+    ModernCardContainer(
+        title = "Athan Sound",
+        icon = Icons.Default.PlayArrow,
+        subtitle = "Audio recitation on prayer start",
+        badge = current.title,
+    ) {
         AthanCatalog.all.forEach { choice ->
-            SoundRow(
+            ModernSoundItem(
                 choice = choice,
                 selected = choice.id == athanSoundId,
                 playing = demoId == choice.id,
@@ -526,93 +786,215 @@ private fun AthanBlock(
 }
 
 @Composable
-private fun AthkarBlock(
+private fun ModernSoundItem(
+    choice: AthanSoundChoice,
+    selected: Boolean,
+    playing: Boolean,
+    onSelect: () -> Unit,
+    onPlay: () -> Unit,
+) {
+    val palette = LocalWallPalette.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(InnerCardShape)
+            .background(if (selected) palette.gold.copy(alpha = 0.12f) else Color.Transparent)
+            .border(
+                width = 1.dp,
+                color = if (selected) palette.gold.copy(alpha = 0.55f) else palette.hairline.copy(alpha = 0.25f),
+                shape = InnerCardShape,
+            )
+            .clickable(onClick = onSelect)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .clip(CircleShape)
+                .border(
+                    width = 1.5.dp,
+                    color = if (selected) palette.gold else palette.prayerPast.copy(alpha = 0.5f),
+                    shape = CircleShape,
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (selected) {
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .clip(CircleShape)
+                        .background(palette.gold),
+                )
+            }
+        }
+
+        Spacer(Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = choice.title,
+                color = if (selected) palette.gold else palette.clock,
+                fontSize = 14.sp,
+                fontFamily = EnglishFontFamily,
+                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+            )
+            Text(
+                text = choice.subtitle,
+                color = palette.prayerPast,
+                fontSize = 11.sp,
+                fontFamily = EnglishFontFamily,
+            )
+        }
+
+        // Play/Stop Button
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(if (playing) palette.gold else palette.gold.copy(alpha = 0.15f))
+                .clickable(onClick = onPlay)
+                .padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = if (playing) Icons.Default.Close else Icons.Default.PlayArrow,
+                contentDescription = null,
+                tint = if (playing) palette.settingsPanel else palette.gold,
+                modifier = Modifier.size(14.dp),
+            )
+            Spacer(Modifier.width(4.dp))
+            Text(
+                text = if (playing) "STOP" else "PLAY",
+                style = labelStyle(
+                    11.sp,
+                    color = if (playing) palette.settingsPanel else palette.gold,
+                ),
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+}
+
+@Composable
+private fun AthkarCard(
     athkarEnabled: Boolean,
     onAthkarEnabledChange: (Boolean) -> Unit,
 ) {
-    SettingsSection("Hourly athkar", "8 AM to 10 PM · athan wins") {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            ChoiceChip(
-                title = "On",
-                active = athkarEnabled,
-                onClick = { onAthkarEnabledChange(true) },
-                modifier = Modifier.weight(1f),
-            )
-            ChoiceChip(
-                title = "Off",
-                active = !athkarEnabled,
-                onClick = { onAthkarEnabledChange(false) },
-                modifier = Modifier.weight(1f),
-            )
-        }
+    ModernCardContainer(
+        title = "Hourly Athkar",
+        icon = Icons.Default.PlayArrow,
+        subtitle = "8 AM – 10 PM · Short salawat on the hour",
+    ) {
+        SegmentedToggle(
+            active = athkarEnabled,
+            onActiveChange = onAthkarEnabledChange,
+            onLabel = "Active",
+            offLabel = "Silent",
+        )
     }
 }
 
 @Composable
-private fun NightBlackoutBlock(
+private fun NightBlackoutCard(
     nightBlackoutEnabled: Boolean,
     onNightBlackoutChange: (Boolean) -> Unit,
 ) {
-    SettingsSection("Night blackout", "11 PM to 4 AM · tap to wake") {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            ChoiceChip(
-                title = "On",
-                active = nightBlackoutEnabled,
-                onClick = { onNightBlackoutChange(true) },
-                modifier = Modifier.weight(1f),
-            )
-            ChoiceChip(
-                title = "Off",
-                active = !nightBlackoutEnabled,
-                onClick = { onNightBlackoutChange(false) },
-                modifier = Modifier.weight(1f),
-            )
-        }
+    ModernCardContainer(
+        title = "Night Blackout",
+        icon = Icons.Default.Refresh,
+        subtitle = "11 PM – 4 AM · Black screen with tap to wake",
+    ) {
+        SegmentedToggle(
+            active = nightBlackoutEnabled,
+            onActiveChange = onNightBlackoutChange,
+            onLabel = "Enabled",
+            offLabel = "Disabled",
+        )
     }
 }
 
 @Composable
-private fun SettingsSection(
-    title: String,
-    caption: String? = null,
-    content: @Composable ColumnScope.() -> Unit,
+private fun SegmentedToggle(
+    active: Boolean,
+    onActiveChange: (Boolean) -> Unit,
+    onLabel: String = "On",
+    offLabel: String = "Off",
 ) {
     val palette = LocalWallPalette.current
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = title.uppercase(),
-            style = labelStyle(13.sp),
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(InnerCardShape)
+            .background(palette.settingsPanel.copy(alpha = 0.8f))
+            .border(1.dp, palette.hairline.copy(alpha = 0.35f), InnerCardShape)
+            .padding(3.dp),
+    ) {
+        TogglePill(
+            title = onLabel,
+            active = active,
+            onClick = { onActiveChange(true) },
+            modifier = Modifier.weight(1f),
         )
-        if (!caption.isNullOrBlank()) {
-            Text(
-                text = caption,
-                color = palette.prayerPast,
-                fontSize = 13.sp,
-                fontFamily = EnglishFontFamily,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-        }
-        Spacer(Modifier.height(8.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(HairlineWidth)
-                .background(palette.gold.copy(alpha = 0.35f)),
+        TogglePill(
+            title = offLabel,
+            active = !active,
+            onClick = { onActiveChange(false) },
+            modifier = Modifier.weight(1f),
         )
-        Spacer(Modifier.height(12.dp))
-        content()
     }
 }
 
 @Composable
-private fun <T> SearchSelect(
+private fun TogglePill(
     title: String,
+    active: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val palette = LocalWallPalette.current
+    val bgAnim by animateColorAsState(
+        targetValue = if (active) palette.gold else Color.Transparent,
+        animationSpec = tween(150),
+        label = "bgAnim",
+    )
+    val textAnim by animateColorAsState(
+        targetValue = if (active) palette.settingsPanel else palette.prayerPast,
+        animationSpec = tween(150),
+        label = "textAnim",
+    )
+
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(9.dp))
+            .background(bgAnim)
+            .clickable(onClick = onClick)
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (active) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null,
+                tint = textAnim,
+                modifier = Modifier
+                    .padding(end = 6.dp)
+                    .size(14.dp),
+            )
+        }
+        Text(
+            text = title,
+            color = textAnim,
+            fontSize = 13.sp,
+            fontFamily = EnglishFontFamily,
+            fontWeight = if (active) FontWeight.Bold else FontWeight.Medium,
+        )
+    }
+}
+
+@Composable
+private fun <T> SearchSelectField(
+    label: String,
     value: String,
     placeholder: String,
     emptyHint: String,
@@ -633,19 +1015,22 @@ private fun <T> SearchSelect(
     val focusRequester = remember { FocusRequester() }
     var fieldWidth by remember { mutableIntStateOf(0) }
     var fieldHeight by remember { mutableIntStateOf(0) }
+
     LaunchedEffect(expanded) {
         if (expanded) {
             runCatching { focusRequester.requestFocus() }
         }
     }
+
     Column {
         Text(
-            text = title,
+            text = label,
             color = palette.prayerPast,
             fontSize = 12.sp,
             fontFamily = EnglishFontFamily,
+            fontWeight = FontWeight.Medium,
         )
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(5.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -658,25 +1043,28 @@ private fun <T> SearchSelect(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(FieldShape)
+                    .background(palette.settingsPanel.copy(alpha = 0.9f))
                     .border(
-                        width = HairlineWidth,
-                        color = if (expanded) palette.gold else palette.hairline.copy(alpha = 0.55f),
+                        width = 1.dp,
+                        color = if (expanded) palette.gold else palette.hairline.copy(alpha = 0.40f),
                         shape = FieldShape,
                     )
                     .clickable(enabled = enabled, onClick = onToggle)
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                    .padding(horizontal = 14.dp, vertical = 11.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = value.ifBlank { placeholder },
                     color = when {
-                        !enabled -> palette.prayerPast.copy(alpha = 0.55f)
+                        !enabled -> palette.prayerPast.copy(alpha = 0.45f)
                         value.isBlank() -> palette.prayerPast
                         else -> palette.gold
                     },
-                    fontSize = 17.sp,
+                    fontSize = 15.sp,
                     fontFamily = EnglishFontFamily,
                     fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f),
                 )
                 Text(
@@ -685,6 +1073,7 @@ private fun <T> SearchSelect(
                     fontSize = 13.sp,
                 )
             }
+
             if (expanded) {
                 Popup(
                     alignment = Alignment.TopStart,
@@ -695,83 +1084,107 @@ private fun <T> SearchSelect(
                     Column(
                         modifier = Modifier
                             .width(with(density) { fieldWidth.toDp() })
-                            .heightIn(max = 300.dp)
+                            .heightIn(max = 280.dp)
                             .clip(MenuShape)
                             .background(palette.settingsPanel)
                             .border(
-                                width = HairlineWidth,
-                                color = palette.gold.copy(alpha = 0.55f),
+                                width = 1.dp,
+                                color = palette.gold.copy(alpha = 0.65f),
                                 shape = MenuShape,
                             )
-                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                            .padding(horizontal = 14.dp, vertical = 12.dp),
                     ) {
-                        BasicTextField(
-                            value = query,
-                            onValueChange = onQueryChange,
-                            singleLine = true,
-                            textStyle = TextStyle(
-                                color = palette.gold,
-                                fontSize = 16.sp,
-                                fontFamily = EnglishFontFamily,
-                                fontWeight = FontWeight.Medium,
-                            ),
-                            cursorBrush = SolidColor(palette.gold),
+                        // Search textfield
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .focusRequester(focusRequester),
-                            decorationBox = { inner ->
-                                Column {
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(palette.backgroundDeep.copy(alpha = 0.7f))
+                                .border(1.dp, palette.hairline.copy(alpha = 0.35f), RoundedCornerShape(8.dp))
+                                .padding(horizontal = 10.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null,
+                                tint = palette.gold.copy(alpha = 0.7f),
+                                modifier = Modifier.size(16.dp),
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            BasicTextField(
+                                value = query,
+                                onValueChange = onQueryChange,
+                                singleLine = true,
+                                textStyle = TextStyle(
+                                    color = palette.gold,
+                                    fontSize = 14.sp,
+                                    fontFamily = EnglishFontFamily,
+                                    fontWeight = FontWeight.Medium,
+                                ),
+                                cursorBrush = SolidColor(palette.gold),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(focusRequester),
+                                decorationBox = { inner ->
                                     Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .heightIn(min = 24.dp),
+                                        modifier = Modifier.fillMaxWidth(),
                                         contentAlignment = Alignment.CenterStart,
                                     ) {
                                         if (query.isEmpty()) {
                                             Text(
                                                 text = placeholder,
-                                                color = palette.prayerPast,
-                                                fontSize = 16.sp,
+                                                color = palette.prayerPast.copy(alpha = 0.6f),
+                                                fontSize = 14.sp,
                                                 fontFamily = EnglishFontFamily,
                                             )
                                         }
                                         inner()
                                     }
-                                    Spacer(Modifier.height(8.dp))
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(HairlineWidth)
-                                            .background(palette.gold.copy(alpha = 0.55f)),
-                                    )
-                                }
-                            },
-                        )
-                        Spacer(Modifier.height(6.dp))
+                                },
+                            )
+                        }
+
+                        Spacer(Modifier.height(8.dp))
+
                         if (options.isEmpty()) {
                             Text(
                                 text = emptyHint,
                                 color = palette.prayerPast,
-                                fontSize = 15.sp,
+                                fontSize = 13.sp,
                                 fontFamily = EnglishFontFamily,
-                                modifier = Modifier.padding(vertical = 10.dp),
+                                modifier = Modifier.padding(vertical = 12.dp),
                             )
                         } else {
-                            LazyColumn(modifier = Modifier.heightIn(max = 220.dp)) {
+                            LazyColumn(modifier = Modifier.heightIn(max = 210.dp)) {
                                 items(options, key = optionKey) { option ->
                                     val label = optionText(option)
                                     val active = option == selected
-                                    Text(
-                                        text = label,
-                                        color = if (active) palette.gold else palette.clock,
-                                        fontSize = 16.sp,
-                                        fontFamily = EnglishFontFamily,
-                                        fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
+                                    Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
+                                            .clip(RoundedCornerShape(6.dp))
+                                            .background(if (active) palette.gold.copy(alpha = 0.15f) else Color.Transparent)
                                             .clickable { onSelect(option) }
-                                            .padding(vertical = 9.dp),
-                                    )
+                                            .padding(horizontal = 8.dp, vertical = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Text(
+                                            text = label,
+                                            color = if (active) palette.gold else palette.clock,
+                                            fontSize = 14.sp,
+                                            fontFamily = EnglishFontFamily,
+                                            fontWeight = if (active) FontWeight.Bold else FontWeight.Normal,
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                        if (active) {
+                                            Icon(
+                                                imageVector = Icons.Default.Check,
+                                                contentDescription = null,
+                                                tint = palette.gold,
+                                                modifier = Modifier.size(16.dp),
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -782,73 +1195,3 @@ private fun <T> SearchSelect(
     }
 }
 
-@Composable
-private fun SoundRow(
-    choice: AthanSoundChoice,
-    selected: Boolean,
-    playing: Boolean,
-    onSelect: () -> Unit,
-    onPlay: () -> Unit,
-) {
-    val palette = LocalWallPalette.current
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 2.dp)
-            .clip(ChipShape)
-            .clickable(onClick = onSelect)
-            .padding(horizontal = 4.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(end = 10.dp)
-                .width(2.dp)
-                .height(18.dp)
-                .background(if (selected) palette.gold else palette.hairline.copy(alpha = 0.35f)),
-        )
-        Text(
-            text = choice.title,
-            color = if (selected) palette.gold else palette.clock,
-            fontSize = 16.sp,
-            fontFamily = EnglishFontFamily,
-            fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal,
-            modifier = Modifier.weight(1f),
-        )
-        Text(
-            text = if (playing) "STOP" else "PLAY",
-            style = labelStyle(11.sp),
-            modifier = Modifier
-                .clickable(onClick = onPlay)
-                .padding(6.dp),
-        )
-    }
-}
-
-@Composable
-private fun ChoiceChip(
-    title: String,
-    active: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    fontSize: androidx.compose.ui.unit.TextUnit = 15.sp,
-) {
-    val palette = LocalWallPalette.current
-    Text(
-        text = title,
-        color = if (active) palette.gold else palette.clock,
-        fontSize = fontSize,
-        fontFamily = EnglishFontFamily,
-        fontWeight = FontWeight.Medium,
-        textAlign = TextAlign.Center,
-        modifier = modifier
-            .border(
-                width = HairlineWidth,
-                color = if (active) palette.gold else palette.hairline.copy(alpha = 0.55f),
-                shape = ChipShape,
-            )
-            .clip(ChipShape)
-            .clickable(onClick = onClick)
-            .padding(vertical = 10.dp),
-    )
-}
