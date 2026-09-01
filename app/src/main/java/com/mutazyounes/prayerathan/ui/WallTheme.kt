@@ -33,11 +33,11 @@ data class WallPalette(
     val star: Color,
     val geometry: Color,
 ) {
-    val highlightStroke: Color get() = Color(0xFFFFD54F)
-    val highlightFill: Color get() = Color(0x22FFD54F)
+    val highlightStroke: Color get() = gold
+    val highlightFill: Color get() = gold.copy(alpha = 0.14f)
     val cellBackground: Color get() = Color.Transparent
-    val date: Color get() = clock
-    val location: Color get() = clock
+    val date: Color get() = Color(0xFFE8C878)
+    val location: Color get() = Color(0xFFF5F5F5)
     val label: Color get() = gold
     val amPm: Color get() = clock
 }
@@ -47,14 +47,14 @@ val DarkWallPalette = WallPalette(
     backgroundLift = Color(0xFF16202A),
     backgroundDeep = Color(0xFF080C10),
     settingsPanel = Color(0xFF121A22),
-    clock = Color(0xFFFFFFFF),
-    gold = Color(0xFFFFD54F),
-    goldDim = Color(0xFFFFE082),
-    prayerPast = Color(0xFFB0BEC5),
-    prayerNext = Color(0xFFEAE0C8),
-    hairline = Color(0x66FFFFFF),
-    star = Color(0xFFFFD54F).copy(alpha = 0.15f),
-    geometry = Color(0xFFFFD54F).copy(alpha = 0.12f),
+    clock = Color(0xFFF5EBDA),
+    gold = Color(0xFFEDC04A),
+    goldDim = Color(0xFFD4AF37),
+    prayerPast = Color(0xFF9A9080),
+    prayerNext = Color(0xFFF5EBDA),
+    hairline = Color(0x99C4A888),
+    star = Color(0xFFE2B85C).copy(alpha = 0.15f),
+    geometry = Color(0xFFE2B85C).copy(alpha = 0.12f),
 )
 
 val LocalWallPalette = staticCompositionLocalOf { DarkWallPalette }
@@ -62,7 +62,17 @@ val LocalWallPalette = staticCompositionLocalOf { DarkWallPalette }
 val HairlineWidth = 1.5.dp
 val HighlightStrokeWidth = 1.5.dp
 val HighlightCornerRadius = 16.dp
+val CellCornerRadius = 8.dp
 val ScreenInset = 16.dp
+
+val ColorCellFill = Color(0xFF0A0A0A).copy(alpha = 0.38f)
+val ColorCellFillNext = Color(0xFF0A0A0A).copy(alpha = 0.48f)
+val ColorCellStroke = Color(0xFFD4C4A8)
+val ColorCellStrokeNext = Color(0xFFE8D5B5)
+val CellStrokeNormal = 1.dp
+val CellStrokeNext = 2.dp
+val NextCellWeight = 1.0f
+val NormalCellWeight = 1.0f
 
 /**
  * Landscape wall knobs. Each field is independent.
@@ -75,12 +85,12 @@ val ScreenInset = 16.dp
 object LandscapeWallLayout {
     val clockHeight = 0.28f
     val weatherHeight = 0.28f
-    val heroRowFromTop = 0.16f
+    val heroRowFromTop = 0.15f
     val countdownHeight = 0.13f
     val countdownFromTop = 0.50f
     val countdownWidth = 0.46f
     val countdownFromStart = 0.52f
-    val prayerHeight = 0.50f
+    val prayerHeight = 0.44f
     val prayerTimeFrac = 0.42f
     val prayerNameFrac = 0.18f
     val prayerWeatherFrac = 0.15f
@@ -91,19 +101,19 @@ object LandscapeWallLayout {
 @OptIn(ExperimentalTextApi::class)
 val EnglishFontFamily = FontFamily(
     Font(
-        R.font.cinzel,
+        R.font.inter,
         weight = FontWeight.Normal,
+        variationSettings = FontVariation.Settings(FontVariation.weight(400)),
+    ),
+    Font(
+        R.font.inter,
+        weight = FontWeight.Medium,
         variationSettings = FontVariation.Settings(FontVariation.weight(500)),
     ),
     Font(
-        R.font.cinzel,
-        weight = FontWeight.Medium,
-        variationSettings = FontVariation.Settings(FontVariation.weight(600)),
-    ),
-    Font(
-        R.font.cinzel,
+        R.font.inter,
         weight = FontWeight.Bold,
-        variationSettings = FontVariation.Settings(FontVariation.weight(700)),
+        variationSettings = FontVariation.Settings(FontVariation.weight(650)),
     ),
 )
 
@@ -126,23 +136,25 @@ data class TypeScale(
     val prayerEn: TextUnit,
     val prayerAr: TextUnit,
     val prayerTime: TextUnit,
+    val cellCountdown: TextUnit,
 )
 
 fun typeScale(shortestSideDp: Float) = TypeScale(
     albanyLandscape = (shortestSideDp * 0.10f).sp,
-    albanyPortrait = (shortestSideDp * 0.11f).sp,
+    albanyPortrait = (shortestSideDp * 0.15f).sp,
     jordanLandscape = (shortestSideDp * 0.10f).sp,
     jordanPortrait = (shortestSideDp * 0.09f).sp,
     countdownLandscape = (shortestSideDp * 0.08f).sp,
-    countdownPortrait = (shortestSideDp * 0.09f).sp,
+    countdownPortrait = (shortestSideDp * 0.055f).sp,
     dateLine = (shortestSideDp * 0.050f).sp,
     weekday = (shortestSideDp * 0.034f).sp,
     location = (shortestSideDp * 0.020f).sp,
     label = (shortestSideDp * 0.020f).sp,
     units = (shortestSideDp * 0.016f).sp,
-    prayerEn = (shortestSideDp * 0.040f).sp,
+    prayerEn = (shortestSideDp * 0.048f).sp,
     prayerAr = (shortestSideDp * 0.032f).sp,
-    prayerTime = (shortestSideDp * 0.048f).sp,
+    prayerTime = (shortestSideDp * 0.058f).sp,
+    cellCountdown = (shortestSideDp * 0.042f).sp,
 )
 
 fun fitSp(
@@ -195,7 +207,7 @@ fun labelStyle(size: TextUnit, color: Color = LocalWallPalette.current.label): T
     lineHeight = size,
     fontWeight = FontWeight.Medium,
     fontFamily = EnglishFontFamily,
-    letterSpacing = 0.12.em,
+    letterSpacing = 0.04.em,
     platformStyle = PlatformTextStyle(includeFontPadding = false),
 )
 
