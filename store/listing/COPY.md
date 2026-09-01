@@ -21,10 +21,10 @@ Athan Wall Clock
 Limit 80.
 
 ```
-Tablet wall clock for prayer times. On-device ISNA times, countdown, athan.
+Tablet wall clock. Prayer times, weather, countdown, and athan.
 ```
 
-75 characters, including spaces and punctuation.
+63 characters, including spaces and punctuation.
 
 ## Full description
 
@@ -33,20 +33,20 @@ Limit 4000. Paste the block below as-is.
 ```
 Athan Wall Clock is a wall-mounted clock for 7-inch and 10-inch Android tablets. Hang it landscape or portrait. The screen stays on while the app is open.
 
-It shows local time, a countdown to the next prayer, and today's Fajr, Sunrise, Dhuhr, Asr, Maghrib, and Isha. Times are calculated on the device. Method is ISNA, North America. Asr is Shafi. No account. After location is saved, the clock does not need the internet.
+It shows local time, today's weather, a countdown to the next prayer, and Fajr, Sunrise, Dhuhr, Asr, Maghrib, and Isha. Times are calculated on the device. Method is ISNA, North America. Asr is Shafi. The wall is dark. Clock is 12-hour. City name on the wall, never coordinates. Date without the year. No account. After location is saved, the clock does not need the internet.
 
-Default location is Albany, NY. Save a different city in settings. 12-hour clock with AM and PM. Theme is Light, Dark, or Auto. Auto is light from sunrise to Maghrib and dark after Maghrib.
+On first open the app asks for location, takes one GPS fix, and saves the nearest city. If you deny it, or the fix fails, it uses Albany, NY. You can search a country and city in settings later.
 
-Athan plays at Fajr, Dhuhr, Asr, Maghrib, and Isha on the alarm stream. A media mute does not silence it. Tap the wall to stop. Sunrise is in the timetable. It stays silent.
+Athan is one Saudi recording for Fajr, Dhuhr, Asr, Maghrib, and Isha. It plays on the alarm stream, so a media mute does not silence it. Tap the wall to stop. Sunrise is in the timetable and stays silent. First launch mutes all five prayer athans and leaves hourly athkar off.
 
 Long-press the wall, or tap the gold gear in the header, for settings.
 
-This is a tablet wall clock, not a phone prayer app. No Hijri date, Qibla, Quran, weather, second-city clock, ads, or login on the wall.
+This is a tablet wall clock, not a phone prayer app. No Hijri date, Qibla, Quran, second-city clock, ads, or login on the wall.
 
 Contact: mutazyounes@gmail.com
 ```
 
-1017 characters, including spaces, punctuation, and line breaks. Limit 4000.
+1239 characters, including spaces, punctuation, and line breaks. Limit 4000.
 
 ## Console fields next to the copy
 
@@ -58,4 +58,4 @@ Contact: mutazyounes@gmail.com
 
 ## After the MP3s are replaced
 
-You may add one sentence to the athan paragraph. Say there are two recordings, and that Fajr is distinct. Do not say official, Haramain, Masjid al-Haram, or a muezzin name you do not have a license to use.
+You may add one sentence to the athan paragraph. Say the recording is licensed for distribution. Do not say official, Haramain, Masjid al-Haram, or a muezzin name you do not have a license to use.
