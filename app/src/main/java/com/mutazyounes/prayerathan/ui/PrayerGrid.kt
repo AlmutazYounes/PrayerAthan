@@ -63,6 +63,180 @@ fun PrayerGrid(
 }
 
 @Composable
+fun LandscapePrayerPanel(
+    cells: List<PrayerCellState>,
+    type: TypeScale,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(start = 12.dp, end = 2.dp, top = 6.dp, bottom = 6.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
+    ) {
+        cells.forEach { cell ->
+            LandscapePrayerSpacedRow(
+                cell = cell,
+                type = type,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun LandscapePrayerSpacedRow(
+    cell: PrayerCellState,
+    type: TypeScale,
+    modifier: Modifier = Modifier,
+) {
+    val palette = LocalWallPalette.current
+    val isNext = cell.kind == CellKind.NEXT
+    val nameColor = when (cell.kind) {
+        CellKind.PAST -> palette.prayerPast
+        CellKind.NEXT -> palette.gold
+        CellKind.LATER -> palette.gold
+    }
+    val timeColor = when (cell.kind) {
+        CellKind.PAST -> palette.prayerPast
+        CellKind.NEXT -> palette.clock
+        CellKind.LATER -> palette.clock.copy(alpha = 0.88f)
+    }
+    BoxWithConstraints(
+        modifier = modifier.clipToBounds(),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        val accentHeight = maxHeight * 0.52f
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (isNext) {
+                Box(
+                    Modifier
+                        .width(3.dp)
+                        .height(accentHeight)
+                        .background(palette.gold),
+                )
+                Spacer(Modifier.width(12.dp))
+            } else {
+                Spacer(Modifier.width(15.dp))
+            }
+            CellLine(
+                text = cell.english,
+                color = nameColor,
+                widthChars = cell.english.length.coerceAtLeast(4) * 0.72f,
+                kind = CellLineKind.English,
+                heightPercent = 0.34f,
+                letterSpacing = 0.05.em,
+                lineAlign = Alignment.CenterStart,
+                modifier = Modifier
+                    .weight(0.42f)
+                    .fillMaxHeight(),
+            )
+            CellLine(
+                text = cell.time,
+                color = timeColor,
+                widthChars = 2.2f,
+                kind = CellLineKind.Time,
+                heightPercent = 0.62f,
+                letterSpacing = (-0.02).em,
+                condenseX = 0.96f,
+                lineAlign = Alignment.CenterEnd,
+                modifier = Modifier
+                    .weight(0.58f)
+                    .fillMaxHeight(),
+            )
+        }
+    }
+}
+
+@Composable
+fun LandscapePrayerStack(
+    cells: List<PrayerCellState>,
+    type: TypeScale,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(vertical = 4.dp),
+    ) {
+        cells.forEachIndexed { index, cell ->
+            if (index > 0) {
+                HorizontalHairline(
+                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
+                )
+            }
+            LandscapePrayerStackRow(
+                cell = cell,
+                type = type,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun LandscapePrayerStackRow(
+    cell: PrayerCellState,
+    type: TypeScale,
+    modifier: Modifier = Modifier,
+) {
+    val palette = LocalWallPalette.current
+    val nameColor = palette.gold
+    val timeColor = when (cell.kind) {
+        CellKind.PAST -> palette.prayerPast
+        CellKind.NEXT -> palette.clock
+        CellKind.LATER -> palette.clock
+    }
+    BoxWithConstraints(
+        modifier = modifier.clipToBounds(),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            CellLine(
+                text = cell.english,
+                color = nameColor,
+                widthChars = cell.english.length.coerceAtLeast(4) * 0.78f,
+                kind = CellLineKind.English,
+                heightPercent = 0.54f,
+                letterSpacing = 0.04.em,
+                lineAlign = Alignment.CenterStart,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+            )
+            CellLine(
+                text = cell.time,
+                color = timeColor,
+                widthChars = 2.4f,
+                kind = CellLineKind.Time,
+                heightPercent = 0.88f,
+                letterSpacing = (-0.02).em,
+                condenseX = 0.98f,
+                lineAlign = Alignment.CenterEnd,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+            )
+        }
+    }
+}
+
+@Composable
 private fun LandscapePrayerGrid(
     cells: List<PrayerCellState>,
     type: TypeScale,
@@ -251,7 +425,7 @@ fun PrayerCell(
                         color = nameColor,
                         widthChars = cell.english.length.coerceAtLeast(4) * 0.78f,
                         kind = CellLineKind.English,
-                        heightPercent = 0.90f,
+                        heightPercent = 0.68f,
                         letterSpacing = 0.04.em,
                         lineAlign = Alignment.Center,
                         modifier = Modifier.fillMaxHeight(),
@@ -280,12 +454,12 @@ fun PrayerCell(
                     color = nameColor,
                     widthChars = if (isNext) 10.0f else 8.0f,
                     kind = CellLineKind.English,
-                    heightPercent = 0.58f,
+                    heightPercent = 0.44f,
                     letterSpacing = 0.10.em,
                     lineAlign = Alignment.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.48f),
+                        .weight(0.40f),
                 )
                 CellLine(
                     text = cell.time,

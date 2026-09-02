@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+
+/** Landscape header is two lines; main content starts just below it. */
+private val LandscapeHeaderClearance = 40.dp
 
 /**
  * Stacked clocks wall layout.
@@ -103,45 +107,51 @@ fun LandscapeStackedWall(
     val playingName = state.playingName?.englishLabel()
     val palette = LocalWallPalette.current
     Box(Modifier.fillMaxSize()) {
-        Column(
+        Row(
             Modifier
                 .fillMaxSize()
-                .padding(start = inset, end = inset, bottom = inset),
+                .padding(start = inset, end = inset, bottom = inset)
+                .padding(top = LandscapeHeaderClearance),
         ) {
-            Spacer(Modifier.weight(12f))
-            ArcWallClock(
-                hourMinute = state.albanyTime,
-                nextLabel = state.nextLabel,
-                countdown = state.countdown,
-                ringFraction = state.nextPrayerRing,
-                playingPrayerName = playingName,
-                type = type,
-                arcWidthFraction = 0.52f,
-                arcHeightFraction = 0.98f,
-                countdownSize = type.countdownLandscape,
-                countdownScale = 1.0f,
+            Box(
                 modifier = Modifier
-                    .weight(48f)
-                    .fillMaxWidth(),
-            )
-            Spacer(Modifier.weight(6f))
-            PrayerGrid(
+                    .weight(0.54f)
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.Center,
+            ) {
+                ArcWallClock(
+                    hourMinute = state.albanyTime,
+                    nextLabel = state.nextLabel,
+                    countdown = state.countdown,
+                    ringFraction = state.nextPrayerRing,
+                    playingPrayerName = playingName,
+                    type = type,
+                    arcWidthFraction = 0.92f,
+                    arcHeightFraction = 0.90f,
+                    clockHeightFraction = 0.98f,
+                    clockInsetHorizontal = 0.03f,
+                    clockInsetTop = 0.03f,
+                    clockInsetBottom = 0.10f,
+                    countdownSize = type.countdownLandscape,
+                    countdownScale = 1.0f,
+                    arcContentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            LandscapePrayerPanel(
                 cells = state.cells,
-                portrait = false,
                 type = type,
-                countdown = state.countdown,
-                athanPlaying = state.athanPlaying,
-                playingName = playingName,
                 modifier = Modifier
-                    .weight(34f)
-                    .fillMaxWidth(),
+                    .weight(0.46f)
+                    .fillMaxHeight()
+                    .padding(start = 12.dp),
             )
         }
         Row(
             modifier = Modifier
-                .align(Alignment.TopCenter)
+                .align(Alignment.TopStart)
                 .fillMaxWidth()
-                .padding(start = inset, end = inset, top = inset),
+                .padding(start = inset, end = inset),
             verticalAlignment = Alignment.Top,
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -207,9 +217,14 @@ private fun ArcWallClock(
     type: TypeScale,
     arcWidthFraction: Float,
     arcHeightFraction: Float = 0.92f,
+    clockHeightFraction: Float = 0.92f,
+    clockInsetHorizontal: Float = 0.05f,
+    clockInsetTop: Float = 0.05f,
+    clockInsetBottom: Float = 0.14f,
     countdownSize: androidx.compose.ui.unit.TextUnit,
     countdownScale: Float = 0.92f,
     labelScale: Float = 0.9f,
+    arcContentAlignment: Alignment = Alignment.TopCenter,
     modifier: Modifier = Modifier,
 ) {
     val palette = LocalWallPalette.current
@@ -227,12 +242,18 @@ private fun ArcWallClock(
         modifier = modifier
             .fillMaxSize()
             .clipToBounds(),
-        contentAlignment = Alignment.TopCenter,
+        contentAlignment = arcContentAlignment,
     ) {
         val side = minOf(maxWidth * arcWidthFraction, maxHeight * arcHeightFraction)
         Box(
             modifier = Modifier
-                .padding(top = 2.dp)
+                .then(
+                    if (arcContentAlignment == Alignment.TopCenter) {
+                        Modifier.padding(top = 2.dp)
+                    } else {
+                        Modifier
+                    },
+                )
                 .size(side),
             contentAlignment = Alignment.Center,
         ) {
@@ -249,13 +270,14 @@ private fun ArcWallClock(
                 type = type,
                 portrait = true,
                 portraitArc = true,
+                clockHeightFraction = clockHeightFraction,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(
-                        start = side * 0.05f,
-                        end = side * 0.05f,
-                        top = side * 0.05f,
-                        bottom = side * 0.14f,
+                        start = side * clockInsetHorizontal,
+                        end = side * clockInsetHorizontal,
+                        top = side * clockInsetTop,
+                        bottom = side * clockInsetBottom,
                     ),
             )
             Column(

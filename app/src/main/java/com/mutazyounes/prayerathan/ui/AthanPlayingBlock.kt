@@ -229,6 +229,7 @@ fun ClockBlock(
     portrait: Boolean,
     starDiameter: androidx.compose.ui.unit.Dp? = null,
     portraitArc: Boolean = false,
+    clockHeightFraction: Float = 0.92f,
     modifier: Modifier = Modifier,
 ) {
     val fallbackSize = when (emphasis) {
@@ -268,6 +269,7 @@ fun ClockBlock(
                 starDiameter = starDiameter,
                 landscape = !portrait,
                 portraitArc = portraitArc,
+                clockHeightFraction = clockHeightFraction,
             )
         }
     }
@@ -282,6 +284,7 @@ private fun ClockDigits(
     starDiameter: androidx.compose.ui.unit.Dp?,
     landscape: Boolean,
     portraitArc: Boolean = false,
+    clockHeightFraction: Float = 0.92f,
 ) {
     BoxWithConstraints(
         modifier = Modifier
@@ -313,7 +316,7 @@ private fun ClockDigits(
             }
             val byHeight = maxHeight.value * when {
                 landscape -> 0.90f
-                portraitArc -> 0.92f
+                portraitArc -> clockHeightFraction
                 else -> 1.0f
             }
             min(byWidth, byHeight).coerceAtLeast(8f).sp

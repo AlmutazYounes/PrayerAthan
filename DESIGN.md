@@ -35,9 +35,9 @@ Same tokens. Two layouts. Portrait is not a squeezed landscape. Landscape is not
 
 Live when `UseStackedClocks` is true in `WallScreen.kt`. Code is `ui/StackedClockWall.kt`.
 
-No Jordan clock on the wall. Albany is hours and minutes. Landscape column: header clearance `12`, hero arc `44`, gap `8`, prayer grid `36`. Portrait column: header spacer `14`, hero arc `40`, gap `10`, prayer grid `34` (plus `10dp` top inset on the grid). Arc is ~66% of portrait width or ~38% of landscape width, top-aligned under the header, height-limited.
+No Jordan clock on the wall. Albany is hours and minutes. Landscape is a two-column split under the header: left `54%` holds the horseshoe arc, Albany clock, countdown, and `NEXT …`; right `46%` is a spaced vertical list (small gold name left, cream time right, no hairlines). Past rows mute to taupe; next row gets a thin gold left accent bar and bright time. Portrait column: header spacer `14`, hero arc `40`, gap `10`, prayer grid `34` (plus `10dp` top inset on the grid).
 
-No standalone countdown in the landscape prayer cells. Landscape top edge holds location + weather (start) and date + settings (end). Hero below matches portrait: Albany clock centered in a horseshoe arc (`nextPrayerRing`); countdown and `NEXT …` sit in the bottom notch. Arc ~38% of width, height-limited, top-aligned under the header. Prayer grid is 3×2 with no cell borders; one hairline between the two rows.
+No standalone countdown in the landscape prayer list. Landscape top edge holds location + weather (start) and date + settings (end). Left column: Albany clock centered in a horseshoe arc (`nextPrayerRing`); countdown and `NEXT …` sit in the bottom notch. Right column: six airy rows, name left and time right, no divider from the clock column.
 
 Portrait hero: big Albany clock centered inside a thick horseshoe arc (gap at bottom). Bright gold stroke = time left until next prayer (`nextPrayerRing`); dim track behind it. Countdown (`HH:MM:SS`) and `NEXT …` sit in the bottom gap of the arc, not below the widget. Arc ~66% of width, pinned under the header. No per-prayer weather in the grid. Prayer list is name + time only, 2 columns, hairline between rows. Column weights: header spacer `14`, hero `40`, gap `10`, prayer grid `34`.
 
