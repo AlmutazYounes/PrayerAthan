@@ -2,7 +2,11 @@
 
 Append one line per event. Newest at the top.
 
-- 2026-09-01 Mutaz: landscape hero matches portrait arc timer. Clock in horseshoe ring, countdown in bottom notch. Top bar unchanged.
+- 2026-09-01 Mutaz: internal testing 27 (0.27.0). Landscape split wall with arc hero and spaced prayer panel.. Not production.
+- 2026-09-01 Mutaz: landscape stacked wall split — arc/clock left 54%, six prayers stacked right 46%.
+
+- 2026-09-01 Mutaz: internal testing 26 (0.26.0). New minaret launcher icon.. Not production.
+- 2026-09-01 Mutaz: landscape prayer list concept B — spaced rows, gold accent on next, no hairlines or vertical divider.
 - 2026-09-01 Mutaz: closed testing Alpha 25 (0.25.0) promoted from internal and sent for review. Portrait arc timer wall, Rub el Hizb icon. Testers stay on 19 until Google clears it.
 - 2026-09-01 Mutaz: internal testing 25 (0.25.0). Portrait arc timer wall, Rub el Hizb icon, header and typography polish.. Not production.
 - 2026-09-01 Mutaz: replaced launcher icon with minimalist flat Rub el Hizb (gold on #050403). Dropped 3D minaret art.

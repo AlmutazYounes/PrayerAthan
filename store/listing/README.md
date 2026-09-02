@@ -35,7 +35,7 @@ Max 8 per slot. These 4 fit. Console accepted them 31 Aug 2026.
 
 ## Icon and feature graphic
 
-`icon-512.png` is from `design/ic_launcher.png`. Gold Rub el Hizb on `#050403`. 512 x 512 PNG.
+`icon-512.png` is from `design/candidates/minaret-00-512.png`. Minimal gold minaret stroke on `#15100E`. 512 x 512 PNG.
 
 `feature-graphic-1024x500.png` is a cover crop of the 10-inch landscape dark idle wall, small icon and the word Athan Wall Clock top left. No Kaaba "official", no price.
 
