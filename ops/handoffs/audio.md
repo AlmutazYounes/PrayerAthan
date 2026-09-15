@@ -1,8 +1,8 @@
 # Handoff: Athan audio
 
-Status: done (picker + athkar toggle + per-prayer volume)
+Status: done (picker + athkar toggle + per-prayer volume + medicine reminder)
 
-When: 2026-09-11
+When: 2026-09-15
 Agent: orchestrator
 
 ## What landed
@@ -15,8 +15,8 @@ Athan selector in settings. PLAY is a demo on the alarm stream. Closing settings
 
 Hourly athkar fires on `:00` between Fajr and Isha, 8:00 AM through 9:00 PM. Silent 10 PM to 8 AM. Single clip: اللهم صل على محمد (Salawat). Settings has On / Off.
 
+Medicine reminder: optional day/time slots (max 6), Arabic or English voice clips in `res/raw/medicine_*.mp3`. `MedicineScheduler` + `MedicineService` + wall banner. Priority athan > medicine > athkar. Off until enabled with at least one slot.
+
 ## Playback
 
-Selected file at all five prayers. Volume comes from prefs at play time. Athkar still uses full volume. Athkar off cancels the hourly alarms. Athan still wins that minute.
-
-Demo athan does not flip the wall to NOW.
+Selected file at all five prayers. Volume comes from prefs at play time. Athkar still uses full volume. Athkar off cancels the hourly alarms. Athan still wins that minute. Medicine cancels athkar if both fire.

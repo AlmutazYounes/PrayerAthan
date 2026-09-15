@@ -1,18 +1,18 @@
 # Status
 
-Updated: 2026-09-11
+Updated: 2026-09-15
 
 ## Now
 
-Play listing is **free**. Internal testing is **30 (0.30.0)**. Closed testing Alpha **28 (0.28.0)** is in Google review (testers still on 25 until it clears). Six wall screenshots saved in Console. App content leftover forms are filled: no advertising ID, mediaPlayback FGS with demo video, exact alarm declared as alarm clock. Production is **not public**. Apply for production is disabled: 11 closed testers opted in. Needs 12 opted in for 14 days.
+Medicine reminder is in: settings day/time slots, Arabic/English voice, wall banner, alarm-stream playback. Play listing is **free**. Internal testing is **31 (0.31.0)** until Mutaz asks for a push. Closed testing Alpha **28 (0.28.0)** is in Google review (testers still on 25 until it clears). Six wall screenshots saved in Console. App content leftover forms are filled: no advertising ID, mediaPlayback FGS with demo video, exact alarm declared as alarm clock. Production is **not public**. Apply for production is disabled: 11 closed testers opted in. Needs 12 opted in for 14 days.
 
 The Play URL shows a gray stub (`com.mutazyounes.prayerathan (unreviewed)`) because listing changes sit in Publishing overview and have not been reviewed. Pictures are in Console. They are not on the store page yet.
 
-Location is searchable country then city. Athan sound is selectable with a PLAY demo. Per-prayer mute lets user toggle athans for Fajr, Dhuhr, Asr, Maghrib, and Isha. Each prayer has its own volume slider. Hourly athkar can be turned off. No athkar from 10 PM until 8 AM. Use GPS takes one fix. Night blackout (11 PM - 4 AM) with tap-to-wake.
+Location is searchable country then city. Athan sound is selectable with a PLAY demo. Per-prayer mute lets user toggle athans for Fajr, Dhuhr, Asr, Maghrib, and Isha. Each prayer has its own volume slider. Hourly athkar can be turned off. No athkar from 10 PM until 8 AM. Medicine reminder optional. Use GPS takes one fix. Night blackout (11 PM - 4 AM) with tap-to-wake.
 
 ## Next
 
-Hourly athkar and Night blackout (11 PM - 4 AM tap-to-wake) are in. Palettes landed. Wall fill is the two dark backdrop WebPs (dark wall only). Location settings landed. Device QA on the real 7-inch and 10-inch. Licensed MP3s before an honest public ship. Closed testing 12/14 after that.
+Device QA on the real 7-inch and 10-inch, including medicine slots. Licensed MP3s before an honest public ship. Closed testing 12/14 after that. Push a new internal build when Mutaz asks.
 
 ## Board
 
@@ -27,6 +27,7 @@ Hourly athkar and Night blackout (11 PM - 4 AM tap-to-wake) are in. Palettes lan
 | Designer | done | `.cursor/agents/designer.md` | `ops/handoffs/designer.md` |
 | Location settings | done | `.cursor/agents/designer.md` | country/city search |
 | Athan audio | done | `.cursor/agents/athan-audio.md` | `ops/handoffs/audio.md` |
+| Medicine reminder | done | orchestrator | settings + banner + alarms |
 | Device QA | waiting | `.cursor/agents/device-qa.md` | `ops/handoffs/qa.md` |
 | Play Store | in Console | | `store/`, `ops/handoffs/store.md` |
 
@@ -43,3 +44,4 @@ Google production access: 12 closed testers / 14 days. Cannot skip on this perso
 - Wall tablets install from Play only. Do not sideload a debug APK over a Play install.
 - Test athan: `adb shell am start-foreground-service -n com.mutazyounes.prayerathan/.audio.AthanService -a com.mutazyounes.prayerathan.audio.PLAY --es prayer DHUHR`
 - Test athkar: `adb shell am start-foreground-service -n com.mutazyounes.prayerathan/.audio.AthkarService -a com.mutazyounes.prayerathan.audio.ATHKAR_PLAY`
+- Test medicine: `adb shell am start-foreground-service -n com.mutazyounes.prayerathan/.audio.MedicineService -a com.mutazyounes.prayerathan.audio.MEDICINE_DEMO`

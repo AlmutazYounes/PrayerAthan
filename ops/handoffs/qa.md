@@ -1,31 +1,45 @@
 # Handoff: Device QA
 
-Status: emulator hang checks done. Physical 7-inch and 10-inch still waiting.
+Status: Play listing screenshots recaptured 1 Sept 2026 evening. Physical tablets still waiting.
 
-When: 2026-08-31
+When: 2026-09-01
 Agent: device-qa
 
-## Emulator
+## Listing capture (1 Sept 2026)
 
-AVD on `emulator-5554`, Android 16 / API 36 Play image. `Tablet_7in` exists on disk and was not started for this pass.
+APK: `app/build/outputs/apk/debug/app-debug.apk` (built same day). Albany defaults, GPS denied, dark wall only. No settings sheet in any PNG.
 
-Hang checks that still stand: keep-screen-on, DST, midnight, reboot athan, tap vs long-press, GPS-denied Albany header.
+| Slot | AVD | `wm size` | Notes |
+| --- | --- | --- | --- |
+| `play/tablet-10/` | `Tablet_10in` | 1440×2560 / 2560×1440 | All four frames pass |
+| `play/tablet-7/` | `Tablet_10in` | 1080×1920 / 1920×1080 | 7in dims on 10in AVD (see blocker) |
+| `play/phone/` | same as tablet-7 | 1080×1920 / 1920×1080 | Copied from tablet-7 set |
+
+Athan frames: `adb shell run-as com.mutazyounes.prayerathan am start-foreground-service --user 0 -n com.mutazyounes.prayerathan/.audio.AthanService -a com.mutazyounes.prayerathan.audio.PLAY --es prayer DHUHR` after seeding `shared_prefs/prayerathan_audio.xml` with empty `muted_prayers` (defaults mute all five). Landscape athan: start in portrait, rotate, then capture.
+
+Feature graphic: cover crop of tablet-10 `02-landscape-idle-dark.png` plus `icon-512.png` and label "Athan Clock" top-left. 1024×500 RGB.
+
+### Verified UI
+
+- Portrait idle: horseshoe arc, countdown in notch, 2-col prayer grid, Albany header, weather on.
+- Landscape idle: arc/clock left ~54%, spaced prayer list right, no vertical divider.
+- Athan portrait/landscape: NOW / DHUHR / Adhan is playing, Dhuhr row highlighted.
+
+### Blocker: `Tablet_7in`
+
+`Tablet_7in` hit System UI ANR, splash-only frames, and taskbar tutorial overlays on recapture. `tablet-7/` and `phone/` were shot on `Tablet_10in` at 7-inch Play dimensions instead. Dimensions verified; UI matches 7-inch layout at 1080×1920.
+
+## Emulator hang checks (31 Aug, still stand)
+
+`Tablet_7in` on `emulator-5554`, API 36 Play. Keep-screen-on, DST, midnight, reboot athan, tap vs long-press, GPS-denied Albany header not re-run this pass.
 
 ### 2026-08-31 landscape 3×2 hang
 
-App running `com.mutazyounes.prayerathan` on emulator-5554.
-
-- Landscape: **pass**. Two rows of three wider cards (Fajr / Sunrise / Dhuhr, then Asr / Maghrib / Isha). Clock left and Albany weather right sit high. No clipping. Sixth slot filled (Isha), no empty hole. Shot: `ops/shots-landscape-3x2.png` (1920×1080).
-- Portrait: **pass**. Classic stack: header, big clock, countdown, 2-col × 3-row grid. Shot: `ops/shots-portrait-check.png` (1080×1920). Rotated back to landscape after.
-
-Ship? Emulator hang for this layout: **yes**. Real tablets still needed before ship.
-
-## Listing crops
-
-Upload set is `store/listing/play/` (16:9 / 9:16). Older 8:5 files under `store/listing/screenshots/` and `store/listing/tablet-7/` / `tablet-10/` were deleted 27 Aug 2026. Recapture from the APK if you need a new crop. Do not upload settings.
-
-Athan on the emulator: `am start-foreground-service` as the package, not as shell, or it dies "Requires permission not exported."
+- Landscape stacked wall: **pass** (superseded by Concept B arc layout in Sept shots).
+- Portrait stacked wall: **pass**.
 
 ## Ship on real tablets?
 
-No. Hang the APK on Mutaz's 7-inch and 10-inch and fill this table again.
+No. Hang the APK on Mutaz's 7-inch and 10-inch and fill this table again before production.
+
+Ship listing PNGs for Console upload? **Yes** (emulator capture only; note tablet-7 AVD workaround above).

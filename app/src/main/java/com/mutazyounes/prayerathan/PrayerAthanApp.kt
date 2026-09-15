@@ -7,6 +7,7 @@ import com.mutazyounes.prayerathan.engine.PrefsLocationStore
 import com.mutazyounes.prayerathan.engine.PrayerCalculator
 import com.mutazyounes.prayerathan.engine.PrayerEngine
 import com.mutazyounes.prayerathan.audio.AudioSettingsStore
+import com.mutazyounes.prayerathan.audio.MedicineSettingsStore
 import com.mutazyounes.prayerathan.engine.WallClock
 import com.mutazyounes.prayerathan.shell.LocationFixer
 import com.mutazyounes.prayerathan.shell.SyncedClock
@@ -22,5 +23,6 @@ class PrayerAthanApp : Application() {
     val athanController: DefaultAthanController by lazy { DefaultAthanController(this) }
     val wallSettings: WallSettingsStore by lazy { WallSettingsStore(this) }
     val audioSettings: AudioSettingsStore by lazy { AudioSettingsStore(this) }
+    val medicineSettings: MedicineSettingsStore by lazy { MedicineSettingsStore(this) }
     val weatherClient: WeatherClient by lazy { OpenMeteoWeather(locationStore) }
 }

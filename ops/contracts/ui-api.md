@@ -22,8 +22,14 @@ data class WallUiState(
     val countdown: String,          // "01:24:18" unused while playing
     val athanPlaying: Boolean,
     val playingName: PrayerName?,
-    val athkarPlaying: Boolean,     // hourly dhikr, never with athan
+    val athkarPlaying: Boolean,     // hourly dhikr, never with athan or medicine
     val athkarCaption: String,      // gold Arabic while a clip plays
+    val medicinePlaying: Boolean,   // spoken medicine cue, never with athan
+    val medicinePrimary: String,    // selected-voice line on the banner
+    val medicineSecondary: String,  // other language under it
+    val medicineEnabled: Boolean,
+    val medicineVoice: String,      // ARABIC or ENGLISH
+    val medicineSlots: List<MedicineSlot>,
     val cells: List<PrayerCellState>,
     val twelveHour: Boolean,        // v1 always true
     val weatherLine: String,
@@ -34,7 +40,7 @@ data class WallUiState(
     val prayerVolumes: Map<PrayerName, Int>, // 0-100, default 100
     val demoId: String?,
     val nightBlackoutEnabled: Boolean,
-    val isNightBlackout: Boolean,   // true from 11 PM to 4 AM unless athan playing
+    val isNightBlackout: Boolean,   // true from 11 PM to 4 AM unless athan or medicine playing
 )
 
 data class PrayerCellState(
@@ -54,9 +60,11 @@ Settings location: searchable country, then searchable city from bundled GeoName
 
 ## Gestures
 
-- Tap while `athanPlaying`: `AthanController.stop()`.
+- Tap while `athanPlaying`, `athkarPlaying`, or `medicinePlaying`: `AthanController.stop()`.
 - Header gear: settings sheet. Child click consumes the tap so it does not also stop athan.
 - Long-press: settings sheet. Not the same as tap.
+
+Medicine banner sits at the bottom while `medicinePlaying`. Settings Medicine card edits enable, voice, and day/time slots through `WallViewModel` medicine methods.
 
 ## Layout
 
