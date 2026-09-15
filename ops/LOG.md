@@ -2,6 +2,22 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-09-13 Mutaz: added aaldhoun37@gmail.com to ClosedTesters (18 invited).
+- 2026-09-13 Play Dashboard: 11 closed testers opted in. Need 12 for 14 days.
+- 2026-09-11 Mutaz: added ba.sa.ah.2006@gmail.com and Tehabsim28@gmail.com to ClosedTesters (17 invited).
+- 2026-09-11 Play Dashboard: 9 closed testers opted in. 15 invited. Need 12 for 14 days.
+- 2026-09-11 Mutaz: added almutazyounes@gmail.com, mohtazby@gmail.com, mohtaz.bni.y@gmail.com to ClosedTesters (15 invited).
+- 2026-09-11 Mutaz: internal testing 30 (0.30.0). Per-prayer athan volume sliders in settings. Not production.
+
+- 2026-09-06 Mutaz: internal testing 29 (0.29.0). Fixed launcher icon: gold minaret on dark, no white blob.. Not production.
+- 2026-09-06 Fixed launcher icon: removed baked checkerboard/white blob; gold stroke on `#1C1614`; monochrome white silhouette on transparent.
+- 2026-09-01 Play Console: uploaded arc-wall feature graphic, phone/tablet-7/tablet-10 screenshots; icon unchanged (Rub el Hizb). 4 listing changes in review.
+- 2026-09-01 device-qa: recaptured `store/listing/play/` (12 PNGs) + `feature-graphic-1024x500.png` from debug APK on `Tablet_10in`; tablet-7/phone at 7in `wm size` after `Tablet_7in` ANR.
+- 2026-09-01 Mutaz: promoted internal 28 to closed testing Alpha. In review. 100% rollout. No new AAB.
+- 2026-09-01 Mutaz: internal testing 28 (0.28.0). Rename display to Athan Clock.. Not production.
+- 2026-09-01 Mutaz: display name is Athan Clock (was Athan Wall Clock). Package unchanged. Update Play listing title in Console.
+- 2026-09-01 Mutaz: internal testing 27 (0.27.0). Landscape arc hero and spaced prayer list with gold next accent.. Not production.
+- 2026-09-01 Launcher icons rebuilt: 66dp safe zone, transparent foreground on `#1C1614` background (`store/scripts/build-launcher-icons.sh`).
 - 2026-09-01 Mutaz: internal testing 27 (0.27.0). Landscape split wall with arc hero and spaced prayer panel.. Not production.
 - 2026-09-01 Mutaz: landscape stacked wall split — arc/clock left 54%, six prayers stacked right 46%.
 

@@ -76,11 +76,13 @@ class AthanService : Service() {
         val app = application as PrayerAthanApp
         app.athanController.stopAthkar()
         app.athanController.markIdle()
-        app.athanController.markDemo(choice.id)
+        app.athanController.markDemo(intent.getStringExtra(EXTRA_DEMO_KEY) ?: choice.id)
+        val volumePercent = intent.getIntExtra(EXTRA_VOLUME, AthanVolume.DEFAULT)
         player.playRaw(
             resId = choice.rawRes,
             onComplete = { stopPlayback() },
             onError = { stopPlayback() },
+            volumePercent = volumePercent,
         )
     }
 
@@ -159,6 +161,8 @@ class AthanService : Service() {
         const val ACTION_STOP = "com.mutazyounes.prayerathan.audio.STOP"
         const val EXTRA_PRAYER = "prayer"
         const val EXTRA_SOUND_ID = "sound_id"
+        const val EXTRA_VOLUME = "volume"
+        const val EXTRA_DEMO_KEY = "demo_key"
         private const val CHANNEL_ID = "athan_playback"
         private const val NOTIFICATION_ID = 41
 
@@ -169,10 +173,17 @@ class AthanService : Service() {
             }
         }
 
-        fun demoIntent(context: Context, soundId: String): Intent {
+        fun demoIntent(
+            context: Context,
+            soundId: String,
+            volumePercent: Int = AthanVolume.DEFAULT,
+            demoKey: String = soundId,
+        ): Intent {
             return Intent(context, AthanService::class.java).apply {
                 action = ACTION_DEMO
                 putExtra(EXTRA_SOUND_ID, soundId)
+                putExtra(EXTRA_VOLUME, AthanVolume.clamp(volumePercent))
+                putExtra(EXTRA_DEMO_KEY, demoKey)
             }
         }
 

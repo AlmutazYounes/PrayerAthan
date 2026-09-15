@@ -7,9 +7,13 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +50,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,10 +60,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -74,6 +82,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.mutazyounes.prayerathan.audio.AthanCatalog
 import com.mutazyounes.prayerathan.audio.AthanSoundChoice
+import com.mutazyounes.prayerathan.audio.AthanVolume
 import com.mutazyounes.prayerathan.engine.CityCatalog
 import com.mutazyounes.prayerathan.engine.PlaceCity
 import com.mutazyounes.prayerathan.engine.PlaceCountry
@@ -81,6 +90,7 @@ import com.mutazyounes.prayerathan.engine.PrayerName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlin.math.roundToInt
 
 private val SheetShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
 private val CardShape = RoundedCornerShape(16.dp)
@@ -103,6 +113,7 @@ fun SettingsSheet(
     athanSoundId: String,
     athkarEnabled: Boolean,
     mutedPrayers: Set<PrayerName>,
+    prayerVolumes: Map<PrayerName, Int>,
     nightBlackoutEnabled: Boolean,
     demoId: String?,
     onSelectLocation: (String, Double, Double, String) -> Unit,
@@ -110,6 +121,8 @@ fun SettingsSheet(
     onSelectAthanSound: (String) -> Unit,
     onAthkarEnabledChange: (Boolean) -> Unit,
     onTogglePrayerMute: (PrayerName) -> Unit,
+    onPrayerVolumeChange: (PrayerName, Int) -> Unit,
+    onPlayPrayerVolumePreview: (PrayerName, Int) -> Unit,
     onNightBlackoutChange: (Boolean) -> Unit,
     onPlayAthanDemo: (String) -> Unit,
     onDismiss: () -> Unit,
@@ -364,7 +377,11 @@ fun SettingsSheet(
                         ) {
                             PrayerAthansCard(
                                 mutedPrayers = mutedPrayers,
+                                prayerVolumes = prayerVolumes,
+                                demoId = demoId,
                                 onTogglePrayerMute = onTogglePrayerMute,
+                                onPrayerVolumeChange = onPrayerVolumeChange,
+                                onPlayPrayerVolumePreview = onPlayPrayerVolumePreview,
                             )
                             AthanSoundCard(
                                 athanSoundId = athanSoundId,
@@ -430,7 +447,11 @@ fun SettingsSheet(
 
                         PrayerAthansCard(
                             mutedPrayers = mutedPrayers,
+                            prayerVolumes = prayerVolumes,
+                            demoId = demoId,
                             onTogglePrayerMute = onTogglePrayerMute,
+                            onPrayerVolumeChange = onPrayerVolumeChange,
+                            onPlayPrayerVolumePreview = onPlayPrayerVolumePreview,
                         )
 
                         AthanSoundCard(
@@ -683,12 +704,16 @@ private fun ModernActionButton(
 @Composable
 private fun PrayerAthansCard(
     mutedPrayers: Set<PrayerName>,
+    prayerVolumes: Map<PrayerName, Int>,
+    demoId: String?,
     onTogglePrayerMute: (PrayerName) -> Unit,
+    onPrayerVolumeChange: (PrayerName, Int) -> Unit,
+    onPlayPrayerVolumePreview: (PrayerName, Int) -> Unit,
 ) {
     ModernCardContainer(
         title = "Prayer Athans",
         icon = Icons.Default.Check,
-        subtitle = "Tap a prayer to toggle athan audio",
+        subtitle = "Mute with the chips. Volume per prayer.",
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -704,6 +729,140 @@ private fun PrayerAthansCard(
                 )
             }
         }
+        Spacer(Modifier.height(12.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            PrayerName.athanTargets().forEach { prayer ->
+                PrayerVolumeRow(
+                    prayer = prayer,
+                    volume = prayerVolumes[prayer] ?: AthanVolume.DEFAULT,
+                    muted = prayer in mutedPrayers,
+                    playing = demoId == AthanVolume.demoKey(prayer),
+                    onVolumeChange = { onPrayerVolumeChange(prayer, it) },
+                    onPlay = { percent -> onPlayPrayerVolumePreview(prayer, percent) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PrayerVolumeRow(
+    prayer: PrayerName,
+    volume: Int,
+    muted: Boolean,
+    playing: Boolean,
+    onVolumeChange: (Int) -> Unit,
+    onPlay: (Int) -> Unit,
+) {
+    val palette = LocalWallPalette.current
+    var sliding by remember { mutableFloatStateOf(volume.toFloat()) }
+    LaunchedEffect(volume) {
+        sliding = volume.toFloat()
+    }
+    val percent = sliding.roundToInt()
+    val labelColor = if (muted) palette.prayerPast.copy(alpha = 0.65f) else palette.clock
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = prayer.englishLabel(),
+            color = labelColor,
+            fontSize = 11.sp,
+            fontFamily = EnglishFontFamily,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            modifier = Modifier.width(72.dp),
+        )
+        GoldVolumeSlider(
+            value = sliding,
+            onValueChange = { sliding = it },
+            onValueChangeFinished = { onVolumeChange(sliding.roundToInt()) },
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = "$percent",
+            color = if (muted) palette.prayerPast.copy(alpha = 0.65f) else palette.gold,
+            fontSize = 11.sp,
+            fontFamily = EnglishFontFamily,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.End,
+            modifier = Modifier.width(28.dp),
+        )
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(if (playing) palette.gold else palette.gold.copy(alpha = 0.15f))
+                .clickable { onPlay(percent) },
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = if (playing) Icons.Default.Close else Icons.Default.PlayArrow,
+                contentDescription = if (playing) "Stop preview" else "Preview volume",
+                tint = if (playing) palette.settingsPanel else palette.gold,
+                modifier = Modifier.size(14.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun GoldVolumeSlider(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    onValueChangeFinished: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val palette = LocalWallPalette.current
+    val trackColor = palette.hairline.copy(alpha = 0.35f)
+    val fillColor = palette.gold
+    Canvas(
+        modifier = modifier
+            .height(28.dp)
+            .fillMaxWidth()
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    val down = awaitFirstDown()
+                    fun at(x: Float): Float {
+                        val fraction = (x / size.width.toFloat()).coerceIn(0f, 1f)
+                        return fraction * AthanVolume.MAX.toFloat()
+                    }
+                    onValueChange(at(down.position.x))
+                    drag(down.id) { change ->
+                        change.consume()
+                        onValueChange(at(change.position.x))
+                    }
+                    onValueChangeFinished()
+                }
+            },
+    ) {
+        val trackY = size.height / 2f
+        val thumbRadius = 7.dp.toPx()
+        val usable = (size.width - thumbRadius * 2f).coerceAtLeast(1f)
+        val fraction = (value / AthanVolume.MAX.toFloat()).coerceIn(0f, 1f)
+        val cx = thumbRadius + fraction * usable
+        val stroke = 3.dp.toPx()
+        drawLine(
+            color = trackColor,
+            start = Offset(thumbRadius, trackY),
+            end = Offset(size.width - thumbRadius, trackY),
+            strokeWidth = stroke,
+            cap = StrokeCap.Round,
+        )
+        drawLine(
+            color = fillColor,
+            start = Offset(thumbRadius, trackY),
+            end = Offset(cx, trackY),
+            strokeWidth = stroke,
+            cap = StrokeCap.Round,
+        )
+        drawCircle(
+            color = fillColor,
+            radius = thumbRadius,
+            center = Offset(cx, trackY),
+        )
     }
 }
 

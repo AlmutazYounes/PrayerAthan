@@ -1,4 +1,4 @@
-# Athan Wall Clock visual spec
+# Athan Clock visual spec
 
 This file is the visual contract. Designer agents and Compose agents implement from here plus the two PNGs. If chat history disagrees with this file, this file wins. If a pixel in an approved PNG disagrees with a number here, update this file with Mutaz. Do not freelance a third look.
 
@@ -358,7 +358,7 @@ Tap to stop is a distinct gesture from long-press settings. Visual of the tap is
 
 Small gold gear in the header, between location and date. Long-press anywhere is the backup. Not a FAB. Not on the prayer grid.
 
-The sheet is a bottom panel in `settingsPanel`. SETTINGS and CLOSE stay on one header row. Gold section titles with a thin rule: Location, Prayer athans, Athan, Hourly athkar, Night blackout. Country and city are bordered search fields. GPS is a quiet action under location. No Default Albany button. Prayer athans has five chips (Fajr, Dhuhr, Asr, Maghrib, Isha) to mute or unmute individual athans. Athan is a compact list with a gold tick on the selected file and PLAY on the right. Athkar is On / Off, no clip demos. Subtitle is `8 AM to 10 PM · athan wins`. Night blackout is On / Off with subtitle `11 PM to 4 AM · tap to wake`. Landscape splits location on the left and prayer athans+athan+athkar+blackout on the right. Same Inter and gold. No Material You cards. Scroll inside a column if the 7-inch cannot fit.
+The sheet is a bottom panel in `settingsPanel`. SETTINGS and CLOSE stay on one header row. Gold section titles with a thin rule: Location, Prayer athans, Athan, Hourly athkar, Night blackout. Country and city are bordered search fields. GPS is a quiet action under location. No Default Albany button. Prayer athans has five chips (Fajr, Dhuhr, Asr, Maghrib, Isha) to mute or unmute individual athans, then a gold slider row per prayer with a percent and a PLAY preview at that volume. Athan is a compact list with a gold tick on the selected file and PLAY on the right. Athkar is On / Off, no clip demos. Subtitle is `8 AM to 10 PM · athan wins`. Night blackout is On / Off with subtitle `11 PM to 4 AM · tap to wake`. Landscape splits location on the left and prayer athans+athan+athkar+blackout on the right. Same Inter and gold. No Material You cards. Scroll inside a column if the 7-inch cannot fit.
 
 ---
 

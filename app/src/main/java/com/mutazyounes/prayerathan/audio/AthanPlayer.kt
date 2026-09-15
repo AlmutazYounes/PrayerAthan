@@ -21,10 +21,16 @@ class AthanPlayer(
             AthanCatalog.rawRes(prayer),
             onComplete,
             onError,
+            store.prayerVolume(prayer),
         )
     }
 
-    fun playRaw(resId: Int, onComplete: () -> Unit, onError: () -> Unit) {
+    fun playRaw(
+        resId: Int,
+        onComplete: () -> Unit,
+        onError: () -> Unit,
+        volumePercent: Int = AthanVolume.DEFAULT,
+    ) {
         stop()
         val next = MediaPlayer()
         player = next
@@ -45,6 +51,8 @@ class AthanPlayer(
                 true
             }
             next.prepare()
+            val gain = AthanVolume.gain(volumePercent)
+            next.setVolume(gain, gain)
             next.start()
         } catch (_: Exception) {
             stop()

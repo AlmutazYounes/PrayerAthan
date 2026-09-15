@@ -31,7 +31,7 @@ data class AthkarPlayback(
 interface AthanController {
     fun schedule(day: PrayerDay, now: Instant)
     fun stop()                  // tap during athan or athkar
-    fun playAthanDemo(soundId: String)
+    fun playAthanDemo(soundId: String, volumePercent: Int = 100, demoKey: String = soundId)
     fun playAthkarDemo(clip: AthkarClip)
     val playback: StateFlow<AthanPlayback?>  // null = idle
     val athkarPlayback: StateFlow<AthkarPlayback?>
@@ -41,7 +41,7 @@ interface AthanController {
 
 `schedule` uses `AlarmManager.setAlarmClock` for each remaining athan instant today, and tomorrow Fajr if next is tomorrow. It also arms remaining local `:00` hours between Fajr and Isha with `setExactAndAllowWhileIdle` so athkar does not steal the system alarm-clock slot. Call again after midnight and after `BOOT_COMPLETED`.
 
-Playback uses `MediaPlayer` on the alarm stream. Foreground service for the duration of the file. Selected Fajr file for Fajr. Selected standard file for the other four.
+Playback uses `MediaPlayer` on the alarm stream. Foreground service for the duration of the file. Selected Fajr file for Fajr. Selected standard file for the other four. Volume is 0–100 per prayer from `AudioSettingsStore`, applied with `MediaPlayer.setVolume` after prepare. Mute still skips the alarm. Sound-picker PLAY uses 100. Settings volume PLAY uses that prayer's percent.
 
 Hourly athkar rotates the remaining clips when the setting is on. Skip if athan is playing or that minute is an athan alarm. Silent from Isha until the next Fajr, and silent from 10:00 PM until 8:00 AM local even if Fajr already passed. Settings PLAY demos do not wait for the hour.
 

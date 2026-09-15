@@ -73,6 +73,19 @@ class AudioSettingsStore(
         prefs.edit().putStringSet(KEY_MUTED_PRAYERS, current.map { it.name }.toSet()).apply()
     }
 
+    fun prayerVolume(prayer: PrayerName): Int {
+        if (prayer == PrayerName.SUNRISE) return AthanVolume.DEFAULT
+        return AthanVolume.clamp(prefs.getInt(volumeKey(prayer), AthanVolume.DEFAULT))
+    }
+
+    fun setPrayerVolume(prayer: PrayerName, percent: Int) {
+        if (prayer == PrayerName.SUNRISE) return
+        prefs.edit().putInt(volumeKey(prayer), AthanVolume.clamp(percent)).apply()
+    }
+
+    fun prayerVolumes(): Map<PrayerName, Int> =
+        PrayerName.athanTargets().associateWith { prayerVolume(it) }
+
     companion object {
         private const val PREFS = "prayerathan_audio"
         private const val KEY_SOUND = "athan_sound"
@@ -80,5 +93,19 @@ class AudioSettingsStore(
         private const val KEY_MUTED_PRAYERS = "muted_prayers"
         private val DEFAULT_MUTED: Set<String> =
             PrayerName.athanTargets().map { it.name }.toSet()
+
+        private fun volumeKey(prayer: PrayerName): String = "volume_${prayer.name}"
     }
+}
+
+object AthanVolume {
+    const val DEFAULT = 100
+    const val MIN = 0
+    const val MAX = 100
+
+    fun clamp(percent: Int): Int = percent.coerceIn(MIN, MAX)
+
+    fun gain(percent: Int): Float = clamp(percent) / 100f
+
+    fun demoKey(prayer: PrayerName): String = "volume:${prayer.name}"
 }

@@ -11,7 +11,7 @@ Category in Console is Lifestyle. Contact email is a listing field and is also i
 ## App name
 
 ```
-Athan Wall Clock
+Athan Clock
 ```
 
 16 characters. Limit 30.
@@ -31,13 +31,13 @@ Tablet wall clock. Prayer times, weather, countdown, and athan.
 Limit 4000. Paste the block below as-is.
 
 ```
-Athan Wall Clock is a wall-mounted clock for 7-inch and 10-inch Android tablets. Hang it landscape or portrait. The screen stays on while the app is open.
+Athan Clock is a wall-mounted clock for 7-inch and 10-inch Android tablets. Hang it landscape or portrait. The screen stays on while the app is open.
 
 It shows local time, today's weather, a countdown to the next prayer, and Fajr, Sunrise, Dhuhr, Asr, Maghrib, and Isha. Times are calculated on the device. Method is ISNA, North America. Asr is Shafi. The wall is dark. Clock is 12-hour. City name on the wall, never coordinates. Date without the year. No account. After location is saved, the clock does not need the internet.
 
 On first open the app asks for location, takes one GPS fix, and saves the nearest city. If you deny it, or the fix fails, it uses Albany, NY. You can search a country and city in settings later.
 
-Athan is one Saudi recording for Fajr, Dhuhr, Asr, Maghrib, and Isha. It plays on the alarm stream, so a media mute does not silence it. Tap the wall to stop. Sunrise is in the timetable and stays silent. First launch mutes all five prayer athans and leaves hourly athkar off.
+Athan is one Saudi recording for Fajr, Dhuhr, Asr, Maghrib, and Isha. It plays on the alarm stream, so a media mute does not silence it. Each prayer has its own volume in settings. Tap the wall to stop. Sunrise is in the timetable and stays silent. First launch mutes all five prayer athans and leaves hourly athkar off.
 
 Long-press the wall, or tap the gold gear in the header, for settings.
 
@@ -50,7 +50,7 @@ Contact: mutazyounes@gmail.com
 
 ## Console fields next to the copy
 
-- App name: Athan Wall Clock
+- App name: Athan Clock
 - Default language: English
 - Category: Lifestyle
 - Contact email: mutazyounes@gmail.com

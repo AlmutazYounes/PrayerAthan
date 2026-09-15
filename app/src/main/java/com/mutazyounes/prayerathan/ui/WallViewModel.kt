@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.mutazyounes.prayerathan.audio.AthanController
+import com.mutazyounes.prayerathan.audio.AthanVolume
 import com.mutazyounes.prayerathan.audio.AthkarClip
 import com.mutazyounes.prayerathan.audio.AudioSettingsStore
 import com.mutazyounes.prayerathan.engine.CityCatalog
@@ -142,6 +143,22 @@ class WallViewModel(
         val muted = audioSettings.isPrayerMuted(prayer)
         audioSettings.setPrayerMuted(prayer, !muted)
         refresh(now(), forceSchedule = true)
+    }
+
+    fun setPrayerVolume(prayer: PrayerName, percent: Int) {
+        audioSettings.setPrayerVolume(prayer, percent)
+        refresh(now())
+    }
+
+    fun playPrayerVolumePreview(prayer: PrayerName, percent: Int) {
+        val key = AthanVolume.demoKey(prayer)
+        if (athan.demoId.value == key) {
+            stopDemo()
+            return
+        }
+        audioSettings.setPrayerVolume(prayer, percent)
+        athan.playAthanDemo(audioSettings.soundId(), percent, key)
+        refresh(now())
     }
 
     fun playAthanDemo(id: String) {
@@ -311,6 +328,7 @@ class WallViewModel(
             athanSoundId = audioSettings.soundId(),
             athkarEnabled = audioSettings.athkarEnabled(),
             mutedPrayers = mutedPrayers,
+            prayerVolumes = audioSettings.prayerVolumes(),
             demoId = athan.demoId.value,
             nightBlackoutEnabled = settings.nightBlackout(),
             isNightBlackout = settings.nightBlackout() && isNightBlackoutWindow(clocks.albany.hour) && !playing && athan.demoId.value == null,

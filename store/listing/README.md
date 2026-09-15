@@ -2,9 +2,9 @@
 
 Upload from `play/`, plus the icon and feature graphic. Do not upload `design/athan-wall-*.png`. Play's tablet slot wants 16:9 and 9:16 (1080px+).
 
-Shot 31 August 2026 evening from the live debug APK on AVD `Tablet_10in`. Package `com.mutazyounes.prayerathan`. Albany, 12-hour, stacked clocks, dark mosque wall only. Weather on the wall. Date without year. No Jordan clock. Athan frames used:
+Shot 1 September 2026 evening from the live debug APK. `Tablet_10in` for tablet-10 (1440×2560 / 2560×1440) and for phone + tablet-7 at 1080×1920 / 1920×1080 (`wm size` on the 10-inch AVD; `Tablet_7in` hit System UI ANR). Package `com.mutazyounes.prayerathan`. Albany, 12-hour, horseshoe arc wall, dark mosque only. Weather on the wall. Date without year. No settings sheet.
 
-`adb shell run-as com.mutazyounes.prayerathan am start-foreground-service --user 0 -n com.mutazyounes.prayerathan/.audio.AthanService -a com.mutazyounes.prayerathan.audio.PLAY --es prayer DHUHR`
+Athan frames: `adb shell run-as com.mutazyounes.prayerathan am start-foreground-service --user 0 -n com.mutazyounes.prayerathan/.audio.AthanService -a com.mutazyounes.prayerathan.audio.PLAY --es prayer DHUHR` after seeding empty `muted_prayers` in app prefs (defaults mute all five).
 
 No settings sheet in any upload PNG. Light frames were dropped. The live wall is dark only.
 
@@ -35,9 +35,9 @@ Max 8 per slot. These 4 fit. Console accepted them 31 Aug 2026.
 
 ## Icon and feature graphic
 
-`icon-512.png` is from `design/candidates/minaret-00-512.png`. Minimal gold minaret stroke on `#15100E`. 512 x 512 PNG.
+`icon-512.png` is flattened from `design/candidates/minaret-00-1024.png` (gold stroke in the 66dp safe zone on `#1C1614`). Rebuild with `store/scripts/build-launcher-icons.sh`. Do not use checkerboard-baked exports. 512 x 512 PNG.
 
-`feature-graphic-1024x500.png` is a cover crop of the 10-inch landscape dark idle wall, small icon and the word Athan Wall Clock top left. No Kaaba "official", no price.
+`feature-graphic-1024x500.png` is a cover crop of the 10-inch landscape dark idle wall, small icon and the word Athan Clock top left. No Kaaba "official", no price.
 
 ## Other listing paste
 

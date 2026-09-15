@@ -31,6 +31,7 @@ data class WallUiState(
     val athanSoundId: String,
     val athkarEnabled: Boolean,
     val mutedPrayers: Set<PrayerName>,
+    val prayerVolumes: Map<PrayerName, Int>, // 0-100, default 100
     val demoId: String?,
     val nightBlackoutEnabled: Boolean,
     val isNightBlackout: Boolean,   // true from 11 PM to 4 AM unless athan playing

@@ -8,9 +8,9 @@ How PrayerAthan sits on Google Play. Not the product spec. `PROJECT.md` wins for
 | --- | --- |
 | Package | `com.mutazyounes.prayerathan` |
 | Price | **Free**. Cannot become paid on this package. |
-| Production | Inactive. Apply disabled. 3 closed testers opted in. Need 12 for 14 days. |
-| Internal testing | Live. Release 27 (0.27.0). |
-| Closed testing | Alpha track. Countries targeted. Release 25 (0.25.0) in review. Testers keep 19 until Google clears it. |
+| Production | Inactive. Apply disabled. 11 closed testers opted in. Need 12 for 14 days. |
+| Internal testing | Live. Release 30 (0.30.0). |
+| Closed testing | Alpha track. Countries targeted. Release 28 (0.28.0) in review. Testers keep 25 until Google clears it. |
 | Listing in Console | Name, copy, icon, graphic, four dark wall screenshots. Sent for review 31 Aug 2026. |
 | Listing on Play URL | Gray stub until Google reviews a closed or production send. |
 | App content | Privacy, ads no, IARC, 13+, Data safety none, gov/finance/health no. Advertising ID no. FGS mediaPlayback + demo video. Exact alarm = alarm clock. |
@@ -20,7 +20,7 @@ Production page: https://play.google.com/store/apps/details?id=com.mutazyounes.p
 
 Internal opt-in: https://play.google.com/apps/internaltest/4701680380313434468
 
-Testers already on Play: open Play Store, search Athan Wall Clock (or the unreviewed package name), tap Update. Or reopen the opt-in link. Play can sit on the old build for 5 to 60 minutes. If Update never appears, the tablet still has the debug APK. Uninstall that, then install from the opt-in link.
+Testers already on Play: open Play Store, search Athan Clock (or the unreviewed package name), tap Update. Or reopen the opt-in link. Play can sit on the old build for 5 to 60 minutes. If Update never appears, the tablet still has the debug APK. Uninstall that, then install from the opt-in link.
 
 Public production needs 12 closed testers opted in for 14 days, then Apply for production. Official: https://support.google.com/googleplay/android-developer/answer/14151465
 

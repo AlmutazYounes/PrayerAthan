@@ -23,7 +23,11 @@ data class AthkarPlayback(
 interface AthanController {
     fun schedule(day: PrayerDay, now: Instant)
     fun stop()
-    fun playAthanDemo(soundId: String)
+    fun playAthanDemo(
+        soundId: String,
+        volumePercent: Int = AthanVolume.DEFAULT,
+        demoKey: String = soundId,
+    )
     fun playAthkarDemo(clip: AthkarClip)
     val playback: StateFlow<AthanPlayback?>
     val athkarPlayback: StateFlow<AthkarPlayback?>
@@ -75,11 +79,17 @@ class DefaultAthanController(
         }
     }
 
-    override fun playAthanDemo(soundId: String) {
+    override fun playAthanDemo(
+        soundId: String,
+        volumePercent: Int,
+        demoKey: String,
+    ) {
         stopAthkar()
         markIdle()
-        markDemo(soundId)
-        appContext.startForegroundService(AthanService.demoIntent(appContext, soundId))
+        markDemo(demoKey)
+        appContext.startForegroundService(
+            AthanService.demoIntent(appContext, soundId, volumePercent, demoKey),
+        )
     }
 
     override fun playAthkarDemo(clip: AthkarClip) {

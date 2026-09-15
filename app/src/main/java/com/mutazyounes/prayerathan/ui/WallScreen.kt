@@ -135,6 +135,7 @@ fun WallScreen(
                     athanSoundId = state.athanSoundId,
                     athkarEnabled = state.athkarEnabled,
                     mutedPrayers = state.mutedPrayers,
+                    prayerVolumes = state.prayerVolumes,
                     nightBlackoutEnabled = state.nightBlackoutEnabled,
                     demoId = state.demoId,
                     onSelectLocation = { label, lat, lon, zone ->
@@ -146,6 +147,8 @@ fun WallScreen(
                     onSelectAthanSound = viewModel::setAthanSound,
                     onAthkarEnabledChange = viewModel::setAthkarEnabled,
                     onTogglePrayerMute = viewModel::togglePrayerMute,
+                    onPrayerVolumeChange = viewModel::setPrayerVolume,
+                    onPlayPrayerVolumePreview = viewModel::playPrayerVolumePreview,
                     onNightBlackoutChange = viewModel::setNightBlackout,
                     onPlayAthanDemo = viewModel::playAthanDemo,
                     onDismiss = {

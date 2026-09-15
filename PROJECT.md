@@ -1,6 +1,6 @@
 # PrayerAthan
 
-Display name on the launcher and Play listing is **Athan Wall Clock**. Package stays `com.mutazyounes.prayerathan`.
+Display name on the launcher and Play listing is **Athan Clock**. Package stays `com.mutazyounes.prayerathan`.
 
 This file is the spec. If chat history and this file disagree, this file wins. Update it when Mutaz decides something. Do not invent a server, an account system, or a second app.
 
@@ -40,7 +40,7 @@ Three surfaces. That is the whole product in v1.
 
 **Athan playing.** Same wall screen. The countdown block switches to NOW, the prayer name, and the line "Adhan is playing". Albany time stays. The day's list highlights the prayer that just started.
 
-**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lets you mute/unmute individual prayer athans. First launch: all five prayer athans muted, hourly athkar off. Wall is dark only. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
+**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lets you mute/unmute individual prayer athans. Each of the five also has its own volume slider, default 100. PLAY on a row previews that prayer at the chosen volume. First launch: all five prayer athans muted, hourly athkar off. Wall is dark only. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
 
 ---
 
@@ -141,7 +141,7 @@ Origins, muezzin names, and license notes are in `audio/SOURCE.md`. Personal use
 
 Schedule with `AlarmManager.setAlarmClock` so the system treats it as an alarm. Play with `MediaPlayer` on the alarm stream. Hold a short foreground service while audio is playing so the process is not killed mid-athan. Reschedule on `BOOT_COMPLETED`. Exact-alarm permission on current Android is part of the shell work, not optional polish.
 
-Volume should fill a room at living-room distance. Do not duck to media volume that a mute toggle silences. This is the reason he is replacing the commercial app.
+Volume should fill a room at living-room distance. Do not duck to media volume that a mute toggle silences. This is the reason he is replacing the commercial app. Settings stores a 0–100 volume per prayer and MediaPlayer applies it on the alarm stream. Mute still skips that prayer's alarm. Default is 100.
 
 Sunrise: silence.
 
