@@ -46,11 +46,20 @@ class MedicineSettingsStore(
         setSlots(slots().filterNot { it.id == id })
     }
 
+    fun lastFireKey(): String? = prefs.getString(KEY_LAST_FIRE, null)
+
+    fun markFired(key: String) {
+        prefs.edit().putString(KEY_LAST_FIRE, key).apply()
+    }
+
+    fun alreadyFired(key: String): Boolean = lastFireKey() == key
+
     companion object {
         private const val PREFS = "prayerathan_medicine"
         private const val KEY_ENABLED = "enabled"
         private const val KEY_VOICE = "voice"
         private const val KEY_SLOTS = "slots"
+        private const val KEY_LAST_FIRE = "last_fire"
 
         private val DAY_ORDER = listOf(
             DayOfWeek.MONDAY,

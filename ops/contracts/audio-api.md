@@ -64,7 +64,7 @@ Playback uses `MediaPlayer` on the alarm stream. Foreground service for the dura
 
 Hourly athkar rotates the remaining clips when the setting is on. Skip if athan is playing or that minute is an athan alarm. Silent from Isha until the next Fajr, and silent from 10:00 PM until 8:00 AM local even if Fajr already passed. Settings PLAY demos do not wait for the hour.
 
-Medicine reminder plays the selected voice clip at each configured weekday/time. Skip if athan is playing or that minute is an athan alarm. Stops athkar if both would collide. Settings stores enable, voice, and slots in `prayerathan_medicine`. Off until the user turns it on. Preview uses `demoId = medicine:preview`.
+Medicine reminder plays the selected voice clip at each configured weekday/time. Skip if athan is playing or that minute is an athan alarm. Uses `AlarmManager.setAlarmClock` (same class as prayer athan) plus a 3-minute grace window so a late wake still speaks. If the slot is already due when Mutaz enables it, play immediately (once per occurrence). Stops athkar if both would collide; athkar also yields when a medicine slot is due that minute. Settings stores enable, voice, slots, and last-fire key in `prayerathan_medicine`. Off until the user turns it on. Preview uses `demoId = medicine:preview`.
 
 Priority: athan > medicine > athkar.
 

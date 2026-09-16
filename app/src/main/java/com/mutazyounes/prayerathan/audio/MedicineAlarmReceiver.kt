@@ -15,15 +15,21 @@ class MedicineAlarmReceiver : BroadcastReceiver() {
         val location = app.prayerEngine.location()
         val day = app.prayerEngine.day(now, location)
         val zone = ZoneId.of(location.timeZoneId)
+        val slot = medicineSlotFor(settings.slots(), now, zone)
+        val key = slot?.let { medicineFireKey(it, now.atZone(zone).toLocalDate()) }
         if (!settings.enabled() ||
             settings.slots().isEmpty() ||
+            slot == null ||
+            key == null ||
+            settings.alreadyFired(key) ||
             app.athanController.playback.value != null ||
-            isAthanMinute(athanInstants(day), now, zone) ||
-            !isMedicineMinute(settings.slots(), now, zone)
+            isAthanMinute(athanInstants(day), now, zone)
         ) {
             app.athanController.schedule(day, now)
             return
         }
+        // Stop athkar first so a same-minute hourly clip cannot win the race.
+        app.athanController.stopAthkar()
         context.startForegroundService(MedicineService.playIntent(context))
     }
 

@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-09-15 Medicine alarms: setAlarmClock + 3min grace + catch-up if due now; athkar yields same minute. Push 34.
 - 2026-09-15 Mutaz: internal testing 33 (0.33.0). Restore medicine reminder + icons; keep athan tile time fix. Not production.
 - 2026-09-15 Mutaz: internal testing 32 (0.32.0). Restore medicine reminder + icons; keep athan tile time fix. Not production.
 - 2026-09-15 Restored medicine+icons from e089ad0 onto main; prayer-time fix kept. Pushing 33 to replace mistaken 32.

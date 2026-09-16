@@ -50,9 +50,13 @@ class AthkarService : Service() {
         val day = app.prayerEngine.day(now, location)
         val zone = ZoneId.of(location.timeZoneId)
         startInForeground(getString(R.string.athkar_playing_title))
+        val medicineSettings = MedicineSettingsStore(this)
+        val medicineDue = medicineSettings.enabled() &&
+            isMedicineMinute(medicineSettings.slots(), now, zone)
         if (!AudioSettingsStore(this).athkarEnabled() ||
             app.athanController.playback.value != null ||
             app.athanController.medicinePlayback.value != null ||
+            medicineDue ||
             !isAthkarWindow(day, now, zone) ||
             isAthanMinute(athanInstants(day), now, zone)
         ) {

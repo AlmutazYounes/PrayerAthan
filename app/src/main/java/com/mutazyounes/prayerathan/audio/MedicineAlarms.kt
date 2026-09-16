@@ -5,11 +5,15 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 data class MedicineAlarm(
     val slotId: String,
     val at: Instant,
 )
+
+/** How late an alarm may still play after its scheduled minute. */
+internal const val MEDICINE_GRACE_MINUTES = 3L
 
 internal fun remainingMedicineAlarms(
     slots: List<MedicineSlot>,
@@ -37,24 +41,30 @@ internal fun isMedicineMinute(
     slots: List<MedicineSlot>,
     now: Instant,
     zone: ZoneId,
-): Boolean {
-    val local = now.atZone(zone)
-    return slots.any { slot ->
-        local.dayOfWeek in slot.days &&
-            local.hour == slot.hour &&
-            local.minute == slot.minute
-    }
-}
+    graceMinutes: Long = MEDICINE_GRACE_MINUTES,
+): Boolean = medicineSlotFor(slots, now, zone, graceMinutes) != null
 
 internal fun medicineSlotFor(
     slots: List<MedicineSlot>,
     now: Instant,
     zone: ZoneId,
+    graceMinutes: Long = MEDICINE_GRACE_MINUTES,
 ): MedicineSlot? {
+    if (slots.isEmpty()) return null
     val local = now.atZone(zone)
     return slots.firstOrNull { slot ->
-        local.dayOfWeek in slot.days &&
-            local.hour == slot.hour &&
-            local.minute == slot.minute
+        if (local.dayOfWeek !in slot.days) return@firstOrNull false
+        val scheduled = ZonedDateTime.of(
+            local.toLocalDate(),
+            LocalTime.of(slot.hour, slot.minute),
+            zone,
+        )
+        val minutesLate = ChronoUnit.MINUTES.between(scheduled, local)
+        minutesLate in 0..graceMinutes
     }
 }
+
+internal fun medicineFireKey(
+    slot: MedicineSlot,
+    localDate: LocalDate,
+): String = listOf(slot.id, localDate, slot.hour, slot.minute).joinToString("|")

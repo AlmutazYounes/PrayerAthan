@@ -19,8 +19,12 @@ class AthkarAlarmReceiver : BroadcastReceiver() {
         val location = app.prayerEngine.location()
         val day = app.prayerEngine.day(now, location)
         val zone = ZoneId.of(location.timeZoneId)
+        val medicineSettings = MedicineSettingsStore(app)
+        val medicineDue = medicineSettings.enabled() &&
+            isMedicineMinute(medicineSettings.slots(), now, zone)
         if (app.athanController.playback.value != null ||
             app.athanController.medicinePlayback.value != null ||
+            medicineDue ||
             !isAthkarWindow(day, now, zone) ||
             isAthanMinute(athanInstants(day), now, zone)
         ) {

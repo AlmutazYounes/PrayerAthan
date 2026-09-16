@@ -51,16 +51,21 @@ class MedicineService : Service() {
         val zone = ZoneId.of(location.timeZoneId)
         val voice = settings.voice()
         startInForeground(voice.wallPrimary)
+        val slot = medicineSlotFor(settings.slots(), now, zone)
+        val key = slot?.let { medicineFireKey(it, now.atZone(zone).toLocalDate()) }
         if (!settings.enabled() ||
             settings.slots().isEmpty() ||
+            slot == null ||
+            key == null ||
+            settings.alreadyFired(key) ||
             app.athanController.playback.value != null ||
-            isAthanMinute(athanInstants(day), now, zone) ||
-            !isMedicineMinute(settings.slots(), now, zone)
+            isAthanMinute(athanInstants(day), now, zone)
         ) {
             app.athanController.schedule(day, now)
             stopPlayback()
             return
         }
+        settings.markFired(key)
         app.athanController.stopAthkar()
         app.athanController.markMedicinePlaying(voice.wallPrimary, voice.wallSecondary, now)
         app.athanController.schedule(day, now)

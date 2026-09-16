@@ -8,6 +8,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -44,11 +45,47 @@ class MedicineAlarmsTest {
             days = setOf(DayOfWeek.TUESDAY),
         )
         val hit = ZonedDateTime.of(LocalDate.of(2026, 9, 15), LocalTime.of(20, 30), zone).toInstant()
-        val miss = ZonedDateTime.of(LocalDate.of(2026, 9, 15), LocalTime.of(20, 31), zone).toInstant()
+        val miss = ZonedDateTime.of(LocalDate.of(2026, 9, 15), LocalTime.of(20, 34), zone).toInstant()
         assertTrue(isMedicineMinute(listOf(slot), hit, zone))
         assertFalse(isMedicineMinute(listOf(slot), miss, zone))
         assertEquals(slot, medicineSlotFor(listOf(slot), hit, zone))
         assertNull(medicineSlotFor(listOf(slot), miss, zone))
+    }
+
+    @Test
+    fun graceAllowsLateAlarmWithinThreeMinutes() {
+        val slot = MedicineSlot(
+            id = "nine",
+            hour = 21,
+            minute = 0,
+            days = setOf(DayOfWeek.TUESDAY),
+        )
+        val late = ZonedDateTime.of(LocalDate.of(2026, 9, 15), LocalTime.of(21, 2), zone).toInstant()
+        assertNotNull(medicineSlotFor(listOf(slot), late, zone))
+        assertTrue(isMedicineMinute(listOf(slot), late, zone))
+    }
+
+    @Test
+    fun graceRejectsBeforeSlot() {
+        val slot = MedicineSlot(
+            id = "nine",
+            hour = 21,
+            minute = 0,
+            days = setOf(DayOfWeek.TUESDAY),
+        )
+        val early = ZonedDateTime.of(LocalDate.of(2026, 9, 15), LocalTime.of(20, 59), zone).toInstant()
+        assertNull(medicineSlotFor(listOf(slot), early, zone))
+    }
+
+    @Test
+    fun fireKeyIsStablePerOccurrence() {
+        val slot = MedicineSlot(
+            id = "abc",
+            hour = 9,
+            minute = 0,
+            days = DayOfWeek.entries.toSet(),
+        )
+        assertEquals("abc|2026-09-15|9|0", medicineFireKey(slot, LocalDate.of(2026, 9, 15)))
     }
 
     @Test
