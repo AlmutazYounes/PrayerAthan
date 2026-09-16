@@ -5,4 +5,6 @@
     <string name="athan_stop">Stop</string>
     <string name="athkar_channel_name">Athkar</string>
     <string name="athkar_playing_title">Dhikr</string>
+    <string name="medicine_channel_name">Medicine</string>
+    <string name="medicine_playing_title">Medicine reminder</string>
 </resources>

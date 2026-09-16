@@ -52,6 +52,7 @@ class AthkarService : Service() {
         startInForeground(getString(R.string.athkar_playing_title))
         if (!AudioSettingsStore(this).athkarEnabled() ||
             app.athanController.playback.value != null ||
+            app.athanController.medicinePlayback.value != null ||
             !isAthkarWindow(day, now, zone) ||
             isAthanMinute(athanInstants(day), now, zone)
         ) {

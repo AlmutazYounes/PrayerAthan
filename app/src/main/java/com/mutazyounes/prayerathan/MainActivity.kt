@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
                     app.locationStore,
                     app.locationFixer,
                     app.audioSettings,
+                    app.medicineSettings,
                     app.wallClock,
                 ),
             )

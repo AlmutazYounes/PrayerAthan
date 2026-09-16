@@ -1,5 +1,7 @@
 package com.mutazyounes.prayerathan.ui
 
+import com.mutazyounes.prayerathan.engine.PrayerName
+import java.time.Instant
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -23,6 +25,38 @@ class WallViewModelTest {
         assertFalse(WallViewModel.isNightBlackoutWindow(20))
         assertFalse(WallViewModel.isNightBlackoutWindow(21))
         assertFalse(WallViewModel.isNightBlackoutWindow(22))
+    }
+
+    @Test
+    fun playingPrayerKeepsOwnTimeNotNextAthan() {
+        val maghrib = Instant.parse("2026-09-15T23:10:00Z")
+        val isha = Instant.parse("2026-09-16T00:25:00Z")
+        assertEquals(
+            maghrib,
+            WallViewModel.cellDisplayInstant(
+                instantAt = maghrib,
+                name = PrayerName.MAGHRIB,
+                playingName = PrayerName.MAGHRIB,
+                nextAthan = PrayerName.ISHA,
+                nextAthanAt = isha,
+            ),
+        )
+    }
+
+    @Test
+    fun afterIshaFajrTileShowsTomorrow() {
+        val todayFajr = Instant.parse("2026-09-15T09:05:00Z")
+        val tomorrowFajr = Instant.parse("2026-09-16T09:06:00Z")
+        assertEquals(
+            tomorrowFajr,
+            WallViewModel.cellDisplayInstant(
+                instantAt = todayFajr,
+                name = PrayerName.FAJR,
+                playingName = null,
+                nextAthan = PrayerName.FAJR,
+                nextAthanAt = tomorrowFajr,
+            ),
+        )
     }
 
     @Test

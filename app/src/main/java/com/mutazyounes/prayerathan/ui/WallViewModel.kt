@@ -7,6 +7,9 @@ import com.mutazyounes.prayerathan.audio.AthanController
 import com.mutazyounes.prayerathan.audio.AthanVolume
 import com.mutazyounes.prayerathan.audio.AthkarClip
 import com.mutazyounes.prayerathan.audio.AudioSettingsStore
+import com.mutazyounes.prayerathan.audio.MedicineSettingsStore
+import com.mutazyounes.prayerathan.audio.MedicineSlot
+import com.mutazyounes.prayerathan.audio.MedicineVoice
 import com.mutazyounes.prayerathan.engine.CityCatalog
 import com.mutazyounes.prayerathan.engine.LocationStore
 import com.mutazyounes.prayerathan.engine.PrayerDay
@@ -43,6 +46,7 @@ class WallViewModel(
     private val locationStore: LocationStore,
     private val locationFixer: LocationFixer,
     private val audioSettings: AudioSettingsStore,
+    private val medicineSettings: MedicineSettingsStore,
     private val wallClock: WallClock = SystemWallClock,
 ) : ViewModel() {
 
@@ -53,6 +57,7 @@ class WallViewModel(
     private var lastScheduledDate: LocalDate? = null
     private var wasPlaying: Boolean = false
     private var wasAthkar: Boolean = false
+    private var wasMedicine: Boolean = false
     private var weatherLine: String = ""
     private var weatherCondition: String = ""
     private var hourlyWeather: List<HourlyWeather> = emptyList()
@@ -83,6 +88,11 @@ class WallViewModel(
         }
         viewModelScope.launch {
             athan.athkarPlayback.collect {
+                refresh(now())
+            }
+        }
+        viewModelScope.launch {
+            athan.medicinePlayback.collect {
                 refresh(now())
             }
         }
@@ -132,6 +142,35 @@ class WallViewModel(
     fun setAthkarEnabled(enabled: Boolean) {
         audioSettings.setAthkarEnabled(enabled)
         refresh(now(), forceSchedule = true)
+    }
+
+    fun setMedicineEnabled(enabled: Boolean) {
+        medicineSettings.setEnabled(enabled)
+        refresh(now(), forceSchedule = true)
+    }
+
+    fun setMedicineVoice(voice: MedicineVoice) {
+        medicineSettings.setVoice(voice)
+        refresh(now())
+    }
+
+    fun upsertMedicineSlot(slot: MedicineSlot) {
+        medicineSettings.upsertSlot(slot)
+        refresh(now(), forceSchedule = true)
+    }
+
+    fun removeMedicineSlot(id: String) {
+        medicineSettings.removeSlot(id)
+        refresh(now(), forceSchedule = true)
+    }
+
+    fun playMedicineDemo() {
+        if (athan.demoId.value == "medicine:preview") {
+            stopDemo()
+            return
+        }
+        athan.playMedicineDemo()
+        refresh(now())
     }
 
     fun setNightBlackout(enabled: Boolean) {
@@ -284,7 +323,9 @@ class WallViewModel(
         val playingName = playback?.prayer
         val playing = playingName != null
         val athkar = athan.athkarPlayback.value
-        val athkarOn = athkar != null && !playing
+        val medicine = athan.medicinePlayback.value
+        val athkarOn = athkar != null && !playing && medicine == null
+        val medicineOn = medicine != null && !playing
         val mutedPrayers = audioSettings.mutedPrayers()
         val albanyClock = formatClock(clocks.albany, twelveHour)
         val jordanClock = formatClock(clocks.jordan, twelveHour)
@@ -320,7 +361,13 @@ class WallViewModel(
             athanPlaying = playing,
             playingName = playingName,
             athkarPlaying = athkarOn,
-            athkarCaption = if (playing) "" else athkar?.caption.orEmpty(),
+            athkarCaption = if (playing || medicineOn) "" else athkar?.caption.orEmpty(),
+            medicinePlaying = medicineOn,
+            medicinePrimary = if (playing) "" else medicine?.primary.orEmpty(),
+            medicineSecondary = if (playing) "" else medicine?.secondary.orEmpty(),
+            medicineEnabled = medicineSettings.enabled(),
+            medicineVoice = medicineSettings.voice().name,
+            medicineSlots = medicineSettings.slots(),
             cells = cells,
             twelveHour = twelveHour,
             weatherLine = weatherLine,
@@ -331,7 +378,7 @@ class WallViewModel(
             prayerVolumes = audioSettings.prayerVolumes(),
             demoId = athan.demoId.value,
             nightBlackoutEnabled = settings.nightBlackout(),
-            isNightBlackout = settings.nightBlackout() && isNightBlackoutWindow(clocks.albany.hour) && !playing && athan.demoId.value == null,
+            isNightBlackout = settings.nightBlackout() && isNightBlackoutWindow(clocks.albany.hour) && !playing && !medicineOn && athan.demoId.value == null,
         )
     }
 
@@ -373,15 +420,18 @@ class WallViewModel(
     private fun maybeSchedule(day: PrayerDay, now: Instant, force: Boolean = false) {
         val playingNow = athan.playback.value != null
         val athkarNow = athan.athkarPlayback.value != null
+        val medicineNow = athan.medicinePlayback.value != null
         if (force || lastScheduledDate != day.localDate ||
             (wasPlaying && !playingNow) ||
-            (wasAthkar && !athkarNow)
+            (wasAthkar && !athkarNow) ||
+            (wasMedicine && !medicineNow)
         ) {
             athan.schedule(day, now)
             lastScheduledDate = day.localDate
         }
         wasPlaying = playingNow
         wasAthkar = athkarNow
+        wasMedicine = medicineNow
     }
 
     private fun buildCells(
@@ -404,7 +454,15 @@ class WallViewModel(
                 else -> CellKind.LATER
             }
             // After Isha, next Fajr is tomorrow — show that clock time on the Fajr tile.
-            val displayAt = if (isNext) day.nextAthanAt else instant.at
+            // While athan plays, isNext means "highlight the playing prayer", not "use nextAthanAt"
+            // (nextAthanAt has already advanced to the following prayer).
+            val displayAt = cellDisplayInstant(
+                instantAt = instant.at,
+                name = instant.name,
+                playingName = playingName,
+                nextAthan = day.nextAthan,
+                nextAthanAt = day.nextAthanAt,
+            )
             PrayerCellState(
                 name = instant.name,
                 english = instant.name.englishLabel(),
@@ -446,6 +504,7 @@ class WallViewModel(
             locationStore: LocationStore,
             locationFixer: LocationFixer,
             audioSettings: AudioSettingsStore,
+            medicineSettings: MedicineSettingsStore,
             wallClock: WallClock,
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
@@ -459,6 +518,7 @@ class WallViewModel(
                         locationStore,
                         locationFixer,
                         audioSettings,
+                        medicineSettings,
                         wallClock,
                     ) as T
                 }
@@ -480,6 +540,19 @@ class WallViewModel(
 
         fun formatPrayerTime(time: ZonedDateTime, twelveHour: Boolean): String =
             formatClock(time, twelveHour).first
+
+        /**
+         * Prayer tile clock time. After Isha, the Fajr tile shows tomorrow's Fajr.
+         * During playback, keep the playing prayer's own instant (nextAthanAt has moved on).
+         */
+        fun cellDisplayInstant(
+            instantAt: Instant,
+            name: PrayerName,
+            playingName: PrayerName?,
+            nextAthan: PrayerName,
+            nextAthanAt: Instant,
+        ): Instant =
+            if (playingName == null && name == nextAthan) nextAthanAt else instantAt
 
         fun formatCountdown(duration: Duration): String {
             val totalSeconds = duration.seconds.coerceAtLeast(0)

@@ -147,6 +147,8 @@ Sunrise: silence.
 
 **Athkar.** Short dhikr on the local clock hour: اللهم صل على محمد (`athkar_salawat.mp3`). Files live in `audio/athkar/` with `audio/athkar/SOURCE.md`. Copy into `res/raw/`. Personal use, same rights rule as athan. Not Quran. Play between Fajr and Isha, and only from 8:00 AM through 9:00 PM local. Silent from 10:00 PM until 8:00 AM, even if Fajr was earlier. If an athan is due that minute, athan wins. Tap stops. Settings can turn this on. Off on first launch.
 
+**Medicine reminder.** Optional spoken cue at times Mutaz picks. Arabic (`medicine_ar.mp3`, حان وقت الدواء) or English (`medicine_en.mp3`, Take your medicine). Masters in `audio/medicine/` with `SOURCE.md`, copied to `res/raw/`. Settings: on/off, voice, up to six slots (hour + minute + weekday chips). Off on first launch until he adds a slot and turns it on. Uses `AlarmManager.setExactAndAllowWhileIdle` plus a short foreground service on the alarm stream, same stack as athkar. Priority: athan beats medicine, medicine beats athkar. Tap stops. Wall shows a gold-bordered banner with the spoken line (Arabic primary when Arabic voice is selected, English primary when English is selected, the other language as secondary). Night blackout stays off while the reminder plays.
+
 ---
 
 ## Out of scope for v1
@@ -337,5 +339,6 @@ Mutaz locked these. Orchestrator standing orders are in `AGENTS.md`.
 3. **Kiosk.** Not in v1. Rely on keep-screen-on. Lock-task is a later settings option if a stray tap dumps him into the launcher.
 4. **12-hour vs 24-hour.** 12-hour with AM/PM on the wall. 24-hour is a settings flag only.
 5. **Athkar quiet hours.** No hourly athkar from 10:00 PM until 8:00 AM local. Last clip is 9:00 PM. First clip is 8:00 AM, and only if that hour is still between Fajr and Isha.
+6. **Medicine reminder.** Optional. Off until Mutaz enables it and adds at least one day/time slot. Arabic or English voice. Athan wins over medicine. Medicine wins over athkar.
 
 When he changes one of these, update this file in the same turn as the code. Agents should not have to mine chat logs.

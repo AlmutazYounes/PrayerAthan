@@ -14,9 +14,9 @@ import android.os.IBinder
 import com.mutazyounes.prayerathan.MainActivity
 import com.mutazyounes.prayerathan.PrayerAthanApp
 import com.mutazyounes.prayerathan.R
-import com.mutazyounes.prayerathan.engine.PrayerName
+import java.time.ZoneId
 
-class AthanService : Service() {
+class MedicineService : Service() {
 
     private val player by lazy { AthanPlayer(this) }
 
@@ -24,11 +24,10 @@ class AthanService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_PLAY -> startPlayback(intent)
-            ACTION_DEMO -> startDemo(intent)
+            ACTION_PLAY -> startPlayback()
+            ACTION_DEMO -> startDemo()
             ACTION_STOP -> {
-                val prayer = controller().playback.value?.prayer ?: PrayerName.DHUHR
-                startInForeground(prayer)
+                startInForeground(getString(R.string.medicine_playing_title))
                 stopPlayback()
             }
             else -> stopPlayback()
@@ -38,67 +37,71 @@ class AthanService : Service() {
 
     override fun onDestroy() {
         player.stop()
-        controller().markIdle()
+        controller().markMedicineIdle()
         controller().markDemo(null)
         super.onDestroy()
     }
 
-    private fun startPlayback(intent: Intent) {
-        val prayer = prayerFrom(intent)
-        if (prayer == null || prayer == PrayerName.SUNRISE) {
-            startInForeground(PrayerName.DHUHR)
+    private fun startPlayback() {
+        val app = application as PrayerAthanApp
+        val settings = MedicineSettingsStore(this)
+        val now = app.wallClock.now()
+        val location = app.prayerEngine.location()
+        val day = app.prayerEngine.day(now, location)
+        val zone = ZoneId.of(location.timeZoneId)
+        val voice = settings.voice()
+        startInForeground(voice.wallPrimary)
+        if (!settings.enabled() ||
+            settings.slots().isEmpty() ||
+            app.athanController.playback.value != null ||
+            isAthanMinute(athanInstants(day), now, zone) ||
+            !isMedicineMinute(settings.slots(), now, zone)
+        ) {
+            app.athanController.schedule(day, now)
             stopPlayback()
             return
         }
-        startInForeground(prayer)
-        val app = application as PrayerAthanApp
-        val now = app.wallClock.now()
         app.athanController.stopAthkar()
-        app.athanController.stopMedicine()
-        app.athanController.markDemo(null)
-        app.athanController.markPlaying(prayer, now)
-        app.athanController.schedule(app.prayerEngine.day(now), now)
-        player.play(
-            prayer = prayer,
+        app.athanController.markMedicinePlaying(voice.wallPrimary, voice.wallSecondary, now)
+        app.athanController.schedule(day, now)
+        player.playRaw(
+            resId = voice.rawRes,
             onComplete = { stopPlayback() },
             onError = { stopPlayback() },
         )
     }
 
-    private fun startDemo(intent: Intent) {
-        val soundId = intent.getStringExtra(EXTRA_SOUND_ID)
-        val choice = soundId?.let { AthanCatalog.byId(it) }
-        if (choice == null) {
-            startInForeground(PrayerName.DHUHR)
-            stopPlayback()
-            return
-        }
-        startInForeground(PrayerName.DHUHR)
+    private fun startDemo() {
+        val settings = MedicineSettingsStore(this)
+        val voice = settings.voice()
         val app = application as PrayerAthanApp
+        startInForeground(voice.wallPrimary)
         app.athanController.stopAthkar()
-        app.athanController.stopMedicine()
         app.athanController.markIdle()
-        app.athanController.markDemo(intent.getStringExtra(EXTRA_DEMO_KEY) ?: choice.id)
-        val volumePercent = intent.getIntExtra(EXTRA_VOLUME, AthanVolume.DEFAULT)
+        app.athanController.markDemo(DEMO_ID)
+        app.athanController.markMedicinePlaying(
+            voice.wallPrimary,
+            voice.wallSecondary,
+            app.wallClock.now(),
+        )
         player.playRaw(
-            resId = choice.rawRes,
+            resId = voice.rawRes,
             onComplete = { stopPlayback() },
             onError = { stopPlayback() },
-            volumePercent = volumePercent,
         )
     }
 
     private fun stopPlayback() {
         player.stop()
-        controller().markIdle()
+        controller().markMedicineIdle()
         controller().markDemo(null)
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
-    private fun startInForeground(prayer: PrayerName) {
+    private fun startInForeground(text: String) {
         ensureChannel()
-        val notification = buildNotification(prayer)
+        val notification = buildNotification(text)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
                 NOTIFICATION_ID,
@@ -110,16 +113,16 @@ class AthanService : Service() {
         }
     }
 
-    private fun buildNotification(prayer: PrayerName): Notification {
+    private fun buildNotification(text: String): Notification {
         val openApp = PendingIntent.getActivity(
             this,
-            0,
+            4,
             Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val stop = PendingIntent.getService(
             this,
-            1,
+            5,
             stopIntent(this),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
@@ -130,8 +133,8 @@ class AthanService : Service() {
         ).build()
         return Notification.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_athan)
-            .setContentTitle(getString(R.string.athan_playing_title))
-            .setContentText(prayer.name)
+            .setContentTitle(getString(R.string.medicine_playing_title))
+            .setContentText(text)
             .setContentIntent(openApp)
             .setOngoing(true)
             .setCategory(Notification.CATEGORY_ALARM)
@@ -144,7 +147,7 @@ class AthanService : Service() {
         val manager = getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(
             CHANNEL_ID,
-            getString(R.string.athan_channel_name),
+            getString(R.string.medicine_channel_name),
             NotificationManager.IMPORTANCE_LOW,
         )
         channel.setSound(null, null)
@@ -158,46 +161,29 @@ class AthanService : Service() {
     }
 
     companion object {
-        const val ACTION_PLAY = "com.mutazyounes.prayerathan.audio.PLAY"
-        const val ACTION_DEMO = "com.mutazyounes.prayerathan.audio.DEMO"
-        const val ACTION_STOP = "com.mutazyounes.prayerathan.audio.STOP"
-        const val EXTRA_PRAYER = "prayer"
-        const val EXTRA_SOUND_ID = "sound_id"
-        const val EXTRA_VOLUME = "volume"
-        const val EXTRA_DEMO_KEY = "demo_key"
-        private const val CHANNEL_ID = "athan_playback"
-        private const val NOTIFICATION_ID = 41
+        const val ACTION_PLAY = "com.mutazyounes.prayerathan.audio.MEDICINE_PLAY"
+        const val ACTION_DEMO = "com.mutazyounes.prayerathan.audio.MEDICINE_DEMO"
+        const val ACTION_STOP = "com.mutazyounes.prayerathan.audio.MEDICINE_STOP"
+        const val DEMO_ID = "medicine:preview"
+        private const val CHANNEL_ID = "medicine_playback"
+        private const val NOTIFICATION_ID = 43
 
-        fun playIntent(context: Context, prayer: PrayerName): Intent {
-            return Intent(context, AthanService::class.java).apply {
+        fun playIntent(context: Context): Intent {
+            return Intent(context, MedicineService::class.java).apply {
                 action = ACTION_PLAY
-                putExtra(EXTRA_PRAYER, prayer.name)
             }
         }
 
-        fun demoIntent(
-            context: Context,
-            soundId: String,
-            volumePercent: Int = AthanVolume.DEFAULT,
-            demoKey: String = soundId,
-        ): Intent {
-            return Intent(context, AthanService::class.java).apply {
+        fun demoIntent(context: Context): Intent {
+            return Intent(context, MedicineService::class.java).apply {
                 action = ACTION_DEMO
-                putExtra(EXTRA_SOUND_ID, soundId)
-                putExtra(EXTRA_VOLUME, AthanVolume.clamp(volumePercent))
-                putExtra(EXTRA_DEMO_KEY, demoKey)
             }
         }
 
         fun stopIntent(context: Context): Intent {
-            return Intent(context, AthanService::class.java).apply {
+            return Intent(context, MedicineService::class.java).apply {
                 action = ACTION_STOP
             }
-        }
-
-        private fun prayerFrom(intent: Intent): PrayerName? {
-            val raw = intent.getStringExtra(EXTRA_PRAYER) ?: return null
-            return runCatching { PrayerName.valueOf(raw) }.getOrNull()
         }
     }
 }

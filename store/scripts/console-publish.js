@@ -12,6 +12,10 @@ if (!AAB || !LABEL) {
   cliLog('need PLAY_AAB and PLAY_LABEL')
   throw new Error('need PLAY_AAB and PLAY_LABEL')
 }
+if (!/^\d+ \(0\.\d+\.\d+\)$/.test(String(LABEL).trim())) {
+  cliLog('bad PLAY_LABEL ' + JSON.stringify(LABEL))
+  throw new Error('bad PLAY_LABEL: ' + LABEL)
+}
 
 const task = await useOrCreateTaskSpace('upload prayerathan push')
 cliLog('space ' + JSON.stringify({ id: task.id, name: task.name }))
@@ -22,7 +26,8 @@ cliLog(JSON.stringify(await pageInfo()))
 
 const before = await js(`document.body.innerText`)
 cliLog(before.match(/Latest release:[\s\S]{0,80}/)?.[0] || before.slice(0, 400))
-if (before.includes('Latest release: ' + LABEL)) {
+cliLog('want ' + LABEL)
+if (LABEL && before.includes('Latest release: ' + LABEL)) {
   cliLog('ALREADY_LIVE ' + LABEL)
 } else {
   const pos = await js(String.raw`(() => {

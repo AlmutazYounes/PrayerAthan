@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-09-15 Restored medicine+icons from e089ad0 onto main; prayer-time fix kept. Pushing 33 to replace mistaken 32.
 - 2026-09-13 Mutaz: added aaldhoun37@gmail.com to ClosedTesters (18 invited).
 - 2026-09-13 Play Dashboard: 11 closed testers opted in. Need 12 for 14 days.
 - 2026-09-11 Mutaz: added ba.sa.ah.2006@gmail.com and Tehabsim28@gmail.com to ClosedTesters (17 invited).
