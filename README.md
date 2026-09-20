@@ -88,15 +88,7 @@ Specs live in `PROJECT.md` and `DESIGN.md`. Agent standing orders: `AGENTS.md`, 
 git clone https://github.com/AlmutazYounes/PrayerAthan.git
 cd PrayerAthan
 ./gradlew test
-./gradlew assembleDebug   # local compile check only
-```
-
-Wall tablets install from Play (internal or closed testing). Do not sideload debug over a Play install of the same package.
-
-Ship an internal testing build:
-
-```bash
-./store/scripts/push-release.sh "what changed"
+./gradlew assembleDebug
 ```
 
 ---

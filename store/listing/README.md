@@ -2,7 +2,7 @@
 
 Upload from `play/`, plus the icon and feature graphic. Do not upload `design/athan-wall-*.png`. Play's tablet slot wants 16:9 and 9:16 (1080px+).
 
-Idle frames refreshed 20 September 2026 from `ops/shots-landscape-arc-check.png` and `ops/shots-portrait-check.png` (arc timer wall, landscape split list, dark mosque only). Resized to Play slots. Athan frames are still the earlier Dhuhr-playing captures until a fresh emulator pass.
+All four frames refreshed 20 September 2026. Arc timer wall, landscape split list, dark mosque only. Portrait and landscape idle plus Dhuhr athan playing with TAP TO STOP. Feature graphic is a crop of the landscape idle wall with the icon and Athan Clock title.
 
 No settings sheet in any upload PNG. Light frames were dropped. The live wall is dark only.
 
@@ -20,8 +20,8 @@ Phone slot is the 7-inch wall in 9:16, not a phone UI. Console still asks for it
 
 1. `01-portrait-idle-dark.png` — portrait arc hero, 2×3 prayer grid
 2. `02-landscape-idle-dark.png` — landscape arc left, spaced prayer list right
-3. `03-portrait-athan-dark.png` — Adhan is playing (older capture; refresh when emulator is free)
-4. `04-landscape-athan-dark.png` — same, landscape
+3. `03-portrait-athan-dark.png` — Adhan is playing (Dhuhr), TAP TO STOP
+4. `04-landscape-athan-dark.png` — same, landscape split
 
 Max 8 per slot. These 4 fit.
 
