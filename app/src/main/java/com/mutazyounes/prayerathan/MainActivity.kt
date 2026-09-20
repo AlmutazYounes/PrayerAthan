@@ -10,17 +10,22 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.keepScreenOn
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mutazyounes.prayerathan.audio.AthanLockScreen
 import com.mutazyounes.prayerathan.shell.KeepAwake
 import com.mutazyounes.prayerathan.shell.LocationFixer
+import com.mutazyounes.prayerathan.shell.ShowOverLock
 import com.mutazyounes.prayerathan.ui.WallScreen
 import com.mutazyounes.prayerathan.ui.WallViewModel
 
@@ -40,6 +45,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         KeepAwake.apply(this)
+        applyOverLock(intent)
         hideSystemBars()
         requestNotificationPermission()
         val app = application as PrayerAthanApp
@@ -60,6 +66,17 @@ class MainActivity : ComponentActivity() {
                     app.wallClock,
                 ),
             )
+            val athanPlaying by app.athanController.playback.collectAsState()
+            var hadAthan by remember { mutableStateOf(false) }
+            LaunchedEffect(athanPlaying) {
+                if (athanPlaying != null) {
+                    hadAthan = true
+                    ShowOverLock.apply(this@MainActivity, true)
+                } else if (hadAthan) {
+                    ShowOverLock.apply(this@MainActivity, false)
+                    hadAthan = false
+                }
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -73,12 +90,24 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        applyOverLock(intent)
+    }
+
     override fun onDestroy() {
         val fixer = (application as PrayerAthanApp).locationFixer
         if (fixer.launchPermissionDialog === launchLocationPermission) {
             fixer.launchPermissionDialog = null
         }
         super.onDestroy()
+    }
+
+    private fun applyOverLock(intent: Intent?) {
+        if (intent?.getBooleanExtra(AthanLockScreen.EXTRA_OVER_LOCK, false) == true) {
+            ShowOverLock.apply(this, true)
+        }
     }
 
     private fun requestNotificationPermission() {

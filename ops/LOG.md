@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-09-20 Mutaz: issue #1 lock-screen Stop. New high-importance athan channel, full-screen intent, wall over lock while playing.
 - 2026-09-15 Mutaz: internal testing 34 (0.34.0). Medicine reminder: reliable alarms, grace window, beats athkar on the hour. Not production.
 - 2026-09-15 Medicine alarms: setAlarmClock + 3min grace + catch-up if due now; athkar yields same minute. Push 34.
 - 2026-09-15 Mutaz: internal testing 33 (0.33.0). Restore medicine reminder + icons; keep athan tile time fix. Not production.

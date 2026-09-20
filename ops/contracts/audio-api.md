@@ -62,6 +62,8 @@ interface AthanController {
 
 Playback uses `MediaPlayer` on the alarm stream. Foreground service for the duration of the file. Selected Fajr file for Fajr. Selected standard file for the other four. Volume is 0–100 per prayer from `AudioSettingsStore`, applied with `MediaPlayer.setVolume` after prepare. Mute still skips the alarm. Sound-picker PLAY uses 100. Settings volume PLAY uses that prayer's percent.
 
+Live athan posts channel `athan_playback_alarm` at `IMPORTANCE_HIGH`, silent, lock-screen public, with a Stop action and a `fullScreenIntent` to `MainActivity`. `MainActivity` sets show-when-locked while `playback` is non-null. Demos skip the full-screen intent.
+
 Hourly athkar rotates the remaining clips when the setting is on. Skip if athan is playing or that minute is an athan alarm. Silent from Isha until the next Fajr, and silent from 10:00 PM until 8:00 AM local even if Fajr already passed. Settings PLAY demos do not wait for the hour.
 
 Medicine reminder plays the selected voice clip at each configured weekday/time. Skip if athan is playing or that minute is an athan alarm. Uses `AlarmManager.setAlarmClock` (same class as prayer athan) plus a 3-minute grace window so a late wake still speaks. If the slot is already due when Mutaz enables it, play immediately (once per occurrence). Stops athkar if both would collide; athkar also yields when a medicine slot is due that minute. Settings stores enable, voice, slots, and last-fire key in `prayerathan_medicine`. Off until the user turns it on. Preview uses `demoId = medicine:preview`.

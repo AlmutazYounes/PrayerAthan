@@ -28,7 +28,7 @@ class AthanService : Service() {
             ACTION_DEMO -> startDemo(intent)
             ACTION_STOP -> {
                 val prayer = controller().playback.value?.prayer ?: PrayerName.DHUHR
-                startInForeground(prayer)
+                startInForeground(prayer, liveAthan = false)
                 stopPlayback()
             }
             else -> stopPlayback()
@@ -46,17 +46,17 @@ class AthanService : Service() {
     private fun startPlayback(intent: Intent) {
         val prayer = prayerFrom(intent)
         if (prayer == null || prayer == PrayerName.SUNRISE) {
-            startInForeground(PrayerName.DHUHR)
+            startInForeground(PrayerName.DHUHR, liveAthan = false)
             stopPlayback()
             return
         }
-        startInForeground(prayer)
         val app = application as PrayerAthanApp
         val now = app.wallClock.now()
         app.athanController.stopAthkar()
         app.athanController.stopMedicine()
         app.athanController.markDemo(null)
         app.athanController.markPlaying(prayer, now)
+        startInForeground(prayer, liveAthan = true)
         app.athanController.schedule(app.prayerEngine.day(now), now)
         player.play(
             prayer = prayer,
@@ -69,11 +69,11 @@ class AthanService : Service() {
         val soundId = intent.getStringExtra(EXTRA_SOUND_ID)
         val choice = soundId?.let { AthanCatalog.byId(it) }
         if (choice == null) {
-            startInForeground(PrayerName.DHUHR)
+            startInForeground(PrayerName.DHUHR, liveAthan = false)
             stopPlayback()
             return
         }
-        startInForeground(PrayerName.DHUHR)
+        startInForeground(PrayerName.DHUHR, liveAthan = false)
         val app = application as PrayerAthanApp
         app.athanController.stopAthkar()
         app.athanController.stopMedicine()
@@ -96,9 +96,9 @@ class AthanService : Service() {
         stopSelf()
     }
 
-    private fun startInForeground(prayer: PrayerName) {
+    private fun startInForeground(prayer: PrayerName, liveAthan: Boolean) {
         ensureChannel()
-        val notification = buildNotification(prayer)
+        val notification = buildNotification(prayer, liveAthan)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
                 NOTIFICATION_ID,
@@ -110,11 +110,11 @@ class AthanService : Service() {
         }
     }
 
-    private fun buildNotification(prayer: PrayerName): Notification {
+    private fun buildNotification(prayer: PrayerName, liveAthan: Boolean): Notification {
         val openApp = PendingIntent.getActivity(
             this,
             0,
-            Intent(this, MainActivity::class.java),
+            openWallIntent(this, overLock = liveAthan),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val stop = PendingIntent.getService(
@@ -128,7 +128,7 @@ class AthanService : Service() {
             getString(R.string.athan_stop),
             stop,
         ).build()
-        return Notification.Builder(this, CHANNEL_ID)
+        val builder = Notification.Builder(this, AthanLockScreen.CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_athan)
             .setContentTitle(getString(R.string.athan_playing_title))
             .setContentText(prayer.name)
@@ -137,19 +137,23 @@ class AthanService : Service() {
             .setCategory(Notification.CATEGORY_ALARM)
             .setVisibility(Notification.VISIBILITY_PUBLIC)
             .addAction(stopAction)
-            .build()
+        if (AthanLockScreen.usesFullScreen(liveAthan)) {
+            builder.setFullScreenIntent(openApp, true)
+        }
+        return builder.build()
     }
 
     private fun ensureChannel() {
         val manager = getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(
-            CHANNEL_ID,
+            AthanLockScreen.CHANNEL_ID,
             getString(R.string.athan_channel_name),
-            NotificationManager.IMPORTANCE_LOW,
+            NotificationManager.IMPORTANCE_HIGH,
         )
         channel.setSound(null, null)
         channel.enableVibration(false)
         channel.setShowBadge(false)
+        channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         manager.createNotificationChannel(channel)
     }
 
@@ -165,7 +169,6 @@ class AthanService : Service() {
         const val EXTRA_SOUND_ID = "sound_id"
         const val EXTRA_VOLUME = "volume"
         const val EXTRA_DEMO_KEY = "demo_key"
-        private const val CHANNEL_ID = "athan_playback"
         private const val NOTIFICATION_ID = 41
 
         fun playIntent(context: Context, prayer: PrayerName): Intent {
@@ -192,6 +195,15 @@ class AthanService : Service() {
         fun stopIntent(context: Context): Intent {
             return Intent(context, AthanService::class.java).apply {
                 action = ACTION_STOP
+            }
+        }
+
+        fun openWallIntent(context: Context, overLock: Boolean): Intent {
+            return Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+                putExtra(AthanLockScreen.EXTRA_OVER_LOCK, overLock)
             }
         }
 
