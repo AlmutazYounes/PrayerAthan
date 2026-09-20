@@ -302,6 +302,7 @@ Playing. `playingPrayerName != null`. Hide the timer and the unit captions. Stac
 1. `NOW` in the section-label size
 2. Prayer English name in the countdown size, all-caps
 3. `Adhan is playing` in the unit-caption size, or slightly larger so it reads at 8 feet
+4. `TAP TO STOP` slightly larger than the line above. Whole wall tap still stops. Volume down lowers the alarm stream. Volume at zero or a long press stops.
 
 Do not open another activity. Swap the body of this block.
 

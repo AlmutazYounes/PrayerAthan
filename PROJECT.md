@@ -117,7 +117,7 @@ Default location, the house:
 - Timezone `America/New_York`
 - Label `Albany, NY`
 
-Calculation: `CalculationMethod.NORTH_AMERICA` (ISNA). That is the Albany default. Do not silently switch to Muslim World League because a sample snippet used it.
+Calculation: `CalculationMethod.NORTH_AMERICA` (ISNA). That is the Albany default. Do not silently switch to Muslim World League because a sample snippet used it. Settings shows `Times: ISNA, North America. Asr is Shafi.` so a mosque table with 18° Fajr is not a surprise.
 
 Madhab: Shafi. Decided. That is the earlier Asr (shadow factor 1) via adhan-kotlin `Madhab.SHAFI`. HighLatitudeRule stays the library default. Albany is 42.7 N, so high-latitude math almost never fires. Make madhab configurable in settings later. Do not turn the code comments into a fiqh thread.
 
@@ -141,7 +141,7 @@ Origins, muezzin names, and license notes are in `audio/SOURCE.md`. Personal use
 
 Schedule with `AlarmManager.setAlarmClock` so the system treats it as an alarm. Play with `MediaPlayer` on the alarm stream. Hold a short foreground service while audio is playing so the process is not killed mid-athan. Reschedule on `BOOT_COMPLETED`. Exact-alarm permission on current Android is part of the shell work, not optional polish. While athan plays, the wall shows over the lock screen and the Stop notice is public at high importance. Unlock is not required to stop. Settings PLAY demos do not take the lock screen.
 
-Volume should fill a room at living-room distance. Do not duck to media volume that a mute toggle silences. This is the reason he is replacing the commercial app. Settings stores a 0–100 volume per prayer and MediaPlayer applies it on the alarm stream. Mute still skips that prayer's alarm. Default is 100. Athan plays on the built-in speaker only. Not the speaker and headphones together.
+Volume should fill a room at living-room distance. Do not duck to media volume that a mute toggle silences. This is the reason he is replacing the commercial app. Settings stores a 0–100 volume per prayer and MediaPlayer applies it on the alarm stream. Mute still skips that prayer's alarm. Default is 100. Athan plays on the built-in speaker only. Not the speaker and headphones together. While athan plays, volume keys bind to the alarm stream. Volume down lowers it. Volume at zero or a long press stops. The playing block shows TAP TO STOP. Tap anywhere on the wall still stops.
 
 Sunrise: silence.
 

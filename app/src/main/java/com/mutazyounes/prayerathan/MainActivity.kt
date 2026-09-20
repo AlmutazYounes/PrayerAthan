@@ -3,8 +3,10 @@ package com.mutazyounes.prayerathan
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +25,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mutazyounes.prayerathan.audio.AthanLockScreen
+import com.mutazyounes.prayerathan.audio.AthanVolumeKeys
 import com.mutazyounes.prayerathan.shell.KeepAwake
 import com.mutazyounes.prayerathan.shell.LocationFixer
 import com.mutazyounes.prayerathan.shell.ShowOverLock
@@ -67,7 +70,14 @@ class MainActivity : ComponentActivity() {
                 ),
             )
             val athanPlaying by app.athanController.playback.collectAsState()
+            val athkarPlaying by app.athanController.athkarPlayback.collectAsState()
+            val medicinePlaying by app.athanController.medicinePlayback.collectAsState()
+            val demoId by app.athanController.demoId.collectAsState()
             var hadAthan by remember { mutableStateOf(false) }
+            val alarmAudio = athanPlaying != null ||
+                athkarPlaying != null ||
+                medicinePlaying != null ||
+                demoId != null
             LaunchedEffect(athanPlaying) {
                 if (athanPlaying != null) {
                     hadAthan = true
@@ -75,6 +85,13 @@ class MainActivity : ComponentActivity() {
                 } else if (hadAthan) {
                     ShowOverLock.apply(this@MainActivity, false)
                     hadAthan = false
+                }
+            }
+            LaunchedEffect(alarmAudio) {
+                volumeControlStream = if (alarmAudio) {
+                    AudioManager.STREAM_ALARM
+                } else {
+                    AudioManager.USE_DEFAULT_STREAM_TYPE
                 }
             }
             Box(
@@ -102,6 +119,37 @@ class MainActivity : ComponentActivity() {
             fixer.launchPermissionDialog = null
         }
         super.onDestroy()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (!alarmAudioPlaying()) {
+            return super.onKeyDown(keyCode, event)
+        }
+        if (keyCode != KeyEvent.KEYCODE_VOLUME_DOWN && keyCode != KeyEvent.KEYCODE_VOLUME_UP) {
+            return super.onKeyDown(keyCode, event)
+        }
+        volumeControlStream = AudioManager.STREAM_ALARM
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN && event.repeatCount > 0) {
+            (application as PrayerAthanApp).athanController.stop()
+            return true
+        }
+        val handled = super.onKeyDown(keyCode, event)
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            val manager = getSystemService(AudioManager::class.java) ?: return handled
+            val volume = manager.getStreamVolume(AudioManager.STREAM_ALARM)
+            if (AthanVolumeKeys.stopAfterDown(event.repeatCount, volume)) {
+                (application as PrayerAthanApp).athanController.stop()
+            }
+        }
+        return handled
+    }
+
+    private fun alarmAudioPlaying(): Boolean {
+        val controller = (application as PrayerAthanApp).athanController
+        return controller.playback.value != null ||
+            controller.athkarPlayback.value != null ||
+            controller.medicinePlayback.value != null ||
+            controller.demoId.value != null
     }
 
     private fun applyOverLock(intent: Intent?) {

@@ -2,6 +2,8 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-09-20 Mutaz: issue #4 times label. Settings shows ISNA North America and Shafi Asr. Did not change the math. Amman in cities.tsv stays Asia/Amman.
+- 2026-09-20 Mutaz: issue #3 clock-style stop. Volume keys bind to STREAM_ALARM. Zero or long-press stops. TAP TO STOP on the playing block.
 - 2026-09-20 Mutaz: issue #2 athan speaker only. Pin MediaPlayer to built-in speaker so headphones do not play at the same time.
 - 2026-09-20 Mutaz: issue #1 lock-screen Stop. New high-importance athan channel, full-screen intent, wall over lock while playing.
 - 2026-09-15 Mutaz: internal testing 34 (0.34.0). Medicine reminder: reliable alarms, grace window, beats athkar on the hour. Not production.

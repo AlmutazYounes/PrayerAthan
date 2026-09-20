@@ -17,7 +17,7 @@ Hourly athkar fires on `:00` between Fajr and Isha, 8:00 AM through 9:00 PM. Sil
 
 Medicine reminder: optional day/time slots (max 6), Arabic or English voice clips in `res/raw/medicine_*.mp3`. `MedicineScheduler` + `MedicineService` + wall banner. Priority athan > medicine > athkar. Off until enabled with at least one slot.
 
-Live athan notification is channel `athan_playback_alarm`, `IMPORTANCE_HIGH`, silent, lock-screen public. Full-screen intent opens the wall over the lock. Tap still stops. Demos skip full-screen. Playback pins to the built-in speaker so a headset does not also play.
+Live athan notification is channel `athan_playback_alarm`, `IMPORTANCE_HIGH`, silent, lock-screen public. Full-screen intent opens the wall over the lock. Tap still stops. Volume keys lower the alarm stream and stop at zero. Demos skip full-screen. Playback pins to the built-in speaker so a headset does not also play.
 
 ## Playback
 

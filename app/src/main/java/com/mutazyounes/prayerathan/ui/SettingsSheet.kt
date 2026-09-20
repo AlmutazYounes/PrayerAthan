@@ -86,11 +86,12 @@ import com.mutazyounes.prayerathan.audio.AthanVolume
 import com.mutazyounes.prayerathan.audio.MedicineSlot
 import com.mutazyounes.prayerathan.audio.MedicineVoice
 import com.mutazyounes.prayerathan.engine.CityCatalog
-import java.time.DayOfWeek
-import java.util.Locale
 import com.mutazyounes.prayerathan.engine.PlaceCity
 import com.mutazyounes.prayerathan.engine.PlaceCountry
+import com.mutazyounes.prayerathan.engine.PrayerMethod
 import com.mutazyounes.prayerathan.engine.PrayerName
+import java.time.DayOfWeek
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -699,6 +700,14 @@ private fun LocationSectionCard(
             icon = Icons.Default.LocationOn,
             onClick = onUseGps,
             modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(Modifier.height(10.dp))
+        Text(
+            text = PrayerMethod.settingsLine(),
+            color = palette.prayerPast.copy(alpha = 0.85f),
+            fontSize = 12.sp,
+            fontFamily = EnglishFontFamily,
         )
     }
 }

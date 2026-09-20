@@ -78,6 +78,12 @@ fun AthanPlayingBlock(
                 style = labelStyle((nameSize.value * 0.22f).coerceAtLeast(10f).sp, palette.gold),
                 maxLines = 1,
             )
+            Text(
+                text = "TAP TO STOP",
+                style = labelStyle((nameSize.value * 0.28f).coerceAtLeast(12f).sp, palette.gold),
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+            )
         }
     }
 }

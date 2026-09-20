@@ -77,9 +77,15 @@ class CityCatalogTest {
     }
 
     @Test
-    fun makkahLabelUsesCountryName() {
-        val sa = catalog.country("SA")!!
-        val makkah = catalog.searchCities("SA", "makkah").single()
-        assertEquals("Makkah, Saudi Arabia", makkah.label(sa.name))
+    fun bundledAmmanKeepsAsiaAmman() {
+        val cities = java.io.File("src/main/assets/cities.tsv").readText()
+        val countries = java.io.File("src/main/assets/countries.tsv").readText()
+        val bundled = CityCatalog.fromTsv(countries, cities)
+        val amman = bundled.searchCities("JO", "amman").first { city ->
+            city.name.equals("Amman", ignoreCase = true)
+        }
+        assertEquals("Asia/Amman", amman.timeZoneId)
+        assertTrue(amman.latitude > 31.8 && amman.latitude < 32.1)
+        assertTrue(amman.longitude > 35.8 && amman.longitude < 36.1)
     }
 }

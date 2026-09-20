@@ -62,7 +62,7 @@ interface AthanController {
 
 Playback uses `MediaPlayer` on the alarm stream. Foreground service for the duration of the file. Selected Fajr file for Fajr. Selected standard file for the other four. Volume is 0–100 per prayer from `AudioSettingsStore`, applied with `MediaPlayer.setVolume` after prepare. Mute still skips the alarm. Sound-picker PLAY uses 100. Settings volume PLAY uses that prayer's percent. `AthanPlayer` pins output to `TYPE_BUILTIN_SPEAKER` so athan does not also play in a headset.
 
-Live athan posts channel `athan_playback_alarm` at `IMPORTANCE_HIGH`, silent, lock-screen public, with a Stop action and a `fullScreenIntent` to `MainActivity`. `MainActivity` sets show-when-locked while `playback` is non-null. Demos skip the full-screen intent.
+Live athan posts channel `athan_playback_alarm` at `IMPORTANCE_HIGH`, silent, lock-screen public, with a Stop action and a `fullScreenIntent` to `MainActivity`. `MainActivity` sets show-when-locked while `playback` is non-null. Demos skip the full-screen intent. While alarm audio plays, volume keys bind to `STREAM_ALARM`. Volume down to zero or a long press calls `AthanController.stop()`.
 
 Hourly athkar rotates the remaining clips when the setting is on. Skip if athan is playing or that minute is an athan alarm. Silent from Isha until the next Fajr, and silent from 10:00 PM until 8:00 AM local even if Fajr already passed. Settings PLAY demos do not wait for the hour.
 

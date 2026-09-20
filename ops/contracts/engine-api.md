@@ -4,7 +4,7 @@ Prayer engine owns this. Designer and audio consume it. Nobody else computes pra
 
 Package: `com.mutazyounes.prayerathan.engine`
 
-Library: `com.batoulapps.adhan:adhan2`. `CalculationMethod.NORTH_AMERICA`. `Madhab.SHAFI`.
+Library: `com.batoulapps.adhan:adhan2`. `CalculationMethod.NORTH_AMERICA`. `Madhab.SHAFI`. Settings shows `PrayerMethod.settingsLine()` (`Times: ISNA, North America. Asr is Shafi.`). Do not add a method picker unless Mutaz changes this file.
 
 If implementation names drift, patch this file in the same change as the code.
 
