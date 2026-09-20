@@ -2,9 +2,7 @@
 
 Upload from `play/`, plus the icon and feature graphic. Do not upload `design/athan-wall-*.png`. Play's tablet slot wants 16:9 and 9:16 (1080px+).
 
-Shot 1 September 2026 evening from the live debug APK. `Tablet_10in` for tablet-10 (1440×2560 / 2560×1440) and for phone + tablet-7 at 1080×1920 / 1920×1080 (`wm size` on the 10-inch AVD; `Tablet_7in` hit System UI ANR). Package `com.mutazyounes.prayerathan`. Albany, 12-hour, horseshoe arc wall, dark mosque only. Weather on the wall. Date without year. No settings sheet.
-
-Athan frames: `adb shell run-as com.mutazyounes.prayerathan am start-foreground-service --user 0 -n com.mutazyounes.prayerathan/.audio.AthanService -a com.mutazyounes.prayerathan.audio.PLAY --es prayer DHUHR` after seeding empty `muted_prayers` in app prefs (defaults mute all five).
+Idle frames refreshed 20 September 2026 from `ops/shots-landscape-arc-check.png` and `ops/shots-portrait-check.png` (arc timer wall, landscape split list, dark mosque only). Resized to Play slots. Athan frames are still the earlier Dhuhr-playing captures until a fresh emulator pass.
 
 No settings sheet in any upload PNG. Light frames were dropped. The live wall is dark only.
 
@@ -20,12 +18,12 @@ No settings sheet in any upload PNG. Light frames were dropped. The live wall is
 
 Phone slot is the 7-inch wall in 9:16, not a phone UI. Console still asks for it. Same four filenames in every folder:
 
-1. `01-portrait-idle-dark.png` — dark wall, Maghrib next, countdown in that cell
-2. `02-landscape-idle-dark.png` — same, landscape
-3. `03-portrait-athan-dark.png` — Dhuhr cell says Adhan is playing
+1. `01-portrait-idle-dark.png` — portrait arc hero, 2×3 prayer grid
+2. `02-landscape-idle-dark.png` — landscape arc left, spaced prayer list right
+3. `03-portrait-athan-dark.png` — Adhan is playing (older capture; refresh when emulator is free)
 4. `04-landscape-athan-dark.png` — same, landscape
 
-Max 8 per slot. These 4 fit. Console accepted them 31 Aug 2026.
+Max 8 per slot. These 4 fit.
 
 ## Do not upload
 
