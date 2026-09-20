@@ -141,7 +141,7 @@ Origins, muezzin names, and license notes are in `audio/SOURCE.md`. Personal use
 
 Schedule with `AlarmManager.setAlarmClock` so the system treats it as an alarm. Play with `MediaPlayer` on the alarm stream. Hold a short foreground service while audio is playing so the process is not killed mid-athan. Reschedule on `BOOT_COMPLETED`. Exact-alarm permission on current Android is part of the shell work, not optional polish. While athan plays, the wall shows over the lock screen and the Stop notice is public at high importance. Unlock is not required to stop. Settings PLAY demos do not take the lock screen.
 
-Volume should fill a room at living-room distance. Do not duck to media volume that a mute toggle silences. This is the reason he is replacing the commercial app. Settings stores a 0–100 volume per prayer and MediaPlayer applies it on the alarm stream. Mute still skips that prayer's alarm. Default is 100.
+Volume should fill a room at living-room distance. Do not duck to media volume that a mute toggle silences. This is the reason he is replacing the commercial app. Settings stores a 0–100 volume per prayer and MediaPlayer applies it on the alarm stream. Mute still skips that prayer's alarm. Default is 100. Athan plays on the built-in speaker only. Not the speaker and headphones together.
 
 Sunrise: silence.
 

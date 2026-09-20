@@ -60,7 +60,7 @@ interface AthanController {
 
 `schedule` uses `AlarmManager.setAlarmClock` for each remaining athan instant today, and tomorrow Fajr if next is tomorrow. It also arms remaining local `:00` hours between Fajr and Isha with `setExactAndAllowWhileIdle` so athkar does not steal the system alarm-clock slot. When medicine is enabled with slots, it arms upcoming day/time hits the same way (look ahead ~7 days, cap 32). Call again after midnight and after `BOOT_COMPLETED`.
 
-Playback uses `MediaPlayer` on the alarm stream. Foreground service for the duration of the file. Selected Fajr file for Fajr. Selected standard file for the other four. Volume is 0–100 per prayer from `AudioSettingsStore`, applied with `MediaPlayer.setVolume` after prepare. Mute still skips the alarm. Sound-picker PLAY uses 100. Settings volume PLAY uses that prayer's percent.
+Playback uses `MediaPlayer` on the alarm stream. Foreground service for the duration of the file. Selected Fajr file for Fajr. Selected standard file for the other four. Volume is 0–100 per prayer from `AudioSettingsStore`, applied with `MediaPlayer.setVolume` after prepare. Mute still skips the alarm. Sound-picker PLAY uses 100. Settings volume PLAY uses that prayer's percent. `AthanPlayer` pins output to `TYPE_BUILTIN_SPEAKER` so athan does not also play in a headset.
 
 Live athan posts channel `athan_playback_alarm` at `IMPORTANCE_HIGH`, silent, lock-screen public, with a Stop action and a `fullScreenIntent` to `MainActivity`. `MainActivity` sets show-when-locked while `playback` is non-null. Demos skip the full-screen intent.
 
