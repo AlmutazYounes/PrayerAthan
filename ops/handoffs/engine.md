@@ -12,7 +12,7 @@ Agent: prayer-engine
 - `PrayerAthanApp.locationStore` is now `PrefsLocationStore(this)`, lazy so Context is attached
 - Tests: `PrefsLocationStoreTest.kt`, `SavedLocationParseTest` in the same file
 
-`InMemoryLocationStore` stays for unit tests and `PrayerCalculator`'s default. Production reads SharedPreferences `prayerathan_location`. Empty prefs, a junk timezone, or unreadable doubles return Albany. Write of Amman round-trips on a fresh store against the same backend. Math is unchanged: adhan2 `NORTH_AMERICA` + `SHAFI`.
+Math is unchanged: adhan2 `NORTH_AMERICA` + `SHAFI`. Per-prayer minute offsets sit on top, −60 to +60, persisted in `prayerathan_offsets`.
 
 ## Tests
 

@@ -3,7 +3,9 @@ package com.mutazyounes.prayerathan
 import android.app.Application
 import com.mutazyounes.prayerathan.audio.DefaultAthanController
 import com.mutazyounes.prayerathan.engine.LocationStore
+import com.mutazyounes.prayerathan.engine.OffsetStore
 import com.mutazyounes.prayerathan.engine.PrefsLocationStore
+import com.mutazyounes.prayerathan.engine.PrefsOffsetStore
 import com.mutazyounes.prayerathan.engine.PrayerCalculator
 import com.mutazyounes.prayerathan.engine.PrayerEngine
 import com.mutazyounes.prayerathan.audio.AudioSettingsStore
@@ -18,8 +20,9 @@ import com.mutazyounes.prayerathan.weather.WeatherClient
 class PrayerAthanApp : Application() {
     val wallClock: WallClock by lazy { SyncedClock(this) }
     val locationStore: LocationStore by lazy { PrefsLocationStore(this) }
+    val offsetStore: OffsetStore by lazy { PrefsOffsetStore(this) }
     val locationFixer: LocationFixer by lazy { LocationFixer(this, locationStore) }
-    val prayerEngine: PrayerEngine by lazy { PrayerCalculator(locationStore) }
+    val prayerEngine: PrayerEngine by lazy { PrayerCalculator(locationStore, offsetStore) }
     val athanController: DefaultAthanController by lazy { DefaultAthanController(this) }
     val wallSettings: WallSettingsStore by lazy { WallSettingsStore(this) }
     val audioSettings: AudioSettingsStore by lazy { AudioSettingsStore(this) }

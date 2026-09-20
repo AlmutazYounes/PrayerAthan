@@ -12,9 +12,11 @@ import com.mutazyounes.prayerathan.audio.MedicineSlot
 import com.mutazyounes.prayerathan.audio.MedicineVoice
 import com.mutazyounes.prayerathan.engine.CityCatalog
 import com.mutazyounes.prayerathan.engine.LocationStore
+import com.mutazyounes.prayerathan.engine.OffsetStore
 import com.mutazyounes.prayerathan.engine.PrayerDay
 import com.mutazyounes.prayerathan.engine.PrayerEngine
 import com.mutazyounes.prayerathan.engine.PrayerName
+import com.mutazyounes.prayerathan.engine.PrayerOffsets
 import com.mutazyounes.prayerathan.engine.SavedLocation
 import com.mutazyounes.prayerathan.engine.SystemWallClock
 import com.mutazyounes.prayerathan.engine.WallClock
@@ -44,6 +46,7 @@ class WallViewModel(
     private val settings: WallSettingsStore,
     private val weather: WeatherClient,
     private val locationStore: LocationStore,
+    private val offsetStore: OffsetStore,
     private val locationFixer: LocationFixer,
     private val audioSettings: AudioSettingsStore,
     private val medicineSettings: MedicineSettingsStore,
@@ -189,6 +192,11 @@ class WallViewModel(
         refresh(now())
     }
 
+    fun setPrayerOffset(prayer: PrayerName, minutes: Int) {
+        offsetStore.write(offsetStore.read().with(prayer, minutes))
+        refresh(now(), forceSchedule = true)
+    }
+
     fun playPrayerVolumePreview(prayer: PrayerName, percent: Int) {
         val key = AthanVolume.demoKey(prayer)
         if (athan.demoId.value == key) {
@@ -327,6 +335,8 @@ class WallViewModel(
         val athkarOn = athkar != null && !playing && medicine == null
         val medicineOn = medicine != null && !playing
         val mutedPrayers = audioSettings.mutedPrayers()
+        val prayerOffsets = offsetStore.read()
+        val prayerOffsetMinutes = PrayerOffsets.ALL.associateWith { prayerOffsets.minutesOf(it) }
         val albanyClock = formatClock(clocks.albany, twelveHour)
         val jordanClock = formatClock(clocks.jordan, twelveHour)
         val previous = _state.value
@@ -334,6 +344,7 @@ class WallViewModel(
             previous.cells.isNotEmpty() &&
             previous.playingName == playingName &&
             previous.mutedPrayers == mutedPrayers &&
+            previous.prayerOffsets == prayerOffsetMinutes &&
             previous.locationTimeZoneId == location.timeZoneId &&
             cellKindsUnchanged(now, day, playingName, previous) &&
             previous.cells.firstOrNull()?.weatherCondition == weatherConditionFor(day.times.first().at)?.condition.orEmpty()
@@ -376,6 +387,7 @@ class WallViewModel(
             athkarEnabled = audioSettings.athkarEnabled(),
             mutedPrayers = mutedPrayers,
             prayerVolumes = audioSettings.prayerVolumes(),
+            prayerOffsets = prayerOffsetMinutes,
             demoId = athan.demoId.value,
             nightBlackoutEnabled = settings.nightBlackout(),
             isNightBlackout = settings.nightBlackout() && isNightBlackoutWindow(clocks.albany.hour) && !playing && !medicineOn && athan.demoId.value == null,
@@ -502,6 +514,7 @@ class WallViewModel(
             settings: WallSettingsStore,
             weather: WeatherClient,
             locationStore: LocationStore,
+            offsetStore: OffsetStore,
             locationFixer: LocationFixer,
             audioSettings: AudioSettingsStore,
             medicineSettings: MedicineSettingsStore,
@@ -516,6 +529,7 @@ class WallViewModel(
                         settings,
                         weather,
                         locationStore,
+                        offsetStore,
                         locationFixer,
                         audioSettings,
                         medicineSettings,

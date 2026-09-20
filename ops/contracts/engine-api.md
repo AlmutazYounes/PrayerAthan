@@ -65,6 +65,8 @@ Jordan is `now.atZone(ZoneId.of("Asia/Amman"))`. Never `albany plus hours`.
 
 Settings calls `SavedLocation.parse(label, latitude, longitude, timeZoneId)` before write. It returns null for unknown timezone ids (`ZoneId.of` throws) or coords outside lat [-90, 90] / long [-180, 180]. City comes from the bundled GeoNames list. Do not geocode over HTTP.
 
+`OffsetStore` holds per-prayer minute offsets, −60 to +60, default 0, for Fajr, Sunrise, Dhuhr, Asr, Maghrib, and Isha. Production is `PrefsOffsetStore` (SharedPreferences `prayerathan_offsets`, keys `offset_FAJR` and so on). Engine tests may use `InMemoryOffsetStore`. `PrayerCalculator` applies the offset after ISNA. Wall times and athan alarms both read the adjusted `PrayerDay`. Changing an offset must reschedule athan.
+
 `PrefsLocationStore.read` falls back to Albany on empty prefs, unreadable values, or an invalid stored zone. Do not crash. After `write`, the next `location()` / `day()` call uses the new coords.
 
 ## What UI may do

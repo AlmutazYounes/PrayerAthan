@@ -37,7 +37,8 @@ data class WallUiState(
     val athanSoundId: String,
     val athkarEnabled: Boolean,
     val mutedPrayers: Set<PrayerName>,
-    val prayerVolumes: Map<PrayerName, Int>, // 0-100, default 100
+    val prayerVolumes: Map<PrayerName, Int>,
+    val prayerOffsets: Map<PrayerName, Int>, // minutes on top of ISNA, default 0
     val demoId: String?,
     val nightBlackoutEnabled: Boolean,
     val isNightBlackout: Boolean,   // true from 11 PM to 4 AM unless athan or medicine playing
@@ -56,7 +57,7 @@ enum class CellKind { PAST, NEXT, LATER }
 
 Tick: ViewModel refreshes `WallUiState` every second from `PrayerEngine` and `AthanController.playback`.
 
-Settings location: searchable country, then searchable city from bundled GeoNames. Picking a city calls `SavedLocation.parse` then `LocationStore.write`. Null parse shows `locationError`. Reset writes `SavedLocation.albany`. After a successful write, refresh immediately and force `athan.schedule` even if the local date did not change. Header `locationLabel` is the saved label, all-caps. Do not import adhan-kotlin in a composable.
+Settings location: searchable country, then searchable city from bundled GeoNames. Picking a city calls `SavedLocation.parse` then `LocationStore.write`. Null parse shows `locationError`. Reset writes `SavedLocation.albany`. After a successful write, refresh immediately and force `athan.schedule` even if the local date did not change. Header `locationLabel` is the saved label, all-caps. Time adjustments card writes per-prayer minute offsets through `WallViewModel.setPrayerOffset` and forces reschedule. Do not import adhan-kotlin in a composable.
 
 ## Gestures
 

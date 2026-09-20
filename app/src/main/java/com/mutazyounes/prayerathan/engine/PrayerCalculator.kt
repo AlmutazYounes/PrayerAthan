@@ -12,6 +12,7 @@ import java.time.ZoneId
 
 class PrayerCalculator(
     private val locationStore: LocationStore = InMemoryLocationStore(),
+    private val offsetStore: OffsetStore = InMemoryOffsetStore(),
 ) : PrayerEngine {
 
     private var cacheOne: Pair<TimesKey, List<PrayerInstant>>? = null
@@ -60,11 +61,13 @@ class PrayerCalculator(
     }
 
     private fun timesFor(localDate: LocalDate, location: SavedLocation): List<PrayerInstant> {
+        val offsets = offsetStore.read()
         val key = TimesKey(
             localDate,
             location.latitude,
             location.longitude,
             location.timeZoneId,
+            offsets.fingerprint(),
         )
         cacheOne?.let { if (it.first == key) return it.second }
         cacheTwo?.let { if (it.first == key) return it.second }
@@ -80,7 +83,10 @@ class PrayerCalculator(
             PrayerInstant(PrayerName.ASR, javaInstant(prayerTimes.asr.toEpochMilliseconds())),
             PrayerInstant(PrayerName.MAGHRIB, javaInstant(prayerTimes.maghrib.toEpochMilliseconds())),
             PrayerInstant(PrayerName.ISHA, javaInstant(prayerTimes.isha.toEpochMilliseconds())),
-        )
+        ).map { instant ->
+            val shift = offsets.minutesOf(instant.name)
+            if (shift == 0) instant else instant.copy(at = instant.at.plusSeconds(shift * 60L))
+        }
         cacheTwo = cacheOne
         cacheOne = key to computed
         return computed
@@ -101,4 +107,5 @@ private data class TimesKey(
     val latitude: Double,
     val longitude: Double,
     val timeZoneId: String,
+    val offsets: List<Int>,
 )

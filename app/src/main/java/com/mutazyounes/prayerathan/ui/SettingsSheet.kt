@@ -90,6 +90,7 @@ import com.mutazyounes.prayerathan.engine.PlaceCity
 import com.mutazyounes.prayerathan.engine.PlaceCountry
 import com.mutazyounes.prayerathan.engine.PrayerMethod
 import com.mutazyounes.prayerathan.engine.PrayerName
+import com.mutazyounes.prayerathan.engine.PrayerOffsets
 import java.time.DayOfWeek
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
@@ -119,6 +120,7 @@ fun SettingsSheet(
     athkarEnabled: Boolean,
     mutedPrayers: Set<PrayerName>,
     prayerVolumes: Map<PrayerName, Int>,
+    prayerOffsets: Map<PrayerName, Int>,
     medicineEnabled: Boolean,
     medicineVoice: String,
     medicineSlots: List<MedicineSlot>,
@@ -130,6 +132,7 @@ fun SettingsSheet(
     onAthkarEnabledChange: (Boolean) -> Unit,
     onTogglePrayerMute: (PrayerName) -> Unit,
     onPrayerVolumeChange: (PrayerName, Int) -> Unit,
+    onPrayerOffsetChange: (PrayerName, Int) -> Unit,
     onPlayPrayerVolumePreview: (PrayerName, Int) -> Unit,
     onMedicineEnabledChange: (Boolean) -> Unit,
     onMedicineVoiceChange: (MedicineVoice) -> Unit,
@@ -379,6 +382,10 @@ fun SettingsSheet(
                                 },
                                 onUseGps = onUseGps,
                             )
+                            TimeAdjustmentsCard(
+                                offsets = prayerOffsets,
+                                onOffsetChange = onPrayerOffsetChange,
+                            )
                         }
 
                         Column(
@@ -467,6 +474,11 @@ fun SettingsSheet(
                                 }
                             },
                             onUseGps = onUseGps,
+                        )
+
+                        TimeAdjustmentsCard(
+                            offsets = prayerOffsets,
+                            onOffsetChange = onPrayerOffsetChange,
                         )
 
                         PrayerAthansCard(
@@ -743,6 +755,103 @@ private fun ModernActionButton(
             fontWeight = FontWeight.Medium,
         )
     }
+}
+
+@Composable
+private fun TimeAdjustmentsCard(
+    offsets: Map<PrayerName, Int>,
+    onOffsetChange: (PrayerName, Int) -> Unit,
+) {
+    ModernCardContainer(
+        title = "Time adjustments",
+        icon = Icons.Default.Refresh,
+        subtitle = "Minutes on top of ISNA. They stay when times drift.",
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            PrayerOffsets.ALL.forEach { prayer ->
+                TimeOffsetRow(
+                    prayer = prayer,
+                    minutes = offsets[prayer] ?: 0,
+                    onChange = { onOffsetChange(prayer, it) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TimeOffsetRow(
+    prayer: PrayerName,
+    minutes: Int,
+    onChange: (Int) -> Unit,
+) {
+    val palette = LocalWallPalette.current
+    val label = formatOffsetMinutes(minutes)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = prayer.englishLabel(),
+            color = palette.clock,
+            fontSize = 11.sp,
+            fontFamily = EnglishFontFamily,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            modifier = Modifier.weight(1f),
+        )
+        OffsetStepButton(
+            label = "−",
+            enabled = minutes > PrayerOffsets.MIN,
+            onClick = { onChange(minutes - 1) },
+        )
+        Text(
+            text = label,
+            color = palette.gold,
+            fontSize = 12.sp,
+            fontFamily = EnglishFontFamily,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.width(72.dp),
+        )
+        OffsetStepButton(
+            label = "+",
+            enabled = minutes < PrayerOffsets.MAX,
+            onClick = { onChange(minutes + 1) },
+        )
+    }
+}
+
+@Composable
+private fun OffsetStepButton(
+    label: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    val palette = LocalWallPalette.current
+    Box(
+        modifier = Modifier
+            .size(28.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(palette.gold.copy(alpha = if (enabled) 0.15f else 0.06f))
+            .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = label,
+            color = palette.gold.copy(alpha = if (enabled) 1f else 0.35f),
+            fontSize = 16.sp,
+            fontFamily = EnglishFontFamily,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+private fun formatOffsetMinutes(minutes: Int): String {
+    if (minutes == 0) return "0 min"
+    if (minutes > 0) return "+$minutes min"
+    return "$minutes min"
 }
 
 @Composable

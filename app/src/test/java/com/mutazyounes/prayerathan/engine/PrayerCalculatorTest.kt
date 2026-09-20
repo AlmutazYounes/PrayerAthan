@@ -167,6 +167,37 @@ class PrayerCalculatorTest {
         assertEquals(amman, store.read())
     }
 
+    @Test
+    fun fajrOffsetShiftsOnlyFajr() {
+        val offsets = InMemoryOffsetStore(PrayerOffsets.ZERO.with(PrayerName.FAJR, -15))
+        val shifted = PrayerCalculator(InMemoryLocationStore(), offsets)
+        val noon = knownDate.atTime(12, 0).atZone(albanyZone).toInstant()
+        val base = engine.day(noon)
+        val adjusted = shifted.day(noon)
+        val fajrBase = base.times.first { it.name == PrayerName.FAJR }.at
+        val fajrAdj = adjusted.times.first { it.name == PrayerName.FAJR }.at
+        assertEquals(15, Duration.between(fajrAdj, fajrBase).toMinutes())
+        PrayerName.entries.filter { it != PrayerName.FAJR }.forEach { name ->
+            assertEquals(
+                base.times.first { it.name == name }.at,
+                adjusted.times.first { it.name == name }.at,
+            )
+        }
+    }
+
+    @Test
+    fun offsetStaysWhenCalculatedTimeDrifts() {
+        val offsets = InMemoryOffsetStore(PrayerOffsets.ZERO.with(PrayerName.ISHA, 15))
+        val shifted = PrayerCalculator(InMemoryLocationStore(), offsets)
+        val first = knownDate.atTime(12, 0).atZone(albanyZone).toInstant()
+        val weekLater = knownDate.plusDays(7).atTime(12, 0).atZone(albanyZone).toInstant()
+        listOf(first, weekLater).forEach { noon ->
+            val base = engine.day(noon).times.first { it.name == PrayerName.ISHA }.at
+            val adj = shifted.day(noon).times.first { it.name == PrayerName.ISHA }.at
+            assertEquals(15, Duration.between(base, adj).toMinutes())
+        }
+    }
+
     private fun hoursJordanAheadOfAlbany(clocks: WallClocks): Long {
         val deltaSeconds = clocks.jordan.offset.totalSeconds - clocks.albany.offset.totalSeconds
         return deltaSeconds / 3600L

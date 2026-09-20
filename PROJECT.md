@@ -119,6 +119,8 @@ Default location, the house:
 
 Calculation: `CalculationMethod.NORTH_AMERICA` (ISNA). That is the Albany default. Do not silently switch to Muslim World League because a sample snippet used it. Settings shows `Times: ISNA, North America. Asr is Shafi.` so a mosque table with 18° Fajr is not a surprise.
 
+Each prayer, including Sunrise, has a manual minute offset in settings, −60 to +60, default 0. ISNA still computes the time. Then the offset is added. If next week Fajr moves five minutes, the wall shows that new time plus the same offset. Athan alarms use the adjusted instants. Offsets persist on device. They are not a method picker.
+
 Madhab: Shafi. Decided. That is the earlier Asr (shadow factor 1) via adhan-kotlin `Madhab.SHAFI`. HighLatitudeRule stays the library default. Albany is 42.7 N, so high-latitude math almost never fires. Make madhab configurable in settings later. Do not turn the code comments into a fiqh thread.
 
 Location can be set three ways, all persisted on device:
@@ -127,7 +129,7 @@ Location can be set three ways, all persisted on device:
 2. If they deny or the fix fails, Albany defaults. Do not ask again until they tap GPS in settings.
 3. Searchable country, then searchable city, from the bundled GeoNames list (`assets/cities.tsv`). Picking a city writes the city name, coordinates, and timezone. No typed lat/long.
 
-Prayer math is a pure function of coordinates, date, method, and madhab. UI does not compute times. If the designer needs a preview, they call the engine.
+Prayer math is a pure function of coordinates, date, method, madhab, and per-prayer minute offsets. UI does not compute times. If the designer needs a preview, they call the engine.
 
 Mockup times (Fajr 5:09 AM and so on) are drawn for Thursday 27 August 2026. They are not constants. If adhan-kotlin disagrees with the PNG, the library wins. The PNG is layout.
 
