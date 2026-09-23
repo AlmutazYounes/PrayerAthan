@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-09-23 Mutaz: internal testing 36 (0.36.0). Medicine wins the same minute as athkar. Settings show live prayer times, hour wheels, and mute on each volume row. Not production.
 - 2026-09-23 Mutaz: issue #6. Settings show live prayer clock times. Medicine uses hour/minute wheels. Mute sits on each volume row.
 - 2026-09-23 Mutaz: issue #5. Same minute as athkar, only medicine plays. Athkar is not armed for that slot.
 - 2026-09-22 Mutaz: added jaafar.alqudah96@gmail.com to ClosedTesters.
