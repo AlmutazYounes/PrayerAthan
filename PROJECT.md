@@ -40,7 +40,7 @@ Three surfaces. That is the whole product in v1.
 
 **Athan playing.** Same wall screen. The countdown block switches to NOW, the prayer name, and the line "Adhan is playing". Albany time stays. The day's list highlights the prayer that just started.
 
-**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lets you mute/unmute individual prayer athans. Each of the five also has its own volume slider, default 100. PLAY on a row previews that prayer at the chosen volume. First launch: all five prayer athans muted, hourly athkar off. Wall is dark only. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
+**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lives on each volume row. PLAY on a row previews that prayer at the chosen volume. First launch: all five prayer athans muted, hourly athkar off. Time adjustments show the live clock time for each prayer, not only plus or minus minutes. Medicine slots use hour, minute, and AM/PM wheels. Wall is dark only. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
 
 ---
 
@@ -119,7 +119,7 @@ Default location, the house:
 
 Calculation: `CalculationMethod.NORTH_AMERICA` (ISNA). That is the Albany default. Do not silently switch to Muslim World League because a sample snippet used it. Settings shows `Times: ISNA, North America. Asr is Shafi.` so a mosque table with 18° Fajr is not a surprise.
 
-Each prayer, including Sunrise, has a manual minute offset in settings, −60 to +60, default 0. ISNA still computes the time. Then the offset is added. If next week Fajr moves five minutes, the wall shows that new time plus the same offset. Athan alarms use the adjusted instants. Offsets persist on device. They are not a method picker.
+Each prayer, including Sunrise, has a manual minute offset in settings, −60 to +60, default 0. ISNA still computes the time. Then the offset is added. Settings shows the resulting clock time on that row so you see 5:15 AM, not only +3 min. If next week Fajr moves five minutes, the wall shows that new time plus the same offset. Athan alarms use the adjusted instants. Offsets persist on device. They are not a method picker.
 
 Madhab: Shafi. Decided. That is the earlier Asr (shadow factor 1) via adhan-kotlin `Madhab.SHAFI`. HighLatitudeRule stays the library default. Albany is 42.7 N, so high-latitude math almost never fires. Make madhab configurable in settings later. Do not turn the code comments into a fiqh thread.
 
@@ -147,9 +147,9 @@ Volume should fill a room at living-room distance. Do not duck to media volume t
 
 Sunrise: silence.
 
-**Athkar.** Short dhikr on the local clock hour: اللهم صل على محمد (`athkar_salawat.mp3`). Files live in `audio/athkar/` with `audio/athkar/SOURCE.md`. Copy into `res/raw/`. Personal use, same rights rule as athan. Not Quran. Play between Fajr and Isha, and only from 8:00 AM through 9:00 PM local. Silent from 10:00 PM until 8:00 AM, even if Fajr was earlier. If an athan is due that minute, athan wins. Tap stops. Settings can turn this on. Off on first launch.
+**Athkar.** Short dhikr on the local clock hour: اللهم صل على محمد (`athkar_salawat.mp3`). Files live in `audio/athkar/` with `audio/athkar/SOURCE.md`. Copy into `res/raw/`. Personal use, same rights rule as athan. Not Quran. Play between Fajr and Isha, and only from 8:00 AM through 9:00 PM local. Silent from 10:00 PM until 8:00 AM, even if Fajr was earlier. If an athan is due that minute, athan wins. If a medicine slot is due that minute, only medicine plays. Tap stops. Settings can turn this on. Off on first launch.
 
-**Medicine reminder.** Optional spoken cue at times Mutaz picks. Arabic (`medicine_ar.mp3`, حان وقت الدواء) or English (`medicine_en.mp3`, Take your medicine). Masters in `audio/medicine/` with `SOURCE.md`, copied to `res/raw/`. Settings: on/off, voice, up to six slots (hour + minute + weekday chips). Off on first launch until he adds a slot and turns it on. Uses `AlarmManager.setAlarmClock` (same reliability class as prayer athan) plus a short foreground service on the alarm stream. Three-minute grace if the wake is late. Enabling a slot that is already due plays once immediately. Priority: athan beats medicine, medicine beats athkar (athkar yields that minute). Tap stops. Wall shows a gold-bordered banner with the spoken line (Arabic primary when Arabic voice is selected, English primary when English is selected, the other language as secondary). Night blackout stays off while the reminder plays.
+**Medicine reminder.** Optional spoken cue at times Mutaz picks. Arabic (`medicine_ar.mp3`, حان وقت الدواء) or English (`medicine_en.mp3`, Take your medicine). Masters in `audio/medicine/` with `SOURCE.md`, copied to `res/raw/`. Settings: on/off switch, Arabic / English voice, up to six slots (hour/minute wheels, AM/PM, weekday chips). Off on first launch until he adds a slot and turns it on. Uses `AlarmManager.setAlarmClock` (same reliability class as prayer athan) plus a short foreground service on the alarm stream. Three-minute grace if the wake is late. Enabling a slot that is already due plays once immediately. Priority: athan beats medicine, medicine beats athkar. Same clock minute: only medicine. Athkar is not armed for that minute. Tap stops. Wall shows a gold-bordered banner with the spoken line (Arabic primary when Arabic voice is selected, English primary when English is selected, the other language as secondary). Night blackout stays off while the reminder plays.
 
 ---
 

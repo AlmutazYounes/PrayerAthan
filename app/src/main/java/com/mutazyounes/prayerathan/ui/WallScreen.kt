@@ -137,6 +137,7 @@ fun WallScreen(
                     mutedPrayers = state.mutedPrayers,
                     prayerVolumes = state.prayerVolumes,
                     prayerOffsets = state.prayerOffsets,
+                    prayerClockTimes = state.prayerClockTimes,
                     medicineEnabled = state.medicineEnabled,
                     medicineVoice = state.medicineVoice,
                     medicineSlots = state.medicineSlots,

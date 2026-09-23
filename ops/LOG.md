@@ -2,6 +2,9 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-09-23 Mutaz: issue #6. Settings show live prayer clock times. Medicine uses hour/minute wheels. Mute sits on each volume row.
+- 2026-09-23 Mutaz: issue #5. Same minute as athkar, only medicine plays. Athkar is not armed for that slot.
+- 2026-09-22 Mutaz: added jaafar.alqudah96@gmail.com to ClosedTesters.
 - 2026-09-20 Mutaz: README rewritten for Athan Clock. Idle Play screenshots refreshed from arc-check ops shots. Light-theme gallery removed.
 - 2026-09-20 Mutaz: per-prayer minute offsets in settings, −60 to +60 on top of ISNA. They stick when calculated times drift. Wall and athan both use the adjusted instants.
 - 2026-09-20 Mutaz: issue #4 times label. Settings shows ISNA North America and Shafi Asr. Did not change the math. Amman in cities.tsv stays Asia/Amman.

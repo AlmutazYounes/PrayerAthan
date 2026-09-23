@@ -2,6 +2,8 @@ package com.mutazyounes.prayerathan.ui
 
 import com.mutazyounes.prayerathan.engine.PrayerName
 import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -57,6 +59,14 @@ class WallViewModelTest {
                 nextAthanAt = tomorrowFajr,
             ),
         )
+    }
+
+    @Test
+    fun settingsClockLabelKeepsAmPm() {
+        val fajr = ZonedDateTime.of(2026, 9, 23, 5, 15, 0, 0, ZoneId.of("America/New_York"))
+        assertEquals("5:15 AM", WallViewModel.formatPrayerClockLabel(fajr, twelveHour = true))
+        val asr = ZonedDateTime.of(2026, 9, 23, 16, 42, 0, 0, ZoneId.of("America/New_York"))
+        assertEquals("4:42 PM", WallViewModel.formatPrayerClockLabel(asr, twelveHour = true))
     }
 
     @Test

@@ -2,8 +2,14 @@
 
 Status: done
 
-When: 2026-08-31
-Agent: designer
+When: 2026-09-23
+Agent: orchestrator
+
+Settings sheet: live 12-hour clock times on Time adjustments. Mute pill on each athan volume row. Compact gold switches for athkar, medicine, and night blackout. Medicine slots use hour/minute wheels plus AM/PM.
+
+---
+
+Previous: 2026-08-31 landscape grid experiment.
 
 ## What changed
 

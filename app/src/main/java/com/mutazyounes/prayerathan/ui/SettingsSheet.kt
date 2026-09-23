@@ -121,6 +121,7 @@ fun SettingsSheet(
     mutedPrayers: Set<PrayerName>,
     prayerVolumes: Map<PrayerName, Int>,
     prayerOffsets: Map<PrayerName, Int>,
+    prayerClockTimes: Map<PrayerName, String>,
     medicineEnabled: Boolean,
     medicineVoice: String,
     medicineSlots: List<MedicineSlot>,
@@ -384,6 +385,7 @@ fun SettingsSheet(
                             )
                             TimeAdjustmentsCard(
                                 offsets = prayerOffsets,
+                                clockTimes = prayerClockTimes,
                                 onOffsetChange = onPrayerOffsetChange,
                             )
                         }
@@ -478,6 +480,7 @@ fun SettingsSheet(
 
                         TimeAdjustmentsCard(
                             offsets = prayerOffsets,
+                            clockTimes = prayerClockTimes,
                             onOffsetChange = onPrayerOffsetChange,
                         )
 
@@ -531,6 +534,8 @@ private fun ModernCardContainer(
     icon: ImageVector,
     subtitle: String? = null,
     badge: String? = null,
+    trailing: @Composable (() -> Unit)? = null,
+    body: Boolean = true,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
@@ -585,7 +590,9 @@ private fun ModernCardContainer(
                 }
             }
 
-            if (!badge.isNullOrBlank()) {
+            if (trailing != null) {
+                trailing()
+            } else if (!badge.isNullOrBlank()) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(6.dp))
@@ -603,8 +610,10 @@ private fun ModernCardContainer(
             }
         }
 
-        Spacer(Modifier.height(14.dp))
-        content()
+        if (body) {
+            Spacer(Modifier.height(14.dp))
+            content()
+        }
     }
 }
 
@@ -760,17 +769,19 @@ private fun ModernActionButton(
 @Composable
 private fun TimeAdjustmentsCard(
     offsets: Map<PrayerName, Int>,
+    clockTimes: Map<PrayerName, String>,
     onOffsetChange: (PrayerName, Int) -> Unit,
 ) {
     ModernCardContainer(
         title = "Time adjustments",
         icon = Icons.Default.Refresh,
-        subtitle = "Minutes on top of ISNA. They stay when times drift.",
+        subtitle = "The clock time is what the wall and athan use.",
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             PrayerOffsets.ALL.forEach { prayer ->
                 TimeOffsetRow(
                     prayer = prayer,
+                    clockTime = clockTimes[prayer].orEmpty(),
                     minutes = offsets[prayer] ?: 0,
                     onChange = { onOffsetChange(prayer, it) },
                 )
@@ -782,38 +793,47 @@ private fun TimeAdjustmentsCard(
 @Composable
 private fun TimeOffsetRow(
     prayer: PrayerName,
+    clockTime: String,
     minutes: Int,
     onChange: (Int) -> Unit,
 ) {
     val palette = LocalWallPalette.current
-    val label = formatOffsetMinutes(minutes)
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(InnerCardShape)
+            .background(palette.settingsPanel.copy(alpha = 0.55f))
+            .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Text(
-            text = prayer.englishLabel(),
-            color = palette.clock,
-            fontSize = 11.sp,
-            fontFamily = EnglishFontFamily,
-            fontWeight = FontWeight.Medium,
-            maxLines = 1,
-            modifier = Modifier.weight(1f),
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = prayer.englishLabel(),
+                color = palette.gold,
+                fontSize = 10.sp,
+                fontFamily = EnglishFontFamily,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.08.em,
+                maxLines = 1,
+            )
+            Text(
+                text = clockTime.ifBlank { "—" },
+                style = tabularStyle(palette.clock, 22.sp, FontWeight.Bold),
+                maxLines = 1,
+            )
+            Text(
+                text = SettingsTime.offsetLabel(minutes),
+                color = if (minutes == 0) palette.prayerPast else palette.gold,
+                fontSize = 11.sp,
+                fontFamily = EnglishFontFamily,
+                fontWeight = FontWeight.Medium,
+            )
+        }
         OffsetStepButton(
             label = "−",
             enabled = minutes > PrayerOffsets.MIN,
             onClick = { onChange(minutes - 1) },
-        )
-        Text(
-            text = label,
-            color = palette.gold,
-            fontSize = 12.sp,
-            fontFamily = EnglishFontFamily,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.width(72.dp),
         )
         OffsetStepButton(
             label = "+",
@@ -832,8 +852,8 @@ private fun OffsetStepButton(
     val palette = LocalWallPalette.current
     Box(
         modifier = Modifier
-            .size(28.dp)
-            .clip(RoundedCornerShape(8.dp))
+            .size(36.dp)
+            .clip(RoundedCornerShape(10.dp))
             .background(palette.gold.copy(alpha = if (enabled) 0.15f else 0.06f))
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -848,12 +868,6 @@ private fun OffsetStepButton(
     }
 }
 
-private fun formatOffsetMinutes(minutes: Int): String {
-    if (minutes == 0) return "0 min"
-    if (minutes > 0) return "+$minutes min"
-    return "$minutes min"
-}
-
 @Composable
 private fun PrayerAthansCard(
     mutedPrayers: Set<PrayerName>,
@@ -866,30 +880,16 @@ private fun PrayerAthansCard(
     ModernCardContainer(
         title = "Prayer Athans",
         icon = Icons.Default.Check,
-        subtitle = "Mute with the chips. Volume per prayer.",
+        subtitle = "Mute or volume on each prayer.",
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            PrayerName.athanTargets().forEach { prayer ->
-                val active = prayer !in mutedPrayers
-                PrayerToggleChip(
-                    title = prayer.englishLabel(),
-                    active = active,
-                    onClick = { onTogglePrayerMute(prayer) },
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
-        Spacer(Modifier.height(12.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             PrayerName.athanTargets().forEach { prayer ->
                 PrayerVolumeRow(
                     prayer = prayer,
                     volume = prayerVolumes[prayer] ?: AthanVolume.DEFAULT,
                     muted = prayer in mutedPrayers,
                     playing = demoId == AthanVolume.demoKey(prayer),
+                    onToggleMute = { onTogglePrayerMute(prayer) },
                     onVolumeChange = { onPrayerVolumeChange(prayer, it) },
                     onPlay = { percent -> onPlayPrayerVolumePreview(prayer, percent) },
                 )
@@ -904,6 +904,7 @@ private fun PrayerVolumeRow(
     volume: Int,
     muted: Boolean,
     playing: Boolean,
+    onToggleMute: () -> Unit,
     onVolumeChange: (Int) -> Unit,
     onPlay: (Int) -> Unit,
 ) {
@@ -914,51 +915,89 @@ private fun PrayerVolumeRow(
     }
     val percent = sliding.roundToInt()
     val labelColor = if (muted) palette.prayerPast.copy(alpha = 0.65f) else palette.clock
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(InnerCardShape)
+            .background(palette.settingsPanel.copy(alpha = 0.45f))
+            .padding(horizontal = 10.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Text(
-            text = prayer.englishLabel(),
-            color = labelColor,
-            fontSize = 11.sp,
-            fontFamily = EnglishFontFamily,
-            fontWeight = FontWeight.Medium,
-            maxLines = 1,
-            modifier = Modifier.width(72.dp),
-        )
-        GoldVolumeSlider(
-            value = sliding,
-            onValueChange = { sliding = it },
-            onValueChangeFinished = { onVolumeChange(sliding.roundToInt()) },
-            modifier = Modifier.weight(1f),
-        )
-        Text(
-            text = "$percent",
-            color = if (muted) palette.prayerPast.copy(alpha = 0.65f) else palette.gold,
-            fontSize = 11.sp,
-            fontFamily = EnglishFontFamily,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.End,
-            modifier = Modifier.width(28.dp),
-        )
-        Box(
-            modifier = Modifier
-                .size(28.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(if (playing) palette.gold else palette.gold.copy(alpha = 0.15f))
-                .clickable { onPlay(percent) },
-            contentAlignment = Alignment.Center,
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Icon(
-                imageVector = if (playing) Icons.Default.Close else Icons.Default.PlayArrow,
-                contentDescription = if (playing) "Stop preview" else "Preview volume",
-                tint = if (playing) palette.settingsPanel else palette.gold,
-                modifier = Modifier.size(14.dp),
+            Text(
+                text = prayer.englishLabel(),
+                color = labelColor,
+                fontSize = 11.sp,
+                fontFamily = EnglishFontFamily,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                modifier = Modifier.weight(1f),
+            )
+            MutePill(muted = muted, onClick = onToggleMute)
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (playing) palette.gold else palette.gold.copy(alpha = 0.15f))
+                    .clickable { onPlay(percent) },
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = if (playing) Icons.Default.Close else Icons.Default.PlayArrow,
+                    contentDescription = if (playing) "Stop preview" else "Preview volume",
+                    tint = if (playing) palette.settingsPanel else palette.gold,
+                    modifier = Modifier.size(14.dp),
+                )
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            GoldVolumeSlider(
+                value = sliding,
+                onValueChange = { sliding = it },
+                onValueChangeFinished = { onVolumeChange(sliding.roundToInt()) },
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                text = "$percent",
+                color = if (muted) palette.prayerPast.copy(alpha = 0.65f) else palette.gold,
+                fontSize = 11.sp,
+                fontFamily = EnglishFontFamily,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.End,
+                modifier = Modifier.width(28.dp),
             )
         }
     }
+}
+
+@Composable
+private fun MutePill(
+    muted: Boolean,
+    onClick: () -> Unit,
+) {
+    val palette = LocalWallPalette.current
+    val active = !muted
+    Text(
+        text = if (active) "ATHAN ON" else "MUTED",
+        color = if (active) palette.settingsPanel else palette.prayerPast,
+        fontSize = 9.sp,
+        fontFamily = EnglishFontFamily,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 0.06.em,
+        modifier = Modifier
+            .clip(ChipShape)
+            .background(if (active) palette.gold else palette.hairline.copy(alpha = 0.18f))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 5.dp),
+    )
 }
 
 @Composable
@@ -1195,14 +1234,12 @@ private fun AthkarCard(
     ModernCardContainer(
         title = "Hourly Athkar",
         icon = Icons.Default.PlayArrow,
-        subtitle = "8 AM – 10 PM · Short salawat on the hour",
+        subtitle = "8 AM – 10 PM · Medicine wins that minute",
+        trailing = {
+            CompactSwitch(active = athkarEnabled, onActiveChange = onAthkarEnabledChange)
+        },
+        body = false,
     ) {
-        SegmentedToggle(
-            active = athkarEnabled,
-            onActiveChange = onAthkarEnabledChange,
-            onLabel = "Active",
-            offLabel = "Silent",
-        )
     }
 }
 
@@ -1224,15 +1261,11 @@ private fun MedicineCard(
         icon = Icons.Default.PlayArrow,
         subtitle = "Spoken cue on the days and hours you pick",
         badge = if (enabled && slots.isNotEmpty()) "${slots.size} slot${if (slots.size == 1) "" else "s"}" else null,
+        trailing = {
+            CompactSwitch(active = enabled, onActiveChange = onEnabledChange)
+        },
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            SegmentedToggle(
-                active = enabled,
-                onActiveChange = onEnabledChange,
-                onLabel = "On",
-                offLabel = "Off",
-            )
-
             AnimatedVisibility(
                 visible = enabled,
                 enter = fadeIn() + expandVertically(),
@@ -1359,11 +1392,8 @@ private fun MedicineSlotEditor(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = formatMedicineClock(slot.hour, slot.minute),
-                color = palette.clock,
-                fontSize = 20.sp,
-                fontFamily = EnglishFontFamily,
-                fontWeight = FontWeight.Bold,
+                text = SettingsTime.clock12(slot.hour, slot.minute),
+                style = tabularStyle(palette.clock, 22.sp, FontWeight.Bold),
             )
             Text(
                 text = "Remove",
@@ -1377,42 +1407,11 @@ private fun MedicineSlotEditor(
             )
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            MedicineStepChip(
-                label = "−1h",
-                onClick = {
-                    onChange(slot.copy(hour = (slot.hour + 23) % 24))
-                },
-                modifier = Modifier.weight(1f),
-            )
-            MedicineStepChip(
-                label = "+1h",
-                onClick = {
-                    onChange(slot.copy(hour = (slot.hour + 1) % 24))
-                },
-                modifier = Modifier.weight(1f),
-            )
-            MedicineStepChip(
-                label = "−15m",
-                onClick = {
-                    val total = (slot.hour * 60 + slot.minute - 15 + 24 * 60) % (24 * 60)
-                    onChange(slot.copy(hour = total / 60, minute = total % 60))
-                },
-                modifier = Modifier.weight(1f),
-            )
-            MedicineStepChip(
-                label = "+15m",
-                onClick = {
-                    val total = (slot.hour * 60 + slot.minute + 15) % (24 * 60)
-                    onChange(slot.copy(hour = total / 60, minute = total % 60))
-                },
-                modifier = Modifier.weight(1f),
-            )
-        }
+        MedicineClockWheels(
+            hour = slot.hour,
+            minute = slot.minute,
+            onChange = { hour, minute -> onChange(slot.copy(hour = hour, minute = minute)) },
+        )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -1435,10 +1434,94 @@ private fun MedicineSlotEditor(
 }
 
 @Composable
-private fun MedicineStepChip(
+private fun MedicineClockWheels(
+    hour: Int,
+    minute: Int,
+    onChange: (Int, Int) -> Unit,
+) {
+    val palette = LocalWallPalette.current
+    val hour12 = SettingsTime.hour12(hour)
+    val isAm = SettingsTime.isAm(hour)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        WheelStepper(
+            valueLabel = hour12.toString(),
+            onUp = {
+                onChange(SettingsTime.hour24(SettingsTime.wrapHour12(hour12 + 1), isAm), minute)
+            },
+            onDown = {
+                onChange(SettingsTime.hour24(SettingsTime.wrapHour12(hour12 - 1), isAm), minute)
+            },
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = ":",
+            color = palette.gold,
+            fontSize = 22.sp,
+            fontFamily = EnglishFontFamily,
+            fontWeight = FontWeight.Bold,
+        )
+        WheelStepper(
+            valueLabel = String.format(Locale.US, "%02d", minute),
+            onUp = {
+                onChange(hour, SettingsTime.wrapMinute(minute + 1))
+            },
+            onDown = {
+                onChange(hour, SettingsTime.wrapMinute(minute - 1))
+            },
+            modifier = Modifier.weight(1f),
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            AmPmChip(
+                title = "AM",
+                active = isAm,
+                onClick = { onChange(SettingsTime.hour24(hour12, true), minute) },
+            )
+            AmPmChip(
+                title = "PM",
+                active = !isAm,
+                onClick = { onChange(SettingsTime.hour24(hour12, false), minute) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun WheelStepper(
+    valueLabel: String,
+    onUp: () -> Unit,
+    onDown: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val palette = LocalWallPalette.current
+    Column(
+        modifier = modifier
+            .clip(InnerCardShape)
+            .background(palette.backgroundDeep.copy(alpha = 0.55f))
+            .border(1.dp, palette.gold.copy(alpha = 0.28f), InnerCardShape)
+            .padding(vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        WheelTick(label = "▲", onClick = onUp)
+        Text(
+            text = valueLabel,
+            style = tabularStyle(palette.clock, 26.sp, FontWeight.Bold),
+            modifier = Modifier.padding(vertical = 2.dp),
+        )
+        WheelTick(label = "▼", onClick = onDown)
+    }
+}
+
+@Composable
+private fun WheelTick(
     label: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val palette = LocalWallPalette.current
     Text(
@@ -1446,11 +1529,31 @@ private fun MedicineStepChip(
         color = palette.gold,
         fontSize = 12.sp,
         fontFamily = EnglishFontFamily,
-        fontWeight = FontWeight.SemiBold,
-        textAlign = TextAlign.Center,
-        modifier = modifier
+        modifier = Modifier
             .clip(ChipShape)
-            .border(1.dp, palette.gold.copy(alpha = 0.40f), ChipShape)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+    )
+}
+
+@Composable
+private fun AmPmChip(
+    title: String,
+    active: Boolean,
+    onClick: () -> Unit,
+) {
+    val palette = LocalWallPalette.current
+    Text(
+        text = title,
+        color = if (active) palette.settingsPanel else palette.gold,
+        fontSize = 12.sp,
+        fontFamily = EnglishFontFamily,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(ChipShape)
+            .background(if (active) palette.gold else palette.gold.copy(alpha = 0.12f))
             .clickable(onClick = onClick)
             .padding(vertical = 8.dp),
     )
@@ -1476,16 +1579,6 @@ private fun dayShort(day: DayOfWeek): String = when (day) {
     DayOfWeek.SATURDAY -> "Sa"
 }
 
-private fun formatMedicineClock(hour: Int, minute: Int): String {
-    val h12 = when {
-        hour == 0 -> 12
-        hour > 12 -> hour - 12
-        else -> hour
-    }
-    val amPm = if (hour < 12) "AM" else "PM"
-    return String.format(Locale.US, "%d:%02d %s", h12, minute, amPm)
-}
-
 @Composable
 private fun NightBlackoutCard(
     nightBlackoutEnabled: Boolean,
@@ -1495,91 +1588,43 @@ private fun NightBlackoutCard(
         title = "Night Blackout",
         icon = Icons.Default.Refresh,
         subtitle = "11 PM – 4 AM · Black screen with tap to wake",
+        trailing = {
+            CompactSwitch(
+                active = nightBlackoutEnabled,
+                onActiveChange = onNightBlackoutChange,
+            )
+        },
+        body = false,
     ) {
-        SegmentedToggle(
-            active = nightBlackoutEnabled,
-            onActiveChange = onNightBlackoutChange,
-            onLabel = "Enabled",
-            offLabel = "Disabled",
-        )
     }
 }
 
 @Composable
-private fun SegmentedToggle(
+private fun CompactSwitch(
     active: Boolean,
     onActiveChange: (Boolean) -> Unit,
-    onLabel: String = "On",
-    offLabel: String = "Off",
 ) {
     val palette = LocalWallPalette.current
-    Row(
+    val track by animateColorAsState(
+        targetValue = if (active) palette.gold else palette.hairline.copy(alpha = 0.35f),
+        animationSpec = tween(150),
+        label = "switchTrack",
+    )
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .clip(InnerCardShape)
-            .background(palette.settingsPanel.copy(alpha = 0.8f))
-            .border(1.dp, palette.hairline.copy(alpha = 0.35f), InnerCardShape)
+            .width(52.dp)
+            .height(30.dp)
+            .clip(CircleShape)
+            .background(track)
+            .clickable { onActiveChange(!active) }
             .padding(3.dp),
+        contentAlignment = if (active) Alignment.CenterEnd else Alignment.CenterStart,
     ) {
-        TogglePill(
-            title = onLabel,
-            active = active,
-            onClick = { onActiveChange(true) },
-            modifier = Modifier.weight(1f),
-        )
-        TogglePill(
-            title = offLabel,
-            active = !active,
-            onClick = { onActiveChange(false) },
-            modifier = Modifier.weight(1f),
-        )
-    }
-}
-
-@Composable
-private fun TogglePill(
-    title: String,
-    active: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val palette = LocalWallPalette.current
-    val bgAnim by animateColorAsState(
-        targetValue = if (active) palette.gold else Color.Transparent,
-        animationSpec = tween(150),
-        label = "bgAnim",
-    )
-    val textAnim by animateColorAsState(
-        targetValue = if (active) palette.settingsPanel else palette.prayerPast,
-        animationSpec = tween(150),
-        label = "textAnim",
-    )
-
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(9.dp))
-            .background(bgAnim)
-            .clickable(onClick = onClick)
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        if (active) {
-            Icon(
-                imageVector = Icons.Default.Check,
-                contentDescription = null,
-                tint = textAnim,
-                modifier = Modifier
-                    .padding(end = 6.dp)
-                    .size(14.dp),
-            )
-        }
-        Text(
-            text = title,
-            color = textAnim,
-            fontSize = 13.sp,
-            fontFamily = EnglishFontFamily,
-            fontWeight = if (active) FontWeight.Bold else FontWeight.Medium,
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .clip(CircleShape)
+                .background(if (active) palette.settingsPanel else palette.clock),
         )
     }
 }

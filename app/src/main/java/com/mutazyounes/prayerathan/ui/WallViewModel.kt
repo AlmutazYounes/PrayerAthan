@@ -340,6 +340,17 @@ class WallViewModel(
         val albanyClock = formatClock(clocks.albany, twelveHour)
         val jordanClock = formatClock(clocks.jordan, twelveHour)
         val previous = _state.value
+        val zone = ZoneId.of(location.timeZoneId)
+        val prayerClockTimes = day.times.associate { instant ->
+            val displayAt = cellDisplayInstant(
+                instantAt = instant.at,
+                name = instant.name,
+                playingName = playingName,
+                nextAthan = day.nextAthan,
+                nextAthanAt = day.nextAthanAt,
+            )
+            instant.name to formatPrayerClockLabel(displayAt.atZone(zone), twelveHour)
+        }
         val cells = if (
             previous.cells.isNotEmpty() &&
             previous.playingName == playingName &&
@@ -388,6 +399,7 @@ class WallViewModel(
             mutedPrayers = mutedPrayers,
             prayerVolumes = audioSettings.prayerVolumes(),
             prayerOffsets = prayerOffsetMinutes,
+            prayerClockTimes = prayerClockTimes,
             demoId = athan.demoId.value,
             nightBlackoutEnabled = settings.nightBlackout(),
             isNightBlackout = settings.nightBlackout() && isNightBlackoutWindow(clocks.albany.hour) && !playing && !medicineOn && athan.demoId.value == null,
@@ -554,6 +566,11 @@ class WallViewModel(
 
         fun formatPrayerTime(time: ZonedDateTime, twelveHour: Boolean): String =
             formatClock(time, twelveHour).first
+
+        fun formatPrayerClockLabel(time: ZonedDateTime, twelveHour: Boolean): String {
+            val (clock, amPm) = formatClock(time, twelveHour)
+            return if (amPm.isBlank()) clock else "$clock $amPm"
+        }
 
         /**
          * Prayer tile clock time. After Isha, the Fajr tile shows tomorrow's Fajr.
