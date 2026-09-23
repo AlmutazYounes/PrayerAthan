@@ -48,6 +48,7 @@ class MedicineScheduler(
         if (settings.alreadyFired(key)) return
         val app = context.applicationContext as PrayerAthanApp
         if (app.athanController.playback.value != null) return
+        if (app.athanController.medicinePlayback.value != null) return
         context.startForegroundService(MedicineService.playIntent(context))
     }
 

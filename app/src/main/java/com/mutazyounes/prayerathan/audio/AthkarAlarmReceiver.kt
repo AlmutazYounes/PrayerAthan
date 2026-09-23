@@ -20,13 +20,27 @@ class AthkarAlarmReceiver : BroadcastReceiver() {
         val day = app.prayerEngine.day(now, location)
         val zone = ZoneId.of(location.timeZoneId)
         val medicineSettings = MedicineSettingsStore(app)
-        val medicineDue = medicineSettings.enabled() &&
-            isMedicineMinute(medicineSettings.slots(), now, zone)
-        if (app.athanController.playback.value != null ||
-            app.athanController.medicinePlayback.value != null ||
-            medicineDue ||
-            !isAthkarWindow(day, now, zone) ||
-            isAthanMinute(athanInstants(day), now, zone)
+        val medicineDue = athkarYieldsToMedicine(
+            medicineSettings.enabled(),
+            medicineSettings.slots(),
+            now,
+            zone,
+        )
+        val athanPlaying = app.athanController.playback.value != null
+        val athanMinute = isAthanMinute(athanInstants(day), now, zone)
+        if (shouldStartMedicineFromAthkar(medicineDue, athanPlaying, athanMinute)) {
+            context.startForegroundService(MedicineService.playIntent(context))
+            app.athanController.schedule(day, now)
+            return
+        }
+        if (!shouldPlayAthkar(
+                athkarEnabled = true,
+                inWindow = isAthkarWindow(day, now, zone),
+                athanPlaying = athanPlaying,
+                medicinePlaying = app.athanController.medicinePlayback.value != null,
+                athanMinute = athanMinute,
+                medicineDue = medicineDue,
+            )
         ) {
             app.athanController.schedule(day, now)
             return

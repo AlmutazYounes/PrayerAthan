@@ -51,14 +51,28 @@ class AthkarService : Service() {
         val zone = ZoneId.of(location.timeZoneId)
         startInForeground(getString(R.string.athkar_playing_title))
         val medicineSettings = MedicineSettingsStore(this)
-        val medicineDue = medicineSettings.enabled() &&
-            isMedicineMinute(medicineSettings.slots(), now, zone)
-        if (!AudioSettingsStore(this).athkarEnabled() ||
-            app.athanController.playback.value != null ||
-            app.athanController.medicinePlayback.value != null ||
-            medicineDue ||
-            !isAthkarWindow(day, now, zone) ||
-            isAthanMinute(athanInstants(day), now, zone)
+        val medicineDue = athkarYieldsToMedicine(
+            medicineSettings.enabled(),
+            medicineSettings.slots(),
+            now,
+            zone,
+        )
+        val athanPlaying = app.athanController.playback.value != null
+        val athanMinute = isAthanMinute(athanInstants(day), now, zone)
+        if (shouldStartMedicineFromAthkar(medicineDue, athanPlaying, athanMinute)) {
+            startForegroundService(MedicineService.playIntent(this))
+            app.athanController.schedule(day, now)
+            stopPlayback()
+            return
+        }
+        if (!shouldPlayAthkar(
+                athkarEnabled = AudioSettingsStore(this).athkarEnabled(),
+                inWindow = isAthkarWindow(day, now, zone),
+                athanPlaying = athanPlaying,
+                medicinePlaying = app.athanController.medicinePlayback.value != null,
+                athanMinute = athanMinute,
+                medicineDue = medicineDue,
+            )
         ) {
             app.athanController.schedule(day, now)
             stopPlayback()

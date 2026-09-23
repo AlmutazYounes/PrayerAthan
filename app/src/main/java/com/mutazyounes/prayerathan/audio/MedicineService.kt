@@ -53,11 +53,13 @@ class MedicineService : Service() {
         startInForeground(voice.wallPrimary)
         val slot = medicineSlotFor(settings.slots(), now, zone)
         val key = slot?.let { medicineFireKey(it, now.atZone(zone).toLocalDate()) }
+        if (app.athanController.medicinePlayback.value != null) {
+            return
+        }
         if (!settings.enabled() ||
             settings.slots().isEmpty() ||
             slot == null ||
             key == null ||
-            settings.alreadyFired(key) ||
             app.athanController.playback.value != null ||
             isAthanMinute(athanInstants(day), now, zone)
         ) {
@@ -65,9 +67,14 @@ class MedicineService : Service() {
             stopPlayback()
             return
         }
+        if (settings.alreadyFired(key)) {
+            app.athanController.schedule(day, now)
+            stopPlayback()
+            return
+        }
         settings.markFired(key)
-        app.athanController.stopAthkar()
         app.athanController.markMedicinePlaying(voice.wallPrimary, voice.wallSecondary, now)
+        app.athanController.stopAthkar()
         app.athanController.schedule(day, now)
         player.playRaw(
             resId = voice.rawRes,

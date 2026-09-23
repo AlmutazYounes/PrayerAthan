@@ -15,7 +15,9 @@ class AthkarScheduler(
     fun schedule(day: PrayerDay, now: Instant, zone: ZoneId) {
         cancelAll()
         val clock = (context.applicationContext as PrayerAthanApp).wallClock
-        for (at in remainingAthkarAlarms(day, now, zone)) {
+        val medicine = MedicineSettingsStore(context)
+        val slots = if (medicine.enabled()) medicine.slots() else emptyList()
+        for (at in remainingAthkarAlarms(day, now, zone, slots)) {
             val hour = at.atZone(zone).hour
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,

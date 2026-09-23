@@ -3,6 +3,7 @@ package com.mutazyounes.prayerathan.audio
 import com.mutazyounes.prayerathan.engine.PrayerDay
 import com.mutazyounes.prayerathan.engine.PrayerInstant
 import com.mutazyounes.prayerathan.engine.PrayerName
+import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -89,5 +90,85 @@ class AthkarAlarmsTest {
         assertEquals(eightAm, hours.first())
         assertFalse(isAthkarWindow(today, fajr.minusSeconds(1), zone))
         assertFalse(isAthkarWindow(today, isha.plusSeconds(1), zone))
+    }
+
+    @Test
+    fun skipsHourWhenMedicineSlotHitsThatMinute() {
+        val slot = MedicineSlot(
+            id = "am",
+            hour = 8,
+            minute = 0,
+            days = setOf(DayOfWeek.THURSDAY),
+        )
+        val hours = remainingAthkarAlarms(today, fajr.plusSeconds(1), zone, listOf(slot))
+        assertFalse(hours.contains(eightAm))
+        assertTrue(hours.any { it.atZone(zone).hour == 9 })
+    }
+
+    @Test
+    fun keepsHourWhenMedicineSlotIsOtherDay() {
+        val slot = MedicineSlot(
+            id = "am",
+            hour = 8,
+            minute = 0,
+            days = setOf(DayOfWeek.FRIDAY),
+        )
+        val hours = remainingAthkarAlarms(today, fajr.plusSeconds(1), zone, listOf(slot))
+        assertTrue(hours.contains(eightAm))
+    }
+
+    @Test
+    fun afterIshaSkipsTomorrowEightIfMedicineOwnsIt() {
+        val afterIsha = today.copy(
+            nextAthan = PrayerName.FAJR,
+            nextAthanAt = tomorrowFajr,
+        )
+        val slot = MedicineSlot(
+            id = "am",
+            hour = 8,
+            minute = 0,
+            days = setOf(DayOfWeek.FRIDAY),
+        )
+        val hours = remainingAthkarAlarms(afterIsha, isha.plusSeconds(1), zone, listOf(slot))
+        assertFalse(hours.contains(tomorrowEightAm))
+        assertEquals(9, hours.single().atZone(zone).hour)
+    }
+
+    @Test
+    fun sameMinutePlaysMedicineNotAthkar() {
+        assertTrue(
+            athkarYieldsToMedicine(
+                medicineEnabled = true,
+                slots = listOf(
+                    MedicineSlot("am", 8, 0, setOf(DayOfWeek.THURSDAY)),
+                ),
+                at = eightAm,
+                zone = zone,
+            ),
+        )
+        assertFalse(
+            shouldPlayAthkar(
+                athkarEnabled = true,
+                inWindow = true,
+                athanPlaying = false,
+                medicinePlaying = false,
+                athanMinute = false,
+                medicineDue = true,
+            ),
+        )
+        assertTrue(
+            shouldStartMedicineFromAthkar(
+                medicineDue = true,
+                athanPlaying = false,
+                athanMinute = false,
+            ),
+        )
+        assertFalse(
+            shouldStartMedicineFromAthkar(
+                medicineDue = true,
+                athanPlaying = true,
+                athanMinute = false,
+            ),
+        )
     }
 }
