@@ -88,7 +88,7 @@ Older PNGs were deleted on purpose. Do not resurrect them. `DESIGN.md` is the wr
 
 ## Behavior
 
-Tick every second. Clocks, countdown, dimming, and athan alarms follow an in-app clock. On first open, and again once a day while the wall stays up, the app asks a public NTP server (Google, then Cloudflare, then pool.ntp.org) for UTC and stores the offset from the tablet clock. AlarmManager still fires on the device clock. The trigger is shifted by that offset so two tablets hit the same real moment. Offline, the last offset stays. If NTP fails, the device clock. No time backend of ours. Do not refresh the wall once a minute and hope.
+Tick every second. Clocks, countdown, dimming, and athan alarms follow an in-app clock. The second tick runs off the main thread. It snapshots `now()` right after `delay`, then paints countdown, Albany time, and the ring. A full refresh runs when remaining hits zero or the local date changes. On first open, and again once a day while the wall stays up, the app asks a public NTP server (Google, then Cloudflare, then pool.ntp.org) for UTC and stores the offset from the tablet clock. AlarmManager still fires on the device clock. The trigger is shifted by that offset so two tablets hit the same real moment. Offline, the last offset stays. If NTP fails, the device clock. No time backend of ours. Do not refresh the wall once a minute and hope.
 
 **Next prayer** is the next of Fajr, Dhuhr, Asr, Maghrib, Isha. Sunrise is a line in the grid only. No athan at sunrise. After Fajr, the countdown target is Dhuhr even if sunrise has not happened yet. Sunrise still dims once its time has passed.
 

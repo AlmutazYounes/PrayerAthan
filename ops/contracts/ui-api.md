@@ -56,7 +56,7 @@ data class PrayerCellState(
 enum class CellKind { PAST, NEXT, LATER }
 ```
 
-Tick: ViewModel refreshes `WallUiState` every second from `PrayerEngine` and `AthanController.playback`.
+Tick: ViewModel waits until the next whole second on `Dispatchers.Default`, snapshots `now()`, then paints countdown, clock, and ring. A full `refresh` runs at zero remaining, date change, or cell-kind change. Playback collectors still call `refresh`.
 
 Settings location: searchable country, then searchable city from bundled GeoNames. Picking a city calls `SavedLocation.parse` then `LocationStore.write`. Null parse shows `locationError`. Reset writes `SavedLocation.albany`. After a successful write, refresh immediately and force `athan.schedule` even if the local date did not change. Header `locationLabel` is the saved label, all-caps. Time adjustments card writes per-prayer minute offsets through `WallViewModel.setPrayerOffset` and forces reschedule. Each row shows the live clock time (`prayerClockTimes`) plus a small offset chip. Do not import adhan-kotlin in a composable.
 

@@ -104,10 +104,11 @@ class WallViewModel(
                 refresh(now())
             }
         }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             while (isActive) {
                 delay(WallTime.millisUntilNextSecond(now().toEpochMilli()))
-                refresh(now())
+                val tickAt = now()
+                tickSecond(tickAt)
             }
         }
         viewModelScope.launch {
@@ -317,6 +318,42 @@ class WallViewModel(
         locationStore.write(resolved)
         resolvedLocation = resolved
         return resolved
+    }
+
+    private fun tickSecond(now: Instant) {
+        val location = resolvedLocation ?: engine.location()
+        val day = engine.day(now, location)
+        val remaining = Duration.between(now, day.nextAthanAt).let {
+            if (it.isNegative) Duration.ZERO else it
+        }
+        val previous = _state.value
+        val playingName = athan.playback.value?.prayer
+        if (needsFullSecondRefresh(remaining, day.localDate, lastScheduledDate) ||
+            !cellKindsUnchanged(now, day, playingName, previous)
+        ) {
+            refresh(now)
+            return
+        }
+        val clocks = engine.clocks(now, location)
+        val albanyClock = formatClock(clocks.albany, twelveHour)
+        val jordanClock = formatClock(clocks.jordan, twelveHour)
+        val playing = playingName != null
+        val medicineOn = athan.medicinePlayback.value != null && !playing
+        _state.value = previous.copy(
+            gregorianDate = clocks.albany.format(DATE_LINE),
+            weekday = clocks.albany.format(WEEKDAY),
+            albanyTime = albanyClock.first,
+            albanyAmPm = albanyClock.second,
+            jordanTime = jordanClock.first,
+            jordanAmPm = jordanClock.second,
+            countdown = formatCountdown(remaining),
+            nextPrayerRing = if (playing) 0f else nextPrayerRingFraction(now, day),
+            isNightBlackout = settings.nightBlackout() &&
+                isNightBlackoutWindow(clocks.albany.hour) &&
+                !playing &&
+                !medicineOn &&
+                athan.demoId.value == null,
+        )
     }
 
     private fun refresh(now: Instant, forceSchedule: Boolean = false) {
@@ -592,6 +629,12 @@ class WallViewModel(
             val seconds = totalSeconds % 60
             return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
         }
+
+        fun needsFullSecondRefresh(
+            remaining: Duration,
+            localDate: LocalDate,
+            lastScheduledDate: LocalDate?,
+        ): Boolean = remaining.isNegative || remaining.seconds <= 0L || lastScheduledDate != localDate
 
         fun isNightBlackoutWindow(localHour: Int): Boolean =
             localHour >= 23 || localHour < 4

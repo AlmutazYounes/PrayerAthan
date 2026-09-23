@@ -27,6 +27,10 @@ class WallTimeTest {
     fun nextSecondWait() {
         assertEquals(1000L, WallTime.millisUntilNextSecond(1_000L))
         assertEquals(250L, WallTime.millisUntilNextSecond(750L))
+        assertEquals(1L, WallTime.millisUntilNextSecond(999L))
+        assertEquals(1000L, WallTime.millisUntilNextSecond(0L))
+        assertEquals(2_000L, WallTime.nextSecondEpochMilli(1_000L))
+        assertEquals(1_000L, WallTime.nextSecondEpochMilli(999L))
     }
 
     @Test

@@ -14,8 +14,13 @@ object WallTime {
     fun alarmEpochMilli(civilEpochMilli: Long, correctionMs: Long): Long =
         civilEpochMilli - correctionMs
 
-    fun millisUntilNextSecond(nowEpochMilli: Long): Long =
-        (1000L - (nowEpochMilli % 1000L)).coerceAtLeast(1L)
+    fun millisUntilNextSecond(nowEpochMilli: Long): Long {
+        val rem = Math.floorMod(nowEpochMilli, 1000L)
+        return if (rem == 0L) 1000L else 1000L - rem
+    }
+
+    fun nextSecondEpochMilli(nowEpochMilli: Long): Long =
+        nowEpochMilli + millisUntilNextSecond(nowEpochMilli)
 }
 
 interface WallClock {

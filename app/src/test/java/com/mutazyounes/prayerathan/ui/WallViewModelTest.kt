@@ -1,7 +1,9 @@
 package com.mutazyounes.prayerathan.ui
 
 import com.mutazyounes.prayerathan.engine.PrayerName
+import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import org.junit.Assert.assertEquals
@@ -67,6 +69,27 @@ class WallViewModelTest {
         assertEquals("5:15 AM", WallViewModel.formatPrayerClockLabel(fajr, twelveHour = true))
         val asr = ZonedDateTime.of(2026, 9, 23, 16, 42, 0, 0, ZoneId.of("America/New_York"))
         assertEquals("4:42 PM", WallViewModel.formatPrayerClockLabel(asr, twelveHour = true))
+    }
+
+    @Test
+    fun countdownFloorsPartialSeconds() {
+        assertEquals("00:00:03", WallViewModel.formatCountdown(Duration.ofMillis(3_999)))
+        assertEquals("00:00:03", WallViewModel.formatCountdown(Duration.ofSeconds(3)))
+        assertEquals("00:00:02", WallViewModel.formatCountdown(Duration.ofMillis(2_001)))
+    }
+
+    @Test
+    fun fullRefreshWhenCountdownHitsZeroOrDateRolls() {
+        val today = LocalDate.of(2026, 9, 23)
+        assertTrue(
+            WallViewModel.needsFullSecondRefresh(Duration.ZERO, today, today),
+        )
+        assertTrue(
+            WallViewModel.needsFullSecondRefresh(Duration.ofSeconds(12), today, today.minusDays(1)),
+        )
+        assertFalse(
+            WallViewModel.needsFullSecondRefresh(Duration.ofSeconds(12), today, today),
+        )
     }
 
     @Test
