@@ -118,6 +118,7 @@ fun SettingsSheet(
     locationError: String?,
     athanSoundId: String,
     athkarEnabled: Boolean,
+    morningAthkarEnabled: Boolean,
     mutedPrayers: Set<PrayerName>,
     prayerVolumes: Map<PrayerName, Int>,
     prayerOffsets: Map<PrayerName, Int>,
@@ -131,6 +132,7 @@ fun SettingsSheet(
     onUseGps: () -> Unit,
     onSelectAthanSound: (String) -> Unit,
     onAthkarEnabledChange: (Boolean) -> Unit,
+    onMorningAthkarEnabledChange: (Boolean) -> Unit,
     onTogglePrayerMute: (PrayerName) -> Unit,
     onPrayerVolumeChange: (PrayerName, Int) -> Unit,
     onPrayerOffsetChange: (PrayerName, Int) -> Unit,
@@ -415,6 +417,10 @@ fun SettingsSheet(
                                 athkarEnabled = athkarEnabled,
                                 onAthkarEnabledChange = onAthkarEnabledChange,
                             )
+                            MorningAthkarCard(
+                                enabled = morningAthkarEnabled,
+                                onEnabledChange = onMorningAthkarEnabledChange,
+                            )
                             MedicineCard(
                                 enabled = medicineEnabled,
                                 voice = MedicineVoice.fromStored(medicineVoice),
@@ -503,6 +509,11 @@ fun SettingsSheet(
                         AthkarCard(
                             athkarEnabled = athkarEnabled,
                             onAthkarEnabledChange = onAthkarEnabledChange,
+                        )
+
+                        MorningAthkarCard(
+                            enabled = morningAthkarEnabled,
+                            onEnabledChange = onMorningAthkarEnabledChange,
                         )
 
                         MedicineCard(
@@ -1237,6 +1248,23 @@ private fun AthkarCard(
         subtitle = "8 AM – 10 PM · Medicine wins that minute",
         trailing = {
             CompactSwitch(active = athkarEnabled, onActiveChange = onAthkarEnabledChange)
+        },
+        body = false,
+    ) {
+    }
+}
+
+@Composable
+private fun MorningAthkarCard(
+    enabled: Boolean,
+    onEnabledChange: (Boolean) -> Unit,
+) {
+    ModernCardContainer(
+        title = "Morning Athkar",
+        icon = Icons.Default.PlayArrow,
+        subtitle = "8:05 every 5 min · six clips · off by default",
+        trailing = {
+            CompactSwitch(active = enabled, onActiveChange = onEnabledChange)
         },
         body = false,
     ) {

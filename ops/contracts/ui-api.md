@@ -36,6 +36,7 @@ data class WallUiState(
     val weatherCondition: String,
     val athanSoundId: String,
     val athkarEnabled: Boolean,
+    val morningAthkarEnabled: Boolean,
     val mutedPrayers: Set<PrayerName>,
     val prayerVolumes: Map<PrayerName, Int>,
     val prayerOffsets: Map<PrayerName, Int>, // minutes on top of ISNA, default 0

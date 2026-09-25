@@ -148,6 +148,11 @@ class WallViewModel(
         refresh(now(), forceSchedule = true)
     }
 
+    fun setMorningAthkarEnabled(enabled: Boolean) {
+        audioSettings.setMorningAthkarEnabled(enabled)
+        refresh(now(), forceSchedule = true)
+    }
+
     fun setMedicineEnabled(enabled: Boolean) {
         medicineSettings.setEnabled(enabled)
         refresh(now(), forceSchedule = true)
@@ -433,6 +438,7 @@ class WallViewModel(
             weatherCondition = weatherCondition,
             athanSoundId = audioSettings.soundId(),
             athkarEnabled = audioSettings.athkarEnabled(),
+            morningAthkarEnabled = audioSettings.morningAthkarEnabled(),
             mutedPrayers = mutedPrayers,
             prayerVolumes = audioSettings.prayerVolumes(),
             prayerOffsets = prayerOffsetMinutes,

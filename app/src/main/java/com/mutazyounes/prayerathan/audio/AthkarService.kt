@@ -26,6 +26,7 @@ class AthkarService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_PLAY -> startPlayback()
+            ACTION_MORNING_PLAY -> startMorningPlayback(intent)
             ACTION_DEMO -> startDemo(intent)
             ACTION_STOP -> {
                 startInForeground(getString(R.string.athkar_playing_title))
@@ -79,6 +80,52 @@ class AthkarService : Service() {
             return
         }
         val clip = rotation.next()
+        app.athanController.markAthkarPlaying(clip.caption, now)
+        app.athanController.schedule(day, now)
+        startInForeground(clip.caption)
+        player.playRaw(
+            resId = clip.rawRes,
+            onComplete = { stopPlayback() },
+            onError = { stopPlayback() },
+        )
+    }
+
+    private fun startMorningPlayback(intent: Intent) {
+        val app = application as PrayerAthanApp
+        val now = app.wallClock.now()
+        val location = app.prayerEngine.location()
+        val day = app.prayerEngine.day(now, location)
+        val zone = ZoneId.of(location.timeZoneId)
+        startInForeground(getString(R.string.athkar_playing_title))
+        val index = intent.getIntExtra(EXTRA_INDEX, -1)
+        val medicineSettings = MedicineSettingsStore(this)
+        val medicineDue = athkarYieldsToMedicine(
+            medicineSettings.enabled(),
+            medicineSettings.slots(),
+            now,
+            zone,
+        )
+        val athanPlaying = app.athanController.playback.value != null
+        val athanMinute = isAthanMinute(athanInstants(day), now, zone)
+        if (shouldStartMedicineFromAthkar(medicineDue, athanPlaying, athanMinute)) {
+            startForegroundService(MedicineService.playIntent(this))
+            app.athanController.schedule(day, now)
+            stopPlayback()
+            return
+        }
+        if (!shouldPlayMorningAthkar(
+                morningEnabled = AudioSettingsStore(this).morningAthkarEnabled(),
+                athanPlaying = athanPlaying,
+                medicinePlaying = app.athanController.medicinePlayback.value != null,
+                athanMinute = athanMinute,
+                medicineDue = medicineDue,
+            ) || index !in 0 until MorningAthkarClip.count
+        ) {
+            app.athanController.schedule(day, now)
+            stopPlayback()
+            return
+        }
+        val clip = MorningAthkarClip.at(index)
         app.athanController.markAthkarPlaying(clip.caption, now)
         app.athanController.schedule(day, now)
         startInForeground(clip.caption)
@@ -179,15 +226,24 @@ class AthkarService : Service() {
 
     companion object {
         const val ACTION_PLAY = "com.mutazyounes.prayerathan.audio.ATHKAR_PLAY"
+        const val ACTION_MORNING_PLAY = "com.mutazyounes.prayerathan.audio.MORNING_ATHKAR_PLAY"
         const val ACTION_DEMO = "com.mutazyounes.prayerathan.audio.ATHKAR_DEMO"
         const val ACTION_STOP = "com.mutazyounes.prayerathan.audio.ATHKAR_STOP"
         const val EXTRA_CLIP = "clip"
+        const val EXTRA_INDEX = "index"
         private const val CHANNEL_ID = "athkar_playback"
         private const val NOTIFICATION_ID = 42
 
         fun playIntent(context: Context): Intent {
             return Intent(context, AthkarService::class.java).apply {
                 action = ACTION_PLAY
+            }
+        }
+
+        fun morningPlayIntent(context: Context, index: Int): Intent {
+            return Intent(context, AthkarService::class.java).apply {
+                action = ACTION_MORNING_PLAY
+                putExtra(EXTRA_INDEX, index)
             }
         }
 
