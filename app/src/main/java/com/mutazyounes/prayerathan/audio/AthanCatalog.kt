@@ -53,6 +53,12 @@ class AudioSettingsStore(
         prefs.edit().putBoolean(KEY_ATHKAR, enabled).apply()
     }
 
+    fun morningAthkarEnabled(): Boolean = prefs.getBoolean(KEY_MORNING_ATHKAR, false)
+
+    fun setMorningAthkarEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_MORNING_ATHKAR, enabled).apply()
+    }
+
     fun isPrayerMuted(prayer: PrayerName): Boolean =
         prayer in mutedPrayers()
 
@@ -90,6 +96,7 @@ class AudioSettingsStore(
         private const val PREFS = "prayerathan_audio"
         private const val KEY_SOUND = "athan_sound"
         private const val KEY_ATHKAR = "athkar_enabled"
+        private const val KEY_MORNING_ATHKAR = "morning_athkar_enabled"
         private const val KEY_MUTED_PRAYERS = "muted_prayers"
         private val DEFAULT_MUTED: Set<String> =
             PrayerName.athanTargets().map { it.name }.toSet()

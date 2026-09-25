@@ -40,7 +40,7 @@ Three surfaces. That is the whole product in v1.
 
 **Athan playing.** Same wall screen. The countdown block switches to NOW, the prayer name, and the line "Adhan is playing". Albany time stays. The day's list highlights the prayer that just started.
 
-**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lives on each volume row. PLAY on a row previews that prayer at the chosen volume. First launch: all five prayer athans muted, hourly athkar off. Time adjustments show the live clock time for each prayer, not only plus or minus minutes. Medicine slots use hour, minute, and AM/PM wheels. Wall is dark only. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
+**Settings.** Header gear, or long-press anywhere on the wall. Location is a searchable country list, then a searchable city list. Per-prayer mute lives on each volume row. PLAY on a row previews that prayer at the chosen volume. First launch: all five prayer athans muted, hourly athkar off, morning athkar off. Time adjustments show the live clock time for each prayer, not only plus or minus minutes. Medicine slots use hour, minute, and AM/PM wheels. Wall is dark only. Night blackout turns screen totally black and dims brightness between 11 PM and 4 AM with tap-to-wake. Persist choices. No kiosk lock in v1. Sheet background is the `settingsPanel` token, not the wall wash.
 
 ---
 
@@ -148,6 +148,8 @@ Volume should fill a room at living-room distance. Do not duck to media volume t
 Sunrise: silence.
 
 **Athkar.** Short dhikr on the local clock hour: اللهم صل على محمد (`athkar_salawat.mp3`). Files live in `audio/athkar/` with `audio/athkar/SOURCE.md`. Copy into `res/raw/`. Personal use, same rights rule as athan. Not Quran. Play between Fajr and Isha, and only from 8:00 AM through 9:00 PM local. Silent from 10:00 PM until 8:00 AM, even if Fajr was earlier. If an athan is due that minute, athan wins. If a medicine slot is due that minute, only medicine plays. Tap stops. Settings can turn this on. Off on first launch.
+
+**Morning athkar.** Separate from hourly. Fixed sequence starting at 8:05 local (saved location timezone), then every 5 minutes until the clip list ends (six clips, last slot ~8:30). One clip per alarm. Reuses `athkar_salawat` as index 0 plus `athkar_morning_01` … `athkar_morning_05`. Not Quran. Settings toggle **Morning Athkar**, default off. Priority: athan > medicine > morning athkar (same yield rules as hourly). Boot and `AthanController.schedule` arm remaining slots for today, or tomorrow morning after the sequence ends. Tap stops.
 
 **Medicine reminder.** Optional spoken cue at times Mutaz picks. Arabic (`medicine_ar.mp3`, حان وقت الدواء) or English (`medicine_en.mp3`, Take your medicine). Masters in `audio/medicine/` with `SOURCE.md`, copied to `res/raw/`. Settings: on/off switch, Arabic / English voice, up to six slots (hour/minute wheels, AM/PM, weekday chips). Off on first launch until he adds a slot and turns it on. Uses `AlarmManager.setAlarmClock` (same reliability class as prayer athan) plus a short foreground service on the alarm stream. Three-minute grace if the wake is late. Enabling a slot that is already due plays once immediately. Priority: athan beats medicine, medicine beats athkar. Same clock minute: only medicine. Athkar is not armed for that minute. Tap stops. Wall shows a gold-bordered banner with the spoken line (Arabic primary when Arabic voice is selected, English primary when English is selected, the other language as secondary). Night blackout stays off while the reminder plays.
 
@@ -342,5 +344,6 @@ Mutaz locked these. Orchestrator standing orders are in `AGENTS.md`.
 4. **12-hour vs 24-hour.** 12-hour with AM/PM on the wall. 24-hour is a settings flag only.
 5. **Athkar quiet hours.** No hourly athkar from 10:00 PM until 8:00 AM local. Last clip is 9:00 PM. First clip is 8:00 AM, and only if that hour is still between Fajr and Isha.
 6. **Medicine reminder.** Optional. Off until Mutaz enables it and adds at least one day/time slot. Arabic or English voice. Athan wins over medicine. Medicine wins over athkar.
+7. **Morning athkar.** Optional sequence at 8:05 local, then every 5 minutes until the clip list ends. Off on first launch. Yields to athan and medicine. Not Quran.
 
 When he changes one of these, update this file in the same turn as the code. Agents should not have to mine chat logs.

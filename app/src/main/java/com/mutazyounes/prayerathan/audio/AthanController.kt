@@ -49,6 +49,7 @@ class DefaultAthanController(
     private val appContext = context.applicationContext
     private val scheduler = AthanScheduler(appContext)
     private val athkarScheduler = AthkarScheduler(appContext)
+    private val morningAthkarScheduler = MorningAthkarScheduler(appContext)
     private val medicineScheduler = MedicineScheduler(appContext)
     private val audioSettings = AudioSettingsStore(appContext)
     private val medicineSettings = MedicineSettingsStore(appContext)
@@ -68,6 +69,11 @@ class DefaultAthanController(
             athkarScheduler.schedule(day, now, zone())
         } else {
             athkarScheduler.cancelAll()
+        }
+        if (audioSettings.morningAthkarEnabled()) {
+            morningAthkarScheduler.schedule(day, now, zone())
+        } else {
+            morningAthkarScheduler.cancelAll()
         }
         if (medicineSettings.enabled() && medicineSettings.slots().isNotEmpty()) {
             medicineScheduler.schedule(now, zone())

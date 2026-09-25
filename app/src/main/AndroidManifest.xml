@@ -53,6 +53,10 @@
             android:exported="false" />
 
         <receiver
+            android:name=".audio.MorningAthkarAlarmReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".audio.MedicineAlarmReceiver"
             android:exported="false" />
 
