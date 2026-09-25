@@ -4,7 +4,7 @@ Updated: 2026-09-11
 
 ## Now
 
-Play listing is **free**. Internal testing is **37 (0.37.0)**. Closed testing Alpha **28 (0.28.0)** is in Google review (testers still on 25 until it clears). Six wall screenshots saved in Console. App content leftover forms are filled: no advertising ID, mediaPlayback FGS with demo video, exact alarm declared as alarm clock. Production is **not public**. Apply for production is disabled: 12+ closed testers opted in. Need those 12 to stay opted in for 14 days.
+Play listing is **free**. Internal testing is **38 (0.38.0)**. Closed testing Alpha **28 (0.28.0)** is in Google review (testers still on 25 until it clears). Six wall screenshots saved in Console. App content leftover forms are filled: no advertising ID, mediaPlayback FGS with demo video, exact alarm declared as alarm clock. Production is **not public**. Apply for production is disabled: 12+ closed testers opted in. Need those 12 to stay opted in for 14 days.
 
 The Play URL shows a gray stub (`com.mutazyounes.prayerathan (unreviewed)`) because listing changes sit in Publishing overview and have not been reviewed. Pictures are in Console. They are not on the store page yet.
 

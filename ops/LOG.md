@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-09-25 Mutaz: internal testing 38 (0.38.0). morning athkar at 8:05 every 5 minutes through six clips, settings toggle. Not production.
 - 2026-09-25 Issue #8 morning athkar: 8:05 every 5 min, six clips, settings toggle default off.
 - 2026-09-23 Mutaz: internal testing 37 (0.37.0). Countdown no longer skips a second on the wall.. Not production.
 - 2026-09-23 Mutaz: issue #7. Countdown tick leaves Main. Snapshot now() after delay so 3, 2, 1 does not skip 2.
