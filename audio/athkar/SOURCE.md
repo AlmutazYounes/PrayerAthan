@@ -17,70 +17,68 @@ Salawat Ibrahimiyyah, one recitation. Opens with اللهم صل على محمد
 
 Personal use. The identifier looks like a bulk dump. The file itself is labeled as one recitation of Salawat Ibrahimiyyah.
 
-## Morning sequence (8:05, then every 5 min)
+## Morning sequence (adhkar as-sabah)
 
-Six clips. Index 0 is the same salawat file. Indexes 1–5 are short one-time salawat variants from the same Archive.org uploader family. Captions on the wall stay اللهم صل على محمد. Not Quran.
+Six clips. 8:05 local, then every 5 minutes through ~8:30. One clip per alarm. Distinct morning adhkar / dua, not salawat. Not Quran (Ayat al-Kursi and surahs from the source pack were skipped).
+
+Source pack: [Azkar Al Sabah 1425](https://archive.org/details/azkar-al-sabah-1425) on Archive.org. Uploader `alafasy.duaa@gmail.com`. License: none stated. Personal use.
+
+Masters were re-encoded to MP3 128 kbps, 44.1 kHz stereo so each slot finishes well before the next 5-minute alarm.
 
 ### morning_01.mp3 → `athkar_morning_01.mp3`
 
-Salawat that Equals 100,000 Salawat, recited 1 time.
+أصبحنا وأصبح الملك لله (morning opener dua).
 
-- Duration: ~0:16
-- Format: MP3, 192 kbps, 48 kHz stereo
-- Item: https://archive.org/details/abdulaziz-az-zahrani-112-al-ikhlas-40146-5793
-- File: https://archive.org/download/abdulaziz-az-zahrani-112-al-ikhlas-40146-5793/Salawat%20that%20Equals%20100%2C000%20Salawat%20Recited%201%20Time.mp3
-- License: none stated
-
-Personal use.
+- Source file: `8-azkar-al-sabah-1425-15.mp3`
+- Duration: ~0:26
+- URL: https://archive.org/download/azkar-al-sabah-1425/8-azkar-al-sabah-1425-15.mp3
+- Wall caption: أصبحنا وأصبح الملك لله
 
 ### morning_02.mp3 → `athkar_morning_02.mp3`
 
-Salawat to See Prophet Muhammad (Pbuh), recited 1 time.
+اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور.
 
-- Duration: ~0:07
-- Format: MP3, 192 kbps, 48 kHz stereo
-- Item: https://archive.org/details/abdulaziz-az-zahrani-092-al-layl-40126-3149
-- File: https://archive.org/download/abdulaziz-az-zahrani-092-al-layl-40126-3149/Salawat%20to%20See%20Prophet%20Muhammad%20%28Pbuh%29%20Recited%201%20Time.mp3
-- License: none stated
-
-Personal use.
+- Source file: `8-azkar-al-sabah-1425-4.mp3`
+- Duration: ~0:14
+- URL: https://archive.org/download/azkar-al-sabah-1425/8-azkar-al-sabah-1425-4.mp3
+- Wall caption: اللهم بك أصبحنا
 
 ### morning_03.mp3 → `athkar_morning_03.mp3`
 
-The Salawat in at-Tahiyyat, recited 1 time.
+Sayyidul istighfar (سيد الاستغفار).
 
-- Duration: ~0:05
-- Format: MP3, 192 kbps, 48 kHz stereo
-- Item: https://archive.org/details/abdulaziz-az-zahrani-100-al-adiyat-40134-291
-- File: https://archive.org/download/abdulaziz-az-zahrani-100-al-adiyat-40134-291/The%20Salawat%20in%20at-Tahiyyat%20Recited%201%20Time.mp3
-- License: none stated
-
-Personal use.
+- Source file: `8-azkar-al-sabah-1425-5.mp3`
+- Duration: ~0:39
+- URL: https://archive.org/download/azkar-al-sabah-1425/8-azkar-al-sabah-1425-5.mp3
+- Wall caption: اللهم أنت ربي لا إله إلا أنت
 
 ### morning_04.mp3 → `athkar_morning_04.mp3`
 
-Salawat Imam Shafi`i, recited 1 time.
+اللهم ما أصبح بي من نعمة أو بأحد من خلقك فمنك وحدك لا شريك لك فلك الحمد ولك الشكر.
 
-- Duration: ~0:06
-- Format: MP3, 192 kbps, 48 kHz stereo
-- Item: https://archive.org/details/abdulaziz-az-zahrani-114-an-nas-40148-4135
-- File: https://archive.org/download/abdulaziz-az-zahrani-114-an-nas-40148-4135/Salawat%20Imam%20Shafi%60i%20Recited%201%20Time.mp3
-- License: none stated
-
-Personal use.
+- Source file: `8-azkar-al-sabah-1425-7.mp3`
+- Duration: ~0:15
+- URL: https://archive.org/download/azkar-al-sabah-1425/8-azkar-al-sabah-1425-7.mp3
+- Wall caption: اللهم ما أصبح بي من نعمة
 
 ### morning_05.mp3 → `athkar_morning_05.mp3`
 
-Salawaat as-Sa`adah, recited 1 time.
+بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم (×3).
 
-- Duration: ~0:10
-- Format: MP3, 192 kbps, 48 kHz stereo
-- Item: https://archive.org/details/abdulaziz-az-zahrani-096-al-alaq-40130-7877
-- File: https://archive.org/download/abdulaziz-az-zahrani-096-al-alaq-40130-7877/Salawaat%20as-Sa%60adah%20Recited%201%20Time.mp3
-- License: none stated
+- Source file: `8-azkar-al-sabah-1425-12.mp3`
+- Duration: ~0:39
+- URL: https://archive.org/download/azkar-al-sabah-1425/8-azkar-al-sabah-1425-12.mp3
+- Wall caption: بسم الله الذي لا يضر مع اسمه شيء
 
-Personal use.
+### morning_06.mp3 → `athkar_morning_06.mp3`
+
+يا حي يا قيوم برحمتك أستغيث أصلح لي شأني كله ولا تكلني إلى نفسي طرفة عين.
+
+- Source file: `8-azkar-al-sabah-1425-14.mp3`
+- Duration: ~0:19
+- URL: https://archive.org/download/azkar-al-sabah-1425/8-azkar-al-sabah-1425-14.mp3
+- Wall caption: يا حي يا قيوم برحمتك أستغيث
 
 ## What we skipped
 
-Hamd, Takbir, Shahada, and Subhanallah children's zikir (removed from hourly after Mutaz asked to keep only Salawat). YouTube nasheeds. Quran reciters dressed up as athkar. Ayat al-Kursi. Long morning azkar packs (20+ MB). Long repeating salawat packs (10x / 100x).
+Hamd, Takbir, Shahada, and Subhanallah children's zikir (removed from hourly after Mutaz asked to keep only Salawat). YouTube nasheeds. Quran reciters dressed up as athkar. Ayat al-Kursi (`8-azkar-al-sabah-1425-1.mp3` in the same pack). Full surahs. Long morning azkar packs (20+ MB continuous). Old salawat-only morning_01..05 pack (issue #10). Long repeating salawat packs (10x / 100x).
