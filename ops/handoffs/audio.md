@@ -15,7 +15,7 @@ Athan selector in settings. PLAY is a demo on the alarm stream. Closing settings
 
 Hourly athkar fires on `:00` between Fajr and Isha, 8:00 AM through 9:00 PM. Silent 10 PM to 8 AM. Single clip: اللهم صل على محمد (Salawat). Settings has On / Off. A medicine slot on that hour skips the athkar alarm.
 
-Morning athkar (issue #8): fixed six-clip sequence at 8:05, 8:10, … 8:30 local. One clip per alarm via `AthkarService` `ACTION_MORNING_PLAY` + `EXTRA_INDEX`. Settings **Morning Athkar** switch, default off (`morning_athkar_enabled`). Yields to athan and medicine. `MorningAthkarScheduler` arms from `AthanController.schedule` / boot. Clips: `athkar_salawat` + `athkar_morning_01`…`05`. Sources in `audio/athkar/SOURCE.md`.
+Morning athkar (issues #8, #10): fixed six-clip adhkar as-sabah sequence at 8:05, 8:10, … 8:30 local. One clip per alarm via `AthkarService` `ACTION_MORNING_PLAY` + `EXTRA_INDEX`. Settings **Morning Athkar** switch, default off (`morning_athkar_enabled`). Yields to athan and medicine. `MorningAthkarScheduler` arms from `AthanController.schedule` / boot. Clips: `athkar_morning_01`…`06` with distinct Arabic captions (not salawat, not Quran). Hourly stays `athkar_salawat`. Sources in `audio/athkar/SOURCE.md`.
 
 Medicine reminder: optional day/time slots (max 6), Arabic or English voice clips in `res/raw/medicine_*.mp3`. `MedicineScheduler` + `MedicineService` + wall banner. Priority athan > medicine > athkar. Same minute: only medicine. Off until enabled with at least one slot.
 
