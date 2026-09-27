@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-09-27 Mutaz: internal testing 39 (0.39.0). morning athkar is adhkar as-sabah, not salawat only. Not production.
 - 2026-09-27 Issue #10: morning sequence is adhkar as-sabah (`athkar_morning_01`…`06`), not salawat. Hourly salawat unchanged.
 - 2026-09-25 Mutaz: internal testing 38 (0.38.0). morning athkar at 8:05 every 5 minutes through six clips, settings toggle. Not production.
 - 2026-09-25 Issue #8 morning athkar: 8:05 every 5 min, six clips, settings toggle default off.
