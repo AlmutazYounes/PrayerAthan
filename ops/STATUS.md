@@ -4,7 +4,7 @@ Updated: 2026-10-05
 
 ## Now
 
-Play listing is **free**. Internal testing is **39 (0.39.0)**. Production is **not public**. Console 5 Oct 2026: 12 closed testers opted in for **13 days** continuously. One day left on the 14-day gate, then Apply for production.
+Play listing is **free**. Internal testing is **40 (0.40.0)**. Production is **not public**. Console 5 Oct 2026: 12 closed testers opted in for **13 days** continuously. One day left on the 14-day gate, then Apply for production.
 
 The Play URL shows a gray stub (`com.mutazyounes.prayerathan (unreviewed)`) because listing changes sit in Publishing overview and have not been reviewed. Pictures are in Console. They are not on the store page yet.
 

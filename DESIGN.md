@@ -90,6 +90,7 @@ Use these Compose names. Hex is sRGB. Dark values below. Light sits in the next 
 | `ColorAmPm` | `#EBDDC8` | `AM` / `PM` beside clock digits. |
 | `ColorStar` | `#C5963A` at 10% alpha | Rub el Hizb behind Albany only. Stroke, not a filled sticker. |
 | `ColorGeometry` | `#C5963A` at 10% alpha | Backdrop eight-point stars, octagons, girih lines. Same pattern as light, lower alpha. |
+| `ColorBatteryLow` | `#C45A4A` | Portrait circular battery when percent is under 20. Muted brick red, not neon. |
 
 On the PNGs, some landscape labels sit closer to cream than brass. Implement `ColorLabel` as gold anyway so labels, countdown, and next-prayer share one accent. Do not add a second gold.
 
@@ -117,6 +118,7 @@ Dark is a night mosque wall: umber, bronze, deep indigo plaster. Not crushed OLE
 | `hairline` | `#C4A888` | Rules. |
 | `star` | gold 12% | Albany watermark only. |
 | `geometry` | gold 10% | Baked into the backdrop bitmaps. Keep the token. |
+| `batteryLow` | `#C45A4A` | Portrait battery under 20%. |
 
 Provide via `CompositionLocal` with `LocalWallPalette`. `WallBackdrop` uses `design/dark-wall-backdrop.png` (landscape) or `design/dark-wall-backdrop-portrait.png` (portrait). Type, hairlines, and the Albany star use the token table. Geometry in the plaster bitmaps stays behind the clocks.
 
@@ -265,7 +267,7 @@ Header(location: String, weekday: String, dateLine: String, showBattery: Boolean
 
 Location top-start, two lines: city name then gold weather with condition icon (`22°C  CLEAR`) from Open-Meteo, Celsius. Gold weather icon sits beside the weather line. Never lat/long on the wall. Date column top-end, one line: weekday then calendar date (`Thursday  27 August`). No year. In landscape, location and weather sit top-start; date and settings top-end. Countdown is in the arc notch, not a separate hero column. No Hijri slot.
 
-Portrait only: gold battery glyph + live percent sit above location (sticky `ACTION_BATTERY_CHANGED`, display only). Portrait weather and date use larger Header multipliers than landscape. Landscape never shows battery.
+Portrait only: larger circular battery with percent inside (sticky `ACTION_BATTERY_CHANGED`). Gold when 20% or above. `ColorBatteryLow` under 20%, with one short alarm-stream beep when crossing into low (and once on cold start if already low). Portrait weather max ~`1.35× dateLine` (slightly under the #14 bump). Date stays ~`1.45×`. Landscape never shows battery.
 
 ### ClockBlock
 
@@ -427,6 +429,7 @@ val DarkWallPalette = WallPalette(
     hairline = Color(0xFFC4A888),
     star = Color(0xFFE2B85C).copy(alpha = 0.12f),
     geometry = Color(0xFFE2B85C).copy(alpha = 0.10f),
+    batteryLow = Color(0xFFC45A4A),
 )
 
 val HairlineWidth = 1.5.dp

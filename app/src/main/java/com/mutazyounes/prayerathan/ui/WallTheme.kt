@@ -32,6 +32,7 @@ data class WallPalette(
     val hairline: Color,
     val star: Color,
     val geometry: Color,
+    val batteryLow: Color,
 ) {
     val highlightStroke: Color get() = gold
     val highlightFill: Color get() = gold.copy(alpha = 0.14f)
@@ -55,6 +56,7 @@ val DarkWallPalette = WallPalette(
     hairline = Color(0x99C4A888),
     star = Color(0xFFE2B85C).copy(alpha = 0.15f),
     geometry = Color(0xFFE2B85C).copy(alpha = 0.12f),
+    batteryLow = Color(0xFFC45A4A),
 )
 
 val LocalWallPalette = staticCompositionLocalOf { DarkWallPalette }

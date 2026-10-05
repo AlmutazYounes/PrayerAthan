@@ -2,6 +2,8 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-10-05 Issue #16. Portrait battery circle larger; red + beep under 20%; weather slightly smaller.
+- 2026-10-05 Mutaz: internal testing 40 (0.40.0). Portrait battery %; larger weather and date. Not production.
 - 2026-10-05 Issue #14. Portrait header: battery % top-left, bigger weather and date. Landscape unchanged.
 - 2026-10-05 Issue #12. setAlarmClock show intent opens system Alarms, not MainActivity.
 - 2026-10-05 Mutaz: Console closed test 12 testers for 13 days. One day left before apply.
