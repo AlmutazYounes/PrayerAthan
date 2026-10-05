@@ -260,10 +260,12 @@ Five composables. Naming is a suggestion. Structure is not.
 ### Header
 
 ```
-Header(location: String, weekday: String, dateLine: String)
+Header(location: String, weekday: String, dateLine: String, showBattery: Boolean = false)
 ```
 
 Location top-start, two lines: city name then gold weather with condition icon (`22°C  CLEAR`) from Open-Meteo, Celsius. Gold weather icon sits beside the weather line. Never lat/long on the wall. Date column top-end, one line: weekday then calendar date (`Thursday  27 August`). No year. In landscape, location and weather sit top-start; date and settings top-end. Countdown is in the arc notch, not a separate hero column. No Hijri slot.
+
+Portrait only: gold battery glyph + live percent sit above location (sticky `ACTION_BATTERY_CHANGED`, display only). Portrait weather and date use larger Header multipliers than landscape. Landscape never shows battery.
 
 ### ClockBlock
 

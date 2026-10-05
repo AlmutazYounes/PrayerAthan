@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
@@ -27,11 +29,13 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -48,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.mutazyounes.prayerathan.engine.CityCatalog
+import com.mutazyounes.prayerathan.shell.BatteryMonitor
 import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -290,6 +295,7 @@ private fun PortraitWall(
             type = type,
             onOpenSettings = onOpenSettings,
             weatherLine = state.weatherLine,
+            showBattery = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(inset),
@@ -401,12 +407,24 @@ fun Header(
     type: TypeScale,
     onOpenSettings: () -> Unit,
     weatherLine: String = "",
+    showBattery: Boolean = false,
     leftWeight: Float? = null,
     rightWeight: Float? = null,
     modifier: Modifier = Modifier,
 ) {
     val palette = LocalWallPalette.current
     val split = leftWeight != null && rightWeight != null
+    val weatherMaxSp = when {
+        showBattery -> type.dateLine.value * 1.65f
+        split -> type.label.value * 1.22f
+        else -> type.dateLine.value * 1.35f
+    }
+    val weatherMinSp = if (showBattery) type.label.value * 1.15f else type.label.value * 0.95f
+    val dateMaxSp = when {
+        showBattery -> type.dateLine.value * 1.45f
+        split -> type.dateLine.value * 1.15f
+        else -> type.dateLine.value
+    }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.Top,
@@ -416,6 +434,13 @@ fun Header(
                 .weight(leftWeight ?: 1f)
                 .fillMaxWidth(),
         ) {
+            if (showBattery) {
+                BatteryChip(
+                    color = palette.gold,
+                    textSize = type.label * 1.05f,
+                    modifier = Modifier.padding(bottom = 2.dp),
+                )
+            }
             Text(
                 text = location,
                 style = tabularStyle(
@@ -428,8 +453,6 @@ fun Header(
             )
             if (weatherLine.isNotEmpty()) {
                 val iconRes = weatherIconRes(weatherLine)
-                val weatherMaxSp = if (split) type.label.value * 1.22f else type.dateLine.value * 1.35f
-                val weatherMinSp = type.label.value * 0.95f
                 WeatherRow(
                     text = weatherLine,
                     iconRes = iconRes,
@@ -453,14 +476,98 @@ fun Header(
                 color = palette.date,
                 weight = FontWeight.Normal,
                 align = TextAlign.End,
-                maxSp = if (split) type.dateLine.value * 1.15f else type.dateLine.value,
-                minSp = type.label.value,
+                maxSp = dateMaxSp,
+                minSp = if (showBattery) type.label.value * 1.1f else type.label.value,
                 modifier = Modifier.fillMaxWidth(),
             )
             SettingsButton(
                 onClick = onOpenSettings,
                 compact = true,
                 modifier = Modifier.padding(top = 2.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun rememberBatteryPercent(): Int {
+    val context = LocalContext.current
+    var percent by remember { mutableIntStateOf(BatteryMonitor.stickyPercent(context)) }
+    DisposableEffect(context) {
+        val receiver = BatteryMonitor.register(context) { percent = it }
+        onDispose { context.unregisterReceiver(receiver) }
+    }
+    return percent
+}
+
+@Composable
+private fun BatteryChip(
+    color: Color,
+    textSize: androidx.compose.ui.unit.TextUnit,
+    modifier: Modifier = Modifier,
+) {
+    val percent = rememberBatteryPercent()
+    if (percent >= 0) {
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            BatteryGlyph(
+                percent = percent,
+                color = color,
+                modifier = Modifier
+                    .width(18.dp)
+                    .height(10.dp),
+            )
+            Spacer(modifier = Modifier.size(5.dp))
+            Text(
+                text = "$percent%",
+                style = tabularStyle(
+                    color = color,
+                    size = textSize,
+                    weight = FontWeight.Medium,
+                ),
+                maxLines = 1,
+            )
+        }
+    }
+}
+
+@Composable
+private fun BatteryGlyph(
+    percent: Int,
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
+    Canvas(modifier = modifier) {
+        val stroke = Stroke(width = 1.4.dp.toPx())
+        val tipW = size.width * 0.12f
+        val tipH = size.height * 0.42f
+        val bodyW = size.width - tipW - 1.dp.toPx()
+        val bodyH = size.height
+        val radius = 1.5.dp.toPx()
+        drawRoundRect(
+            color = color,
+            topLeft = Offset.Zero,
+            size = Size(bodyW, bodyH),
+            cornerRadius = CornerRadius(radius, radius),
+            style = stroke,
+        )
+        drawRoundRect(
+            color = color,
+            topLeft = Offset(bodyW + 1.dp.toPx(), (bodyH - tipH) / 2f),
+            size = Size(tipW, tipH),
+            cornerRadius = CornerRadius(radius * 0.5f, radius * 0.5f),
+        )
+        val inset = 2.dp.toPx()
+        val fillMaxW = (bodyW - inset * 2f).coerceAtLeast(0f)
+        val fillW = fillMaxW * (percent.coerceIn(0, 100) / 100f)
+        if (fillW > 0f) {
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(inset, inset),
+                size = Size(fillW, (bodyH - inset * 2f).coerceAtLeast(0f)),
+                cornerRadius = CornerRadius(radius * 0.6f, radius * 0.6f),
             )
         }
     }
