@@ -267,7 +267,7 @@ Header(location: String, weekday: String, dateLine: String, showBattery: Boolean
 
 Location top-start, two lines: city name then gold weather with condition icon (`22°C  CLEAR`) from Open-Meteo, Celsius. Gold weather icon sits beside the weather line. Never lat/long on the wall. Date column top-end, one line: weekday then calendar date (`Thursday  27 August`). No year. In landscape, location and weather sit top-start; date and settings top-end. Countdown is in the arc notch, not a separate hero column. No Hijri slot.
 
-Portrait only: larger circular battery with percent inside (sticky `ACTION_BATTERY_CHANGED`). Gold when 20% or above. `ColorBatteryLow` under 20%, with one short alarm-stream beep when crossing into low (and once on cold start if already low). Portrait weather max ~`1.35× dateLine` (slightly under the #14 bump). Date stays ~`1.45×`. Landscape never shows battery.
+Portrait only top-left stack: weather, then location, then circular battery (~54dp) with percent inside (sticky `ACTION_BATTERY_CHANGED`). Gold when 20% or above. `ColorBatteryLow` under 20%, with one short alarm-stream beep when crossing into low (and once on cold start if already low). Portrait weather max ~`1.35× dateLine`. Date stays ~`1.45×`. Landscape never shows battery.
 
 ### ClockBlock
 

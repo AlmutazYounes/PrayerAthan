@@ -4,27 +4,23 @@ Status: done
 
 When: 2026-10-05
 Agent: designer
-Issue: #16
+Issue: #18
 
-Portrait circular battery (bigger), low-battery red + beep, weather slightly smaller.
+Portrait header stack: weather → location → larger battery.
 
 ## What changed
 
-1. **`shell/BatteryLowAlert.kt`**
-   - Threshold 20%. ToneGenerator beep on STREAM_ALARM once when entering low (and cold start if already low).
+1. **`ui/WallScreen.kt` — `Header`**
+   - Portrait left column order: weather, location, battery.
+   - Battery diameter 54dp (was 44).
 
-2. **`ui/WallScreen.kt` — `Header` / `BatteryChip`**
-   - Circular ring with percent inside (~44dp).
-   - Gold normal, `palette.batteryLow` under 20%.
-   - Portrait weather max ~`1.35× dateLine` (was 1.65).
-
-3. **`ui/WallTheme.kt` + `DESIGN.md`**
-   - `batteryLow` / `ColorBatteryLow` `#C45A4A`.
+2. **`DESIGN.md`**
+   - Header note matches the stack order.
 
 ## Not touched
 
-Athan, engine, landscape header, Play push.
+Athan, engine, landscape, low-battery beep logic.
 
 ## Verify
 
-`./gradlew test assembleDebug` with `ANDROID_HOME` if needed.
+`./gradlew test assembleDebug`

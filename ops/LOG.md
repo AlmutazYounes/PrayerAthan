@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-10-05 Issue #18. Portrait header order: weather, location, larger battery circle.
 - 2026-10-05 Mutaz: internal testing 41 (0.41.0). Portrait battery circle; low red+beep; smaller weather. Not production.
 - 2026-10-05 Issue #16. Portrait battery circle larger; red + beep under 20%; weather slightly smaller.
 - 2026-10-05 Mutaz: internal testing 40 (0.40.0). Portrait battery %; larger weather and date. Not production.
