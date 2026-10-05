@@ -1,10 +1,7 @@
 package com.mutazyounes.prayerathan.audio
 
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import com.mutazyounes.prayerathan.MainActivity
 import com.mutazyounes.prayerathan.PrayerAthanApp
 import java.time.Instant
 import java.time.ZoneId
@@ -21,14 +18,11 @@ class MedicineScheduler(
         val clock = (context.applicationContext as PrayerAthanApp).wallClock
         val alarms = remainingMedicineAlarms(settings.slots(), now, zone)
         alarms.take(MAX_ARMED).forEachIndexed { index, alarm ->
-            val show = PendingIntent.getActivity(
-                context,
-                SHOW_REQUEST_BASE + index,
-                Intent(context, MainActivity::class.java),
-                FLAG,
-            )
             alarmManager.setAlarmClock(
-                AlarmManager.AlarmClockInfo(clock.alarmEpochMilli(alarm.at), show),
+                AlarmManager.AlarmClockInfo(
+                    clock.alarmEpochMilli(alarm.at),
+                    alarmClockShowPendingIntent(context, SHOW_REQUEST_BASE + index),
+                ),
                 MedicineAlarmReceiver.pendingIntent(context, index, alarm.slotId),
             )
         }
@@ -55,6 +49,5 @@ class MedicineScheduler(
     companion object {
         const val MAX_ARMED = 32
         private const val SHOW_REQUEST_BASE = 720
-        private const val FLAG = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     }
 }
