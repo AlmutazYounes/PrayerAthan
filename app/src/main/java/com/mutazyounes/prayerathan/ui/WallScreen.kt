@@ -434,13 +434,15 @@ fun Header(
                 .weight(leftWeight ?: 1f)
                 .fillMaxWidth(),
         ) {
-            if (showBattery) {
-                BatteryChip(
-                    normalColor = palette.gold,
-                    lowColor = palette.batteryLow,
-                    textSize = type.label * 0.72f,
-                    diameter = 44.dp,
-                    modifier = Modifier.padding(bottom = 4.dp),
+            if (weatherLine.isNotEmpty()) {
+                val iconRes = weatherIconRes(weatherLine)
+                WeatherRow(
+                    text = weatherLine,
+                    iconRes = iconRes,
+                    color = palette.gold,
+                    maxSp = weatherMaxSp,
+                    minSp = weatherMinSp,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
             Text(
@@ -451,17 +453,17 @@ fun Header(
                     weight = FontWeight.Medium,
                 ).copy(letterSpacing = 0.12.em),
                 maxLines = 1,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = if (weatherLine.isNotEmpty()) 2.dp else 0.dp),
             )
-            if (weatherLine.isNotEmpty()) {
-                val iconRes = weatherIconRes(weatherLine)
-                WeatherRow(
-                    text = weatherLine,
-                    iconRes = iconRes,
-                    color = palette.gold,
-                    maxSp = weatherMaxSp,
-                    minSp = weatherMinSp,
-                    modifier = Modifier.fillMaxWidth(),
+            if (showBattery) {
+                BatteryChip(
+                    normalColor = palette.gold,
+                    lowColor = palette.batteryLow,
+                    textSize = type.label * 0.82f,
+                    diameter = 54.dp,
+                    modifier = Modifier.padding(top = 6.dp),
                 )
             }
         }
