@@ -88,6 +88,7 @@ fun PortraitStackedWall(
             type = type,
             onOpenSettings = onOpenSettings,
             weatherLine = state.weatherLine,
+            showBattery = true,
             leftWeight = 1.35f,
             rightWeight = 0.65f,
             modifier = Modifier

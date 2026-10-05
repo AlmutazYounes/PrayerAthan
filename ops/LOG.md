@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-10-05 Issue #14. Portrait header: battery % top-left, bigger weather and date. Landscape unchanged.
 - 2026-10-05 Issue #12. setAlarmClock show intent opens system Alarms, not MainActivity.
 - 2026-10-05 Mutaz: Console closed test 12 testers for 13 days. One day left before apply.
 - 2026-09-27 Mutaz: internal testing 39 (0.39.0). morning athkar is adhkar as-sabah, not salawat only. Not production.
