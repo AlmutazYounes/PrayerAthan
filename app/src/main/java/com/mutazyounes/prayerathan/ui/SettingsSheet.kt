@@ -118,6 +118,7 @@ fun SettingsSheet(
     locationError: String?,
     athanSoundId: String,
     athkarEnabled: Boolean,
+    athkarVolume: Int,
     morningAthkarEnabled: Boolean,
     morningAthkarVolume: Int,
     mutedPrayers: Set<PrayerName>,
@@ -133,6 +134,8 @@ fun SettingsSheet(
     onUseGps: () -> Unit,
     onSelectAthanSound: (String) -> Unit,
     onAthkarEnabledChange: (Boolean) -> Unit,
+    onAthkarVolumeChange: (Int) -> Unit,
+    onPlayAthkarVolumePreview: (Int) -> Unit,
     onMorningAthkarEnabledChange: (Boolean) -> Unit,
     onMorningAthkarVolumeChange: (Int) -> Unit,
     onPlayMorningAthkarVolumePreview: (Int) -> Unit,
@@ -418,7 +421,11 @@ fun SettingsSheet(
                             )
                             AthkarCard(
                                 athkarEnabled = athkarEnabled,
+                                volume = athkarVolume,
+                                demoId = demoId,
                                 onAthkarEnabledChange = onAthkarEnabledChange,
+                                onVolumeChange = onAthkarVolumeChange,
+                                onPlayPreview = onPlayAthkarVolumePreview,
                             )
                             MorningAthkarCard(
                                 enabled = morningAthkarEnabled,
@@ -515,7 +522,11 @@ fun SettingsSheet(
 
                         AthkarCard(
                             athkarEnabled = athkarEnabled,
+                            volume = athkarVolume,
+                            demoId = demoId,
                             onAthkarEnabledChange = onAthkarEnabledChange,
+                            onVolumeChange = onAthkarVolumeChange,
+                            onPlayPreview = onPlayAthkarVolumePreview,
                         )
 
                         MorningAthkarCard(
@@ -1251,17 +1262,79 @@ private fun ModernSoundItem(
 @Composable
 private fun AthkarCard(
     athkarEnabled: Boolean,
+    volume: Int,
+    demoId: String?,
     onAthkarEnabledChange: (Boolean) -> Unit,
+    onVolumeChange: (Int) -> Unit,
+    onPlayPreview: (Int) -> Unit,
 ) {
+    val palette = LocalWallPalette.current
+    var sliding by remember { mutableFloatStateOf(volume.toFloat()) }
+    LaunchedEffect(volume) {
+        sliding = volume.toFloat()
+    }
+    val percent = sliding.roundToInt()
+    val playing = demoId == AthanVolume.HOURLY_DEMO_KEY
     ModernCardContainer(
         title = "Hourly Athkar",
         icon = Icons.Default.PlayArrow,
-        subtitle = "8 AM – 10 PM · Medicine wins that minute",
+        subtitle = "8 AM – 10 PM · volume · Medicine wins that minute",
         trailing = {
             CompactSwitch(active = athkarEnabled, onActiveChange = onAthkarEnabledChange)
         },
-        body = false,
     ) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = "VOLUME",
+                    color = palette.prayerPast,
+                    fontSize = 10.sp,
+                    fontFamily = EnglishFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.weight(1f),
+                )
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (playing) palette.gold else palette.gold.copy(alpha = 0.15f))
+                        .clickable { onPlayPreview(percent) },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = if (playing) Icons.Default.Close else Icons.Default.PlayArrow,
+                        contentDescription = if (playing) "Stop preview" else "Preview volume",
+                        tint = if (playing) palette.settingsPanel else palette.gold,
+                        modifier = Modifier.size(14.dp),
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                GoldVolumeSlider(
+                    value = sliding,
+                    onValueChange = { sliding = it },
+                    onValueChangeFinished = { onVolumeChange(sliding.roundToInt()) },
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = "$percent",
+                    color = palette.gold,
+                    fontSize = 11.sp,
+                    fontFamily = EnglishFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.width(28.dp),
+                )
+            }
+        }
     }
 }
 

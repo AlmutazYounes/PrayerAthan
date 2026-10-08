@@ -7,7 +7,7 @@ Agent: athan-audio
 
 ## What landed
 
-Per-prayer athan volume, 0–100, default 100. Stored in `prayerathan_audio` as `volume_FAJR` etc. `AthanPlayer` applies it with `MediaPlayer.setVolume` on the alarm stream. Mute still skips the alarm.
+Per-prayer athan volume, 0–100, default 100. Stored in `prayerathan_audio` as `volume_FAJR` etc. Hourly athkar volume is `athkar_volume` (issue #22). Morning athkar volume is `morning_athkar_volume` (issue #20). `AthanPlayer` applies it with `MediaPlayer.setVolume` on the alarm stream. Mute still skips the alarm.
 
 Settings Prayer Athans card has mute chips plus a gold slider row per prayer. PLAY on a row previews at that volume (`demoId` = `volume:FAJR`). Sound-picker PLAY stays at 100.
 
@@ -23,7 +23,7 @@ Live athan notification is channel `athan_playback_alarm`, `IMPORTANCE_HIGH`, si
 
 ## Playback
 
-Selected file at all five prayers. Volume comes from prefs at play time. Athkar still uses full volume. Athkar off cancels the hourly alarms. Morning off cancels the morning slots. Athan still wins that minute. Medicine cancels athkar if both fire.
+Selected file at all five prayers. Volume comes from prefs at play time. Hourly and morning athkar use their own volume prefs. Athkar off cancels the hourly alarms. Morning off cancels the morning slots. Athan still wins that minute. Medicine cancels athkar if both fire.
 
 ## Test
 

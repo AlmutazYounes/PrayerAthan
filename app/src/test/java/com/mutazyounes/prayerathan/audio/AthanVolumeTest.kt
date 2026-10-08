@@ -43,4 +43,9 @@ class AthanVolumeTest {
     fun morningPreviewKeyIsStable() {
         assertEquals("volume:morning_athkar", AthanVolume.MORNING_DEMO_KEY)
     }
+
+    @Test
+    fun hourlyPreviewKeyIsStable() {
+        assertEquals("volume:hourly_athkar", AthanVolume.HOURLY_DEMO_KEY)
+    }
 }

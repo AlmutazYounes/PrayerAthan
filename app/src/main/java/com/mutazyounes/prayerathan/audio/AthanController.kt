@@ -35,6 +35,7 @@ interface AthanController {
         demoKey: String = soundId,
     )
     fun playAthkarDemo(clip: AthkarClip)
+    fun playHourlyAthkarDemo(volumePercent: Int = AthanVolume.DEFAULT)
     fun playMorningAthkarDemo(volumePercent: Int = AthanVolume.DEFAULT)
     fun playMedicineDemo()
     val playback: StateFlow<AthanPlayback?>
@@ -135,6 +136,19 @@ class DefaultAthanController(
         markIdle()
         markDemo(AthkarService.demoId(clip))
         appContext.startForegroundService(AthkarService.demoIntent(appContext, clip))
+    }
+
+    override fun playHourlyAthkarDemo(volumePercent: Int) {
+        stopMedicine()
+        try {
+            appContext.startService(AthanService.stopIntent(appContext))
+        } catch (_: IllegalStateException) {
+        }
+        markIdle()
+        markDemo(AthanVolume.HOURLY_DEMO_KEY)
+        appContext.startForegroundService(
+            AthkarService.hourlyDemoIntent(appContext, volumePercent),
+        )
     }
 
     override fun playMorningAthkarDemo(volumePercent: Int) {
