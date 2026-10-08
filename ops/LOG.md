@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-10-08 Mutaz: internal testing 44 (0.44.0). Hourly athkar volume slider. Not production.
 - 2026-10-08 Issue #22. Hourly athkar volume slider + PLAY preview. Persist `athkar_volume`.
 - 2026-10-08 Mutaz: internal testing 43 (0.43.0). Morning athkar volume slider. Not production.
 - 2026-10-08 Issue #20. Morning athkar volume slider + PLAY preview. Persist `morning_athkar_volume`.
