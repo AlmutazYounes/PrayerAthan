@@ -38,4 +38,9 @@ class AthanVolumeTest {
         assertEquals("volume:FAJR", AthanVolume.demoKey(PrayerName.FAJR))
         assertEquals("volume:ISHA", AthanVolume.demoKey(PrayerName.ISHA))
     }
+
+    @Test
+    fun morningPreviewKeyIsStable() {
+        assertEquals("volume:morning_athkar", AthanVolume.MORNING_DEMO_KEY)
+    }
 }
