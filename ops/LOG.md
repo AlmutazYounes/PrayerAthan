@@ -2,6 +2,7 @@
 
 Append one line per event. Newest at the top.
 
+- 2026-10-08 Issue #20. Morning athkar volume slider + PLAY preview. Persist `morning_athkar_volume`.
 - 2026-10-05 Mutaz: internal testing 42 (0.42.0). Portrait header weather then location then larger battery. Not production.
 - 2026-10-05 Issue #18. Portrait header order: weather, location, larger battery circle.
 - 2026-10-05 Mutaz: internal testing 41 (0.41.0). Portrait battery circle; low red+beep; smaller weather. Not production.

@@ -153,6 +153,22 @@ class WallViewModel(
         refresh(now(), forceSchedule = true)
     }
 
+    fun setMorningAthkarVolume(percent: Int) {
+        audioSettings.setMorningAthkarVolume(percent)
+        refresh(now())
+    }
+
+    fun playMorningAthkarVolumePreview(percent: Int) {
+        val key = AthanVolume.MORNING_DEMO_KEY
+        if (athan.demoId.value == key) {
+            stopDemo()
+            return
+        }
+        audioSettings.setMorningAthkarVolume(percent)
+        athan.playMorningAthkarDemo(percent)
+        refresh(now())
+    }
+
     fun setMedicineEnabled(enabled: Boolean) {
         medicineSettings.setEnabled(enabled)
         refresh(now(), forceSchedule = true)
@@ -439,6 +455,7 @@ class WallViewModel(
             athanSoundId = audioSettings.soundId(),
             athkarEnabled = audioSettings.athkarEnabled(),
             morningAthkarEnabled = audioSettings.morningAthkarEnabled(),
+            morningAthkarVolume = audioSettings.morningAthkarVolume(),
             mutedPrayers = mutedPrayers,
             prayerVolumes = audioSettings.prayerVolumes(),
             prayerOffsets = prayerOffsetMinutes,

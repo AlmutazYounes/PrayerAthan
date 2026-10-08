@@ -59,6 +59,13 @@ class AudioSettingsStore(
         prefs.edit().putBoolean(KEY_MORNING_ATHKAR, enabled).apply()
     }
 
+    fun morningAthkarVolume(): Int =
+        AthanVolume.clamp(prefs.getInt(KEY_MORNING_ATHKAR_VOLUME, AthanVolume.DEFAULT))
+
+    fun setMorningAthkarVolume(percent: Int) {
+        prefs.edit().putInt(KEY_MORNING_ATHKAR_VOLUME, AthanVolume.clamp(percent)).apply()
+    }
+
     fun isPrayerMuted(prayer: PrayerName): Boolean =
         prayer in mutedPrayers()
 
@@ -97,6 +104,7 @@ class AudioSettingsStore(
         private const val KEY_SOUND = "athan_sound"
         private const val KEY_ATHKAR = "athkar_enabled"
         private const val KEY_MORNING_ATHKAR = "morning_athkar_enabled"
+        private const val KEY_MORNING_ATHKAR_VOLUME = "morning_athkar_volume"
         private const val KEY_MUTED_PRAYERS = "muted_prayers"
         private val DEFAULT_MUTED: Set<String> =
             PrayerName.athanTargets().map { it.name }.toSet()
@@ -115,4 +123,6 @@ object AthanVolume {
     fun gain(percent: Int): Float = clamp(percent) / 100f
 
     fun demoKey(prayer: PrayerName): String = "volume:${prayer.name}"
+
+    const val MORNING_DEMO_KEY = "volume:morning_athkar"
 }

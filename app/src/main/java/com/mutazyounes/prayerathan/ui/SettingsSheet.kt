@@ -119,6 +119,7 @@ fun SettingsSheet(
     athanSoundId: String,
     athkarEnabled: Boolean,
     morningAthkarEnabled: Boolean,
+    morningAthkarVolume: Int,
     mutedPrayers: Set<PrayerName>,
     prayerVolumes: Map<PrayerName, Int>,
     prayerOffsets: Map<PrayerName, Int>,
@@ -133,6 +134,8 @@ fun SettingsSheet(
     onSelectAthanSound: (String) -> Unit,
     onAthkarEnabledChange: (Boolean) -> Unit,
     onMorningAthkarEnabledChange: (Boolean) -> Unit,
+    onMorningAthkarVolumeChange: (Int) -> Unit,
+    onPlayMorningAthkarVolumePreview: (Int) -> Unit,
     onTogglePrayerMute: (PrayerName) -> Unit,
     onPrayerVolumeChange: (PrayerName, Int) -> Unit,
     onPrayerOffsetChange: (PrayerName, Int) -> Unit,
@@ -419,7 +422,11 @@ fun SettingsSheet(
                             )
                             MorningAthkarCard(
                                 enabled = morningAthkarEnabled,
+                                volume = morningAthkarVolume,
+                                demoId = demoId,
                                 onEnabledChange = onMorningAthkarEnabledChange,
+                                onVolumeChange = onMorningAthkarVolumeChange,
+                                onPlayPreview = onPlayMorningAthkarVolumePreview,
                             )
                             MedicineCard(
                                 enabled = medicineEnabled,
@@ -513,7 +520,11 @@ fun SettingsSheet(
 
                         MorningAthkarCard(
                             enabled = morningAthkarEnabled,
+                            volume = morningAthkarVolume,
+                            demoId = demoId,
                             onEnabledChange = onMorningAthkarEnabledChange,
+                            onVolumeChange = onMorningAthkarVolumeChange,
+                            onPlayPreview = onPlayMorningAthkarVolumePreview,
                         )
 
                         MedicineCard(
@@ -1257,17 +1268,79 @@ private fun AthkarCard(
 @Composable
 private fun MorningAthkarCard(
     enabled: Boolean,
+    volume: Int,
+    demoId: String?,
     onEnabledChange: (Boolean) -> Unit,
+    onVolumeChange: (Int) -> Unit,
+    onPlayPreview: (Int) -> Unit,
 ) {
+    val palette = LocalWallPalette.current
+    var sliding by remember { mutableFloatStateOf(volume.toFloat()) }
+    LaunchedEffect(volume) {
+        sliding = volume.toFloat()
+    }
+    val percent = sliding.roundToInt()
+    val playing = demoId == AthanVolume.MORNING_DEMO_KEY
     ModernCardContainer(
         title = "Morning Athkar",
         icon = Icons.Default.PlayArrow,
-        subtitle = "8:05 every 5 min · six clips · off by default",
+        subtitle = "8:05 every 5 min · six clips · volume · off by default",
         trailing = {
             CompactSwitch(active = enabled, onActiveChange = onEnabledChange)
         },
-        body = false,
     ) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = "VOLUME",
+                    color = palette.prayerPast,
+                    fontSize = 10.sp,
+                    fontFamily = EnglishFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.weight(1f),
+                )
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (playing) palette.gold else palette.gold.copy(alpha = 0.15f))
+                        .clickable { onPlayPreview(percent) },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = if (playing) Icons.Default.Close else Icons.Default.PlayArrow,
+                        contentDescription = if (playing) "Stop preview" else "Preview volume",
+                        tint = if (playing) palette.settingsPanel else palette.gold,
+                        modifier = Modifier.size(14.dp),
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                GoldVolumeSlider(
+                    value = sliding,
+                    onValueChange = { sliding = it },
+                    onValueChangeFinished = { onVolumeChange(sliding.roundToInt()) },
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = "$percent",
+                    color = palette.gold,
+                    fontSize = 11.sp,
+                    fontFamily = EnglishFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.width(28.dp),
+                )
+            }
+        }
     }
 }
 

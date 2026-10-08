@@ -51,6 +51,7 @@ interface AthanController {
     fun stop()                  // tap during athan, athkar, or medicine
     fun playAthanDemo(soundId: String, volumePercent: Int = 100, demoKey: String = soundId)
     fun playAthkarDemo(clip: AthkarClip)
+    fun playMorningAthkarDemo(volumePercent: Int = 100)
     fun playMedicineDemo()
     val playback: StateFlow<AthanPlayback?>  // null = idle
     val athkarPlayback: StateFlow<AthkarPlayback?>
@@ -67,7 +68,7 @@ Live athan posts channel `athan_playback_alarm` at `IMPORTANCE_HIGH`, silent, lo
 
 Hourly athkar rotates the remaining clips when the setting is on. Skip if athan is playing or that minute is an athan alarm. Do not arm `:00` hours that already have a medicine slot. If a leftover athkar alarm still fires that minute, start medicine and stay silent. Silent from Isha until the next Fajr, and silent from 10:00 PM until 8:00 AM local even if Fajr already passed. Settings PLAY demos do not wait for the hour.
 
-Morning athkar is a fixed six-clip adhkar as-sabah sequence at 8:05, 8:10, … 8:30 local when `morningAthkarEnabled()` is on (default off). Files `athkar_morning_01` … `06` with matching Arabic captions. Not salawat (hourly keeps salawat). Not Quran. One clip per `AthkarService` start via `EXTRA_INDEX`. Skip the slot if athan or medicine owns that minute. Same priority as hourly: athan > medicine > athkar. Settings stores the flag in `prayerathan_audio` as `morning_athkar_enabled`.
+Morning athkar is a fixed six-clip adhkar as-sabah sequence at 8:05, 8:10, … 8:30 local when `morningAthkarEnabled()` is on (default off). Files `athkar_morning_01` … `06` with matching Arabic captions. Not salawat (hourly keeps salawat). Not Quran. One clip per `AthkarService` start via `EXTRA_INDEX`. Volume is 0–100 from `morning_athkar_volume` (default 100), applied with `MediaPlayer.setVolume`. Settings PLAY previews clip 01 at that volume (`demoId = volume:morning_athkar`). Skip the slot if athan or medicine owns that minute. Same priority as hourly: athan > medicine > athkar. Settings stores the flag in `prayerathan_audio` as `morning_athkar_enabled`.
 
 Medicine reminder plays the selected voice clip at each configured weekday/time. Skip if athan is playing or that minute is an athan alarm. Uses `AlarmManager.setAlarmClock` (same class as prayer athan) plus a 3-minute grace window so a late wake still speaks. If the slot is already due when Mutaz enables it, play immediately (once per occurrence). Same minute as athkar: only medicine. A second PLAY for the same fire key must not stop a clip that is already speaking. Settings stores enable, voice, slots, and last-fire key in `prayerathan_medicine`. Off until the user turns it on. Preview uses `demoId = medicine:preview`.
 
