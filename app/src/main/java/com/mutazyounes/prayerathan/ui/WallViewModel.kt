@@ -148,6 +148,22 @@ class WallViewModel(
         refresh(now(), forceSchedule = true)
     }
 
+    fun setAthkarVolume(percent: Int) {
+        audioSettings.setAthkarVolume(percent)
+        refresh(now())
+    }
+
+    fun playAthkarVolumePreview(percent: Int) {
+        val key = AthanVolume.HOURLY_DEMO_KEY
+        if (athan.demoId.value == key) {
+            stopDemo()
+            return
+        }
+        audioSettings.setAthkarVolume(percent)
+        athan.playHourlyAthkarDemo(percent)
+        refresh(now())
+    }
+
     fun setMorningAthkarEnabled(enabled: Boolean) {
         audioSettings.setMorningAthkarEnabled(enabled)
         refresh(now(), forceSchedule = true)
@@ -454,6 +470,7 @@ class WallViewModel(
             weatherCondition = weatherCondition,
             athanSoundId = audioSettings.soundId(),
             athkarEnabled = audioSettings.athkarEnabled(),
+            athkarVolume = audioSettings.athkarVolume(),
             morningAthkarEnabled = audioSettings.morningAthkarEnabled(),
             morningAthkarVolume = audioSettings.morningAthkarVolume(),
             mutedPrayers = mutedPrayers,

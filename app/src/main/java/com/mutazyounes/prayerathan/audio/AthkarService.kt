@@ -26,6 +26,7 @@ class AthkarService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_PLAY -> startPlayback()
+            ACTION_HOURLY_DEMO -> startHourlyDemo(intent)
             ACTION_MORNING_PLAY -> startMorningPlayback(intent)
             ACTION_MORNING_DEMO -> startMorningDemo(intent)
             ACTION_DEMO -> startDemo(intent)
@@ -81,6 +82,7 @@ class AthkarService : Service() {
             return
         }
         val clip = rotation.next()
+        val volumePercent = AudioSettingsStore(this).athkarVolume()
         app.athanController.markAthkarPlaying(clip.caption, now)
         app.athanController.schedule(day, now)
         startInForeground(clip.caption)
@@ -88,6 +90,24 @@ class AthkarService : Service() {
             resId = clip.rawRes,
             onComplete = { stopPlayback() },
             onError = { stopPlayback() },
+            volumePercent = volumePercent,
+        )
+    }
+
+    private fun startHourlyDemo(intent: Intent) {
+        val volumePercent = AthanVolume.clamp(
+            intent.getIntExtra(EXTRA_VOLUME, AudioSettingsStore(this).athkarVolume()),
+        )
+        val clip = AthkarClip.SALAWAT
+        val app = application as PrayerAthanApp
+        startInForeground(clip.caption)
+        app.athanController.markDemo(AthanVolume.HOURLY_DEMO_KEY)
+        app.athanController.markAthkarPlaying(clip.caption, app.wallClock.now())
+        player.playRaw(
+            resId = clip.rawRes,
+            onComplete = { stopPlayback() },
+            onError = { stopPlayback() },
+            volumePercent = volumePercent,
         )
     }
 
@@ -246,6 +266,7 @@ class AthkarService : Service() {
 
     companion object {
         const val ACTION_PLAY = "com.mutazyounes.prayerathan.audio.ATHKAR_PLAY"
+        const val ACTION_HOURLY_DEMO = "com.mutazyounes.prayerathan.audio.HOURLY_ATHKAR_DEMO"
         const val ACTION_MORNING_PLAY = "com.mutazyounes.prayerathan.audio.MORNING_ATHKAR_PLAY"
         const val ACTION_MORNING_DEMO = "com.mutazyounes.prayerathan.audio.MORNING_ATHKAR_DEMO"
         const val ACTION_DEMO = "com.mutazyounes.prayerathan.audio.ATHKAR_DEMO"
@@ -259,6 +280,13 @@ class AthkarService : Service() {
         fun playIntent(context: Context): Intent {
             return Intent(context, AthkarService::class.java).apply {
                 action = ACTION_PLAY
+            }
+        }
+
+        fun hourlyDemoIntent(context: Context, volumePercent: Int): Intent {
+            return Intent(context, AthkarService::class.java).apply {
+                action = ACTION_HOURLY_DEMO
+                putExtra(EXTRA_VOLUME, AthanVolume.clamp(volumePercent))
             }
         }
 

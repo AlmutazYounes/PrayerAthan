@@ -51,6 +51,7 @@ interface AthanController {
     fun stop()                  // tap during athan, athkar, or medicine
     fun playAthanDemo(soundId: String, volumePercent: Int = 100, demoKey: String = soundId)
     fun playAthkarDemo(clip: AthkarClip)
+    fun playHourlyAthkarDemo(volumePercent: Int = 100)
     fun playMorningAthkarDemo(volumePercent: Int = 100)
     fun playMedicineDemo()
     val playback: StateFlow<AthanPlayback?>  // null = idle
@@ -66,7 +67,7 @@ Playback uses `MediaPlayer` on the alarm stream. Foreground service for the dura
 
 Live athan posts channel `athan_playback_alarm` at `IMPORTANCE_HIGH`, silent, lock-screen public, with a Stop action and a `fullScreenIntent` to `MainActivity`. `MainActivity` sets show-when-locked while `playback` is non-null. Demos skip the full-screen intent. While alarm audio plays, volume keys bind to `STREAM_ALARM`. Volume down to zero or a long press calls `AthanController.stop()`.
 
-Hourly athkar rotates the remaining clips when the setting is on. Skip if athan is playing or that minute is an athan alarm. Do not arm `:00` hours that already have a medicine slot. If a leftover athkar alarm still fires that minute, start medicine and stay silent. Silent from Isha until the next Fajr, and silent from 10:00 PM until 8:00 AM local even if Fajr already passed. Settings PLAY demos do not wait for the hour.
+Hourly athkar rotates the remaining clips when the setting is on. Volume is 0–100 from `athkar_volume` (default 100). Settings PLAY previews salawat at that volume (`demoId = volume:hourly_athkar`). Skip if athan is playing or that minute is an athan alarm. Do not arm `:00` hours that already have a medicine slot. If a leftover athkar alarm still fires that minute, start medicine and stay silent. Silent from Isha until the next Fajr, and silent from 10:00 PM until 8:00 AM local even if Fajr already passed. Settings PLAY demos do not wait for the hour.
 
 Morning athkar is a fixed six-clip adhkar as-sabah sequence at 8:05, 8:10, … 8:30 local when `morningAthkarEnabled()` is on (default off). Files `athkar_morning_01` … `06` with matching Arabic captions. Not salawat (hourly keeps salawat). Not Quran. One clip per `AthkarService` start via `EXTRA_INDEX`. Volume is 0–100 from `morning_athkar_volume` (default 100), applied with `MediaPlayer.setVolume`. Settings PLAY previews clip 01 at that volume (`demoId = volume:morning_athkar`). Skip the slot if athan or medicine owns that minute. Same priority as hourly: athan > medicine > athkar. Settings stores the flag in `prayerathan_audio` as `morning_athkar_enabled`.
 
